@@ -14581,7 +14581,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><font size="5">**Algorytmy danych geoprzestrzennych**</font><br>
-<font size="4">Wprowadzenie do PyQGIS</font></p>
+<font size="4">Przetwarzanie danych wektorowych</font></p>
 <p><font size="4">Krzysztof Dyba</font></p>
 
 </div>
@@ -14594,81 +14594,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>PyQGIS to biblioteka języka Python udostępniająca interfejs programistyczny do aplikacji QGIS, dzięki czemu możliwa jest interakcja pomiędzy kodem napisanym w Pythonie, a środowiskiem i elementami QGIS (np. projekt, warstwy, funkcje, itd.). Biblioteka odgrywa kluczową rolę w automatyzacji zadań oraz tworzeniu niestandardowych narzędzi i wtyczek do rozszerzenia funkcjonalności QGIS. PyQGIS jest częścią projektu QGIS, który jest darmowy i otwarty.</p>
-<p>Przykładowe zastosowania:</p>
-<ul>
-<li>Automatyzacja (przetwarzanie wsadowe, skrypty do czyszczenia i walidacji danych, generowanie map),</li>
-<li>Tworzenie nowych narzędzi (wtyczki, specjalistyczne algorytmy geoprzetwarzania, niestandardowe interfejsy),</li>
-<li>Zaawansowane analizy przestrzenne (wykorzystanie zewnętrznych bibliotek, np. <code>numpy</code>, <code>scikit-learn</code>).</li>
-</ul>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Instalacja">Instalacja<a class="anchor-link" href="#Instalacja">&#182;</a></h1><p>Instalacja jest bardzo prosta -- należy pobrać program QGIS z oficjalnej strony <a href="https://qgis.org/download/">https://qgis.org/download/</a> i zainstalować według wyświetlanych instrukcji. Środowisko Python i podstawowe biblioteki są automatycznie instalowane wraz z QGIS.</p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Pierwsze-kroki">Pierwsze kroki<a class="anchor-link" href="#Pierwsze-kroki">&#182;</a></h1><p>Zasadniczo bibliotekę PyQGIS możemy wykorzystać na dwa sposoby:</p>
-<ol>
-<li>Zintegrowana konsola Pythona w QGIS.</li>
-</ol>
-<p>QGIS ma wbudowaną konsolę Pythona, w której można wykonywać skrypty interaktywnie. Aby ją włączyć kliknij <code>Wtyczki</code> &gt; <code>Konsola Pythona</code> w pasku narzędzi. Można również wykorzystać skrót klawiszowy: <code>CTRL</code> + <code>ALT</code> + <code>P</code>. Oprócz konsoli, wbudowany jest bardzo prosty edytor kodu.</p>
-<ol>
-<li>Samodzielne skrypty.</li>
-</ol>
-<p>PyQGIS można również wykorzystać poza aplikacją QGIS w samodzielnych skryptach Pythona.</p>
-<p>Sprawdź czy wszystko działa prawidłowo wykonując następujące polecenie:</p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="o">*</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Dane-wektorowe">Dane wektorowe<a class="anchor-link" href="#Dane-wektorowe">&#182;</a></h2><h3 id="Wczytywanie">Wczytywanie<a class="anchor-link" href="#Wczytywanie">&#182;</a></h3><p>W folderze <code>dane</code> znajduje się plik <em>powiaty.gpkg</em>, który zawiera granice powiatów w wielkopolsce z <a href="https://www.geoportal.gov.pl/pl/dane/panstwowy-rejestr-granic-prg/">Państwowego Rejestru Granic</a>. Żeby go wczytać należy wykorzystać klasę <a href="https://qgis.org/pyqgis/master/core/QgsVectorLayer.html">QgsVectorLayer</a> i zdefiniować trzy argumenty:</p>
-<ol>
-<li>ścieżkę do pliku,</li>
-<li>nazwę warstwy pod jaką zostanie wyświetlony,</li>
-<li>backend do wczytania danych (<em>data provider</em>), np. <a href="https://gdal.org/en/stable/drivers/vector/index.html">ogr</a>, <a href="https://www.gaia-gis.it/fossil/libspatialite/index">spatialite</a>, <a href="https://www.postgresql.org/">postgres</a>.</li>
-</ol>
-<p>Ścieżkę do pliku można zdefiniować na dwa sposoby. Pierwszy to podanie <strong>ścieżki bezwzględnej</strong>, tj. wskazanie dokładnej lokalizacji, w której znajduje się plik. Na przykład:</p>
-
-<pre><code>sciezka = "C:\Users\Krzysztof\Desktop\dane.csv"
-# lub sciezka = "C:\\Users\\Krzysztof\\Desktop\\dane.csv"</code></pre>
-<p>Nie jest to jednak rekomendowana metoda, ponieważ zakłada, że struktura katalogów pomiędzy różnymi komputerami i systemami jest identyczna. Drugi sposób polega na podaniu <strong>ścieżki względnej</strong>. W tym przypadku podajemy lokalizację pliku względem bieżącego katalogu roboczego lub projektu. Aby dowiedzieć się, gdzie znajduje się katalog roboczy, możemy użyć metody <code>getcwd()</code> z biblioteki <code>os</code>, a do jego zmiany metody <code>chdir()</code>. Uwaga: domyślna ścieżka katalogu roboczego w konsoli QGIS, a systemowej są różne!</p>
+<p>Na początku wczytajmy warstwę wektorową <code>powiaty.gpkg</code>, a następnie sprawdźmy podstawowe metadane.</p>
 
 </div>
 </div>
@@ -14682,7 +14608,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+<span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsVectorLayer</span>
+
+<span class="c1"># wczytanie warstwy wektorowej</span>
+<span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"algorytmy-geoprzestrzenne"</span><span class="p">,</span> <span class="s2">"dane"</span><span class="p">,</span> <span class="s2">"powiaty.gpkg"</span><span class="p">)</span>
+<span class="n">vector</span> <span class="o">=</span> <span class="n">QgsVectorLayer</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">"powiaty"</span><span class="p">,</span> <span class="s2">"ogr"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">isValid</span><span class="p">())</span>
 </pre></div>
 
      </div>
@@ -14704,7 +14635,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>C:\Users\Krzysztof\Desktop
+<pre>True
 </pre>
 </div>
 </div>
@@ -14713,18 +14644,6 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 </div>
 
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Zauważ również, że w zależności od systemu jest wykorzystywany różny separator katalogów w hierarchii. Aby prawidłowo wskazać ścieżkę do pliku należy wykorzystać metodę <code>os.path.join()</code>.</p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14733,7 +14652,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"projekt"</span><span class="p">,</span> <span class="s2">"dane"</span><span class="p">,</span> <span class="s2">"pomiary.csv"</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># wyświetlenie metadanych</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">featureCount</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">fields</span><span class="p">()</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">fields</span><span class="p">()</span><span class="o">.</span><span class="n">names</span><span class="p">())</span>
 </pre></div>
 
      </div>
@@ -14755,7 +14677,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>projekt\dane\pomiary.csv
+<pre>35
+5
+[&#39;fid&#39;, &#39;JPT_KOD_JE&#39;, &#39;JPT_NAZWA_&#39;, &#39;IIP_IDENTY&#39;, &#39;IIP_WERSJA&#39;]
 </pre>
 </div>
 </div>
@@ -14771,7 +14695,20 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Spróbujmy teraz wczytać nasz plik.</p>
+<p>Wczytana warstwa składa się z 35 obiektów oraz 5 atrybutów (inne określenie to kolumny bądź pola).</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Dost%C4%99p-do-obiekt%C3%B3w">Dost&#281;p do obiekt&#243;w<a class="anchor-link" href="#Dost%C4%99p-do-obiekt%C3%B3w">&#182;</a></h1><p>Iterowanie po obiektach warstwy wektorowej umożliwia dostęp lub modyfikowanie geometrii/atrybutów tych obiektów. Do tego celu służy metoda <code>getFeatures()</code>. Geometria obiektu dostępna jest za pomocą metody <code>geometry()</code> (klasa <a href="https://qgis.org/pyqgis/master/core/QgsGeometry.html">QgsGeometry</a>), natomiast atrybuty za pomocą metody <code>attributes()</code>.</p>
+<p>W poniższym przykładzie wykorzystamy funkcję <code>islice</code> z biblioteki <code>itertools</code>, która zwróci tylko 5 pierwszych obiektów.</p>
 
 </div>
 </div>
@@ -14784,16 +14721,17 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsVectorLayer</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
 
-<span class="c1"># określenie ścieżki do pliku</span>
-<span class="n">sciezka_do_pliku</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"algorytmy-geoprzestrzenne"</span><span class="p">,</span> <span class="s2">"dane"</span><span class="p">,</span> <span class="s2">"powiaty.gpkg"</span><span class="p">)</span>
-
-<span class="c1"># wczytanie warstwy wektorowej</span>
-<span class="n">wektor</span> <span class="o">=</span> <span class="n">QgsVectorLayer</span><span class="p">(</span><span class="n">sciezka_do_pliku</span><span class="p">,</span> <span class="s2">"powiaty"</span><span class="p">,</span> <span class="s2">"ogr"</span><span class="p">)</span>
-
-<span class="c1"># sprawdzenie czy warstwa została załadowana prawidłowo</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">wektor</span><span class="o">.</span><span class="n">isValid</span><span class="p">())</span>
+<span class="c1"># iteracja po obiektach</span>
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">islice</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">getFeatures</span><span class="p">(),</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="c1"># dostęp do atrybutów obiektu</span>
+    <span class="n">attrs</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">attributes</span><span class="p">()</span>
+    <span class="c1"># dostęp do geometrii obiektu</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="n">attrs</span><span class="p">)</span>
+    <span class="c1"># print(geom)</span>
 </pre></div>
 
      </div>
@@ -14815,7 +14753,11 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>True
+<pre>[1, &#39;3012&#39;, &#39;powiat krotoszyński&#39;, &#39;dc54ce6a-5272-45fc-a49c-824dbf170f2c&#39;, &#39;2024-09-05T13:41:42+02:00&#39;]
+[2, &#39;3002&#39;, &#39;powiat czarnkowsko-trzcianecki&#39;, &#39;b2e00ebb-412b-4ae8-9afc-fe68f65bb1ac&#39;, &#39;2021-05-11T10:49:15+02:00&#39;]
+[3, &#39;3009&#39;, &#39;powiat kolski&#39;, &#39;06a4a975-dc89-4ac3-9d51-cf188532908a&#39;, &#39;2012-09-27T08:59:03+02:00&#39;]
+[4, &#39;3029&#39;, &#39;powiat wolsztyński&#39;, &#39;6f988fb3-2b2c-467e-9d07-c512d9215c05&#39;, &#39;2024-08-27T13:56:13+02:00&#39;]
+[5, &#39;3026&#39;, &#39;powiat śremski&#39;, &#39;2fc58bb6-d095-4f37-8f10-874797cb97fb&#39;, &#39;2024-09-03T13:42:56+02:00&#39;]
 </pre>
 </div>
 </div>
@@ -14831,39 +14773,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Warstwa została wczytana prawidłowo. Następnie możemy wyświetlić ją w QGIS (pod warunkiem, że kod wykonujemy w QGIS).</p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsProject</span>
-<span class="n">QgsProject</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">addMapLayer</span><span class="p">(</span><span class="n">wektor</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Wy%C5%9Bwietlanie-metadanych">Wy&#347;wietlanie metadanych<a class="anchor-link" href="#Wy%C5%9Bwietlanie-metadanych">&#182;</a></h3><p>W kolejnym kroku możemy wyświetlić podstawowe informacje o warstwie, tj.:</p>
-<ul>
-<li>rodzaj geometrii,</li>
-<li>zakres przestrzenny,</li>
-<li>liczba obiektów oraz liczba atrybutów,</li>
-<li>układ współrzędnych.</li>
-</ul>
+<h1 id="Obliczanie-powierzchni">Obliczanie powierzchni<a class="anchor-link" href="#Obliczanie-powierzchni">&#182;</a></h1><p>W celu obliczenia powierzchni poligonów musimy wykonać pętle po wszystkich obiektach znajdujących się w warstwie i uzyskać dostęp do ich geometrii. Następnie, należy wykorzystać metodę <code>area()</code>, która oblicza pole powierzchni w jednostkach układu współrzędnych warstwy (zazwyczaj są to metry kwadratowe) w układzie planarnym (kartezjańskim). Opcjonalnie, możemy dokonać konwersji jednostek, np. na kilometry kwadratowe czy hektary. W niniejszym przykładzie wszystkie obiekty w warstwie posiadają geometrie.</p>
 
 </div>
 </div>
@@ -14876,29 +14786,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># rodzaj geometrii</span>
-<span class="n">rodzaj_geometrii</span> <span class="o">=</span> <span class="n">wektor</span><span class="o">.</span><span class="n">geometryType</span><span class="p">()</span>
-<span class="n">rodzaj_geometrii</span> <span class="o">=</span> <span class="n">rodzaj_geometrii</span><span class="o">.</span><span class="n">name</span> <span class="c1"># zwraca nazwę</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Rodzaj geometrii:"</span><span class="p">,</span> <span class="n">rodzaj_geometrii</span><span class="p">)</span>
-
-<span class="c1"># zakres przestrzenny</span>
-<span class="n">zakres</span> <span class="o">=</span> <span class="n">wektor</span><span class="o">.</span><span class="n">extent</span><span class="p">()</span> <span class="c1"># obiekt QgsRectangle</span>
-<span class="n">zakres</span> <span class="o">=</span> <span class="n">zakres</span><span class="o">.</span><span class="n">toString</span><span class="p">()</span> <span class="c1"># konwersja na tekst</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Zakres przestrzenny:"</span><span class="p">,</span> <span class="n">zakres</span><span class="p">)</span>
-
-<span class="c1"># liczba obiektów</span>
-<span class="n">liczba_obiekty</span> <span class="o">=</span> <span class="n">wektor</span><span class="o">.</span><span class="n">featureCount</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba obiektów:"</span><span class="p">,</span> <span class="n">liczba_obiekty</span><span class="p">)</span>
-
-<span class="c1"># liczba atrybutów</span>
-<span class="n">liczba_atrybuty</span> <span class="o">=</span> <span class="n">wektor</span><span class="o">.</span><span class="n">fields</span><span class="p">()</span>
-<span class="n">liczba_atrybuty</span> <span class="o">=</span> <span class="n">liczba_atrybuty</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba atrybutów:"</span><span class="p">,</span> <span class="n">liczba_atrybuty</span><span class="p">)</span>
-
-<span class="c1"># układ współrzędnych</span>
-<span class="n">uklad</span> <span class="o">=</span> <span class="n">wektor</span><span class="o">.</span><span class="n">crs</span><span class="p">()</span>
-<span class="n">uklad</span> <span class="o">=</span> <span class="n">uklad</span><span class="o">.</span><span class="n">authid</span><span class="p">()</span> <span class="c1"># zwraca kod EPSG</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"CRS:"</span><span class="p">,</span> <span class="n">uklad</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">islice</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">getFeatures</span><span class="p">(),</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">area</span> <span class="o">/</span> <span class="mi">1000</span><span class="o">**</span><span class="mi">2</span> <span class="c1"># konwersja na km^2</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">area</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14920,11 +14811,11 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Rodzaj geometrii: Polygon
-Zakres przestrzenny: 281949.3437500000000000,360241.7500000000000000 : 507167.3125000000000000,645513.6250000000000000
-Liczba obiektów: 35
-Liczba atrybutów: 5
-CRS: EPSG:2180
+<pre>712.7437283077061
+1806.6288683868954
+1009.273272845488
+679.340479768619
+573.5639814826102
 </pre>
 </div>
 </div>
@@ -14940,107 +14831,14 @@ CRS: EPSG:2180
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Zapisywanie">Zapisywanie<a class="anchor-link" href="#Zapisywanie">&#182;</a></h3><p>Do zapisu danych wektorowych można wykorzystać dwie klasy:</p>
+<h1 id="Dodawanie-atrybut%C3%B3w">Dodawanie atrybut&#243;w<a class="anchor-link" href="#Dodawanie-atrybut%C3%B3w">&#182;</a></h1><p>Dodawanie atrybutów do warstwy wektorowej obejmuje modyfikację tabeli atrybutów poprzez dodanie nowych atrybutów i opcjonalnie ich wypełnienie. Operacja składa się z kilku kroków:</p>
 <ol>
-<li><a href="https://qgis.org/pyqgis/master/core/QgsVectorFileWriter.html">QgsVectorFileWriter</a> -- zapis danych wyłącznie jako pliki na dysku.</li>
-<li><a href="https://qgis.org/pyqgis/master/core/QgsVectorLayerExporter.html">QgsVectorLayerExporter</a> -- możliwe wykorzystanie różnych backendów (<em>data providers</em>), np. zapis do bazy danych.</li>
+<li>Na początku należy włączyć tryb edycji warstwy <code>startEditing()</code>, aby ją zmodyfikować.</li>
+<li>Kolejny krok to zdefiniowanie nowego atrybutu wykorzystując klasę <code>QgsField</code>. Każdy atrybut posiada nazwę, typ danych i opcjonalne ograniczenia (długość, precyzja). Zdefiniowanie kilku atrybutów wymaga przekazanie ich jako listy. Następnie należy użyć metod <code>addAttributes()</code> oraz <code>updateFields()</code>, aby dodać nowe pole do tabeli atrybutów i ją zaktualizować.</li>
+<li>Jeśli chcemy uzupełnić nowo utworzony atrybut, to musimy zastosować pętle po obiektach i zaktualizować wartość wybranego atrybutu używając metody <code>changeAttributeValue()</code>, w której kolejno określimy ID obiektu, indeks atrybutu oraz wartość.</li>
+<li>W ostatnim kroku należy zatwierdzić i zapisać wprowadzone zmiany używając <code>commitChanges()</code>.</li>
 </ol>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Pierwszy sposób używając <code>QgsVectorFileWriter</code>.</p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsVectorFileWriter</span><span class="p">,</span> <span class="n">QgsCoordinateTransformContext</span>
-
-<span class="n">output_path</span> <span class="o">=</span> <span class="s2">&quot;test.geojson&quot;</span>
-<span class="c1"># opcje zapisu</span>
-<span class="n">options</span> <span class="o">=</span> <span class="n">QgsVectorFileWriter</span><span class="o">.</span><span class="n">SaveVectorOptions</span><span class="p">()</span>
-<span class="n">options</span><span class="o">.</span><span class="n">driverName</span> <span class="o">=</span> <span class="s2">&quot;GeoJSON&quot;</span>
-<span class="n">options</span><span class="o">.</span><span class="n">fileEncoding</span> <span class="o">=</span> <span class="s2">&quot;UTF-8&quot;</span>
-
-<span class="n">writer</span> <span class="o">=</span> <span class="n">QgsVectorFileWriter</span><span class="o">.</span><span class="n">writeAsVectorFormatV3</span><span class="p">(</span>
-    <span class="n">layer</span> <span class="o">=</span> <span class="n">wektor</span><span class="p">,</span>
-    <span class="n">fileName</span> <span class="o">=</span> <span class="n">output_path</span><span class="p">,</span>
-    <span class="n">transformContext</span> <span class="o">=</span> <span class="n">QgsCoordinateTransformContext</span><span class="p">(),</span>
-    <span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
-<span class="p">)</span>
-
-<span class="k">if</span> <span class="n">writer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Błąd zapisu&quot;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span> 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OK&quot;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Alternatywne podejście z zastosowaniem <code>QgsVectorLayerExporter</code>.</p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsVectorLayerExporter</span>
-
-<span class="n">output_path</span> <span class="o">=</span> <span class="s2">&quot;test.geojson&quot;</span>
-<span class="n">output_format</span> <span class="o">=</span> <span class="s2">&quot;GeoJSON&quot;</span>
-
-<span class="n">QgsVectorLayerExporter</span><span class="o">.</span><span class="n">exportLayer</span><span class="p">(</span>
-    <span class="n">layer</span> <span class="o">=</span> <span class="n">wektor</span><span class="p">,</span>
-    <span class="n">uri</span> <span class="o">=</span> <span class="n">output_path</span><span class="p">,</span>
-    <span class="n">providerKey</span> <span class="o">=</span> <span class="s2">&quot;ogr&quot;</span><span class="p">,</span>
-    <span class="n">destCRS</span> <span class="o">=</span> <span class="n">wektor</span><span class="o">.</span><span class="n">crs</span><span class="p">(),</span>
-    <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;driverName&quot;</span><span class="p">:</span> <span class="n">output_format</span><span class="p">}</span> <span class="c1"># jako słownik</span>
-<span class="p">)</span>
-
-<span class="k">if</span> <span class="n">writer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Błąd zapisu&quot;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span> 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OK&quot;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Dane-rastrowe">Dane rastrowe<a class="anchor-link" href="#Dane-rastrowe">&#182;</a></h2><h3 id="Wczytywanie">Wczytywanie<a class="anchor-link" href="#Wczytywanie">&#182;</a></h3><p>Wczytanie danych rastrowych wygląda podobnie jak w przypadku danych wektorowych z tą różnicą, iż służy do tego klasa <a href="https://qgis.org/pyqgis/master/core/QgsRasterLayer.html">QgsRasterLayer</a>. Wczytajmy plik <code>DEM.tif</code>, który znajduje się w katalogu <code>dane</code>.</p>
+<p>Uwaga odnośnie typów danych atrybutów w QGIS! Od wersji 3.38 typy danych zdefiniowane są w klasie <code>QMetaType</code> (np. <code>QMetaType.Type.Double</code>, <code>QMetaType.Type.QString</code>). Wcześniej była to klasa <code>QVariant</code> (np. <code>QVariant.Double</code>, <code>QVariant.String</code>).</p>
 
 </div>
 </div>
@@ -15053,11 +14851,337 @@ CRS: EPSG:2180
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsRasterLayer</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsField</span>
+<span class="kn">from</span> <span class="nn">qgis.PyQt.QtCore</span> <span class="kn">import</span> <span class="n">QMetaType</span>
 
-<span class="n">sciezka_do_pliku</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">"algorytmy-geoprzestrzenne"</span><span class="p">,</span> <span class="s2">"dane"</span><span class="p">,</span> <span class="s2">"DEM.tif"</span><span class="p">)</span>
-<span class="n">raster</span> <span class="o">=</span> <span class="n">QgsRasterLayer</span><span class="p">(</span><span class="n">sciezka_do_pliku</span><span class="p">,</span> <span class="s2">"DEM"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">raster</span><span class="o">.</span><span class="n">isValid</span><span class="p">())</span>
+<span class="c1"># (1) rozpoczęcie trybu edycji warstwy</span>
+<span class="n">vector</span><span class="o">.</span><span class="n">startEditing</span><span class="p">()</span>
+
+<span class="c1"># (2) dodanie nowego atrybutu do tabeli</span>
+<span class="n">new_field</span> <span class="o">=</span> <span class="p">[</span><span class="n">QgsField</span><span class="p">(</span><span class="s2">"pole_km2"</span><span class="p">,</span> <span class="n">QMetaType</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">Double</span><span class="p">)]</span>
+<span class="n">vector</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span><span class="o">.</span><span class="n">addAttributes</span><span class="p">(</span><span class="n">new_field</span><span class="p">)</span>
+<span class="n">vector</span><span class="o">.</span><span class="n">updateFields</span><span class="p">()</span>
+
+<span class="c1"># indeks nowego atrybutu</span>
+<span class="n">area_idx</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">fields</span><span class="p">()</span><span class="o">.</span><span class="n">indexOf</span><span class="p">(</span><span class="s2">"pole_km2"</span><span class="p">)</span>
+
+<span class="c1"># (3) obliczenie powierzchni dla każdego obiektu</span>
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">vector</span><span class="o">.</span><span class="n">getFeatures</span><span class="p">():</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">area</span> <span class="o">/</span> <span class="mi">1000</span><span class="o">**</span><span class="mi">2</span>
+    <span class="c1"># wprowadzenie wartości do atrybutu obiektu</span>
+    <span class="n">vector</span><span class="o">.</span><span class="n">changeAttributeValue</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">id</span><span class="p">(),</span> <span class="n">area_idx</span><span class="p">,</span> <span class="n">area</span><span class="p">)</span>
+
+<span class="c1"># (4) zapisanie zmian</span>
+<span class="n">vector</span><span class="o">.</span><span class="n">commitChanges</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Sprawdźmy teraz czy wykonany kod zadziałał prawidłowo.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"pole_km2"</span> <span class="ow">in</span> <span class="n">vector</span><span class="o">.</span><span class="n">fields</span><span class="p">()</span><span class="o">.</span><span class="n">names</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">islice</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">getFeatures</span><span class="p">(),</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">attribute</span><span class="p">(</span><span class="s2">"pole_km2"</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>True
+712.7437283077061
+1806.6288683868954
+1009.273272845488
+679.340479768619
+573.5639814826102
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Wybieranie-obiekt%C3%B3w">Wybieranie obiekt&#243;w<a class="anchor-link" href="#Wybieranie-obiekt%C3%B3w">&#182;</a></h1><p>Obiekty z warstwy wektorowej można wybrać (wyselekcjonować) na podstawie różnych kryteriów, takich jak wartości atrybutów czy położenie przestrzenne.</p>
+<h2 id="Atrybut">Atrybut<a class="anchor-link" href="#Atrybut">&#182;</a></h2><p>Zasadniczo, istnieją dwa sposoby wybierania obiektów z uwzględnieniem wartości atrybutów:</p>
+<ol>
+<li><code>selectByExpression()</code> z klasy <code>QgsVectorLayer</code>.</li>
+<li><code>setFilterExpression()</code> z klasy <code>QgsFeatureRequest</code>.</li>
+</ol>
+<p>Pierwszy sposób <code>selectByExpression()</code> to metoda służąca do wybierania obiektów w warstwie na podstawie określonego wyrażenia. Co najważniejsze, wybór odbywa się z uwzględnieniem wszystkich obiektów i jest tymczasowy.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">expression</span> <span class="o">=</span> <span class="s1">'"pole_km2" &gt; 1300'</span>
+<span class="n">vector</span><span class="o">.</span><span class="n">selectByExpression</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+<span class="n">selected_features</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">selectedFeatures</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selected_features</span><span class="p">))</span> <span class="c1"># liczba obiektów</span>
+
+<span class="c1"># for feature in selected_features:</span>
+    <span class="c1"># print(feature.attributes())</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>4
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Jeśli kod wykonaliśmy w QGIS, to wybrane obiekty możemy podświetlić na mapie w następujący sposób:</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsProject</span>
+<span class="n">QgsProject</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">addMapLayer</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+<span class="n">vector</span><span class="o">.</span><span class="n">selectByIds</span><span class="p">([</span><span class="n">feature</span><span class="o">.</span><span class="n">id</span><span class="p">()</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">selected_features</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Natomiast drugi sposób, <code>setFilterExpression()</code> stosuje filtr przy wczytywaniu danych (<code>getFeatures()</code>). Obiekty, które nie spełniają kryteriów, nie są dodawane do sesji. Zwiększa to wydajność przetwarzania poprzez zmniejszenie ilości wczytywanych danych, co jest szczególnie przydatne w przypadku dużych zbiorów.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsFeatureRequest</span>
+
+<span class="n">expression</span> <span class="o">=</span> <span class="s1">'"pole_km2" &gt; 1300'</span>
+<span class="c1"># stworzenie żądania używając wyrażenia</span>
+<span class="n">request</span> <span class="o">=</span> <span class="n">QgsFeatureRequest</span><span class="p">()</span><span class="o">.</span><span class="n">setFilterExpression</span><span class="p">(</span><span class="n">expression</span><span class="p">)</span>
+
+<span class="c1"># for feature in vector.getFeatures(request):</span>
+    <span class="c1"># print(feature.attributes())</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="Lokalizacja">Lokalizacja<a class="anchor-link" href="#Lokalizacja">&#182;</a></h2><p>Metoda <code>selectByRect()</code> umożliwia dokonanie prostej selekcji obiektów używając zakresu przestrzennego (<em>bounding box</em>) zdefiniowanego przez prostokąt (<code>QgsRectangle</code>) i cztery współrzędne (<code>xmin</code>, <code>ymin</code>, <code>xmax</code>, <code>ymax</code>). Bardziej zaawansowane zapytania przestrzenne pozwalają na wybór obiektów na podstawie ich relacji przestrzennej z innymi geometriami (np. wybór obiektów w obrębie poligonu, przecięcie linii).</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsRectangle</span>
+
+<span class="c1"># wybranie obiektów używając prostokąta</span>
+<span class="n">rect</span> <span class="o">=</span> <span class="n">QgsRectangle</span><span class="p">(</span><span class="mi">340000</span><span class="p">,</span> <span class="mi">480000</span><span class="p">,</span> <span class="mi">380000</span><span class="p">,</span> <span class="mi">520000</span><span class="p">)</span> <span class="c1"># xmin, ymin, xmax, ymax</span>
+<span class="n">vector</span><span class="o">.</span><span class="n">selectByRect</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
+<span class="n">selected_features</span> <span class="o">=</span> <span class="n">vector</span><span class="o">.</span><span class="n">selectedFeatures</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">selected_features</span><span class="p">))</span> <span class="c1"># liczba obiektów</span>
+
+<span class="c1"># for feature in selected_features:</span>
+    <span class="c1"># print(feature.attributes())</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>6
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Tworzenie-nowej-warstwy">Tworzenie nowej warstwy<a class="anchor-link" href="#Tworzenie-nowej-warstwy">&#182;</a></h1><p>Do tworzenia nowej warstwy wektorowej stosuje się tę samą klasę, co do wczytywania, czyli <code>QgsVectorLayer</code>, z tą różnicą iż określa się:</p>
+<ul>
+<li>Typ geometrii warstwy oraz układ odniesienia (<em>CRS</em>). QGIS obsługuje kilka typów geometrii, np. punkty (<code>Point</code>), linie (<code>LineString</code>), poligony (<code>Polygon</code>) i multigeometrie (<code>Multi*</code>). Do zdefiniowania układu odniesienia można wykorzystać kod EPSG, np. <code>EPSG:4326</code>. Format zapisu jest następujący: <code>Point?crs=EPSG:4326</code>.</li>
+<li>Nazwę warstwy.</li>
+<li>Backend (<em>data provider</em>). Nowe warstwy zazwyczaj są tworzone w pamięci (<code>memory</code>).</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># typ geometrii i układ współrzędnych</span>
+<span class="n">geometry_type</span> <span class="o">=</span> <span class="s2">"Polygon"</span>
+<span class="n">crs</span> <span class="o">=</span> <span class="s2">"EPSG:2180"</span>
+
+<span class="c1"># stworzenie nowej warstwy wektorowej</span>
+<span class="n">newlayer</span> <span class="o">=</span> <span class="n">QgsVectorLayer</span><span class="p">(</span><span class="n">geometry_type</span><span class="o">+</span><span class="s2">"?crs="</span><span class="o">+</span><span class="n">crs</span><span class="p">,</span> <span class="s2">"Nowa warstwa"</span><span class="p">,</span> <span class="s2">"memory"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">newlayer</span><span class="o">.</span><span class="n">isValid</span><span class="p">())</span>
 </pre></div>
 
      </div>
@@ -15095,36 +15219,40 @@ CRS: EPSG:2180
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Po prawidłowym wczytaniu warstwy, również możemy ją zwizualizować w QGIS.</p>
+<p>Następnie możemy zdefiniować i dodać do warstwy atrybuty, tak jak zaprezentowano to w sekcji "<strong>Dodawanie atrybutów</strong>". Należy pamiętać o włączonym trybie edycji warstwy, a na końcu o zatwierdzeniu zmian.</p>
 
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsProject</span>
-<span class="n">QgsProject</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">addMapLayer</span><span class="p">(</span><span class="n">raster</span><span class="p">)</span>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># rozpoczęcie trybu edycji warstwy</span>
+<span class="n">newlayer</span><span class="o">.</span><span class="n">startEditing</span><span class="p">()</span>
+
+<span class="c1"># stworzenie atrybutów</span>
+<span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">QgsField</span><span class="p">(</span><span class="s2">"ID"</span><span class="p">,</span> <span class="n">QMetaType</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">Int</span><span class="p">),</span>          <span class="c1"># ID obiektu</span>
+    <span class="n">QgsField</span><span class="p">(</span><span class="s2">"nazwa"</span><span class="p">,</span> <span class="n">QMetaType</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">QString</span><span class="p">),</span>   <span class="c1"># nazwa obiektu</span>
+    <span class="n">QgsField</span><span class="p">(</span><span class="s2">"wartosc"</span><span class="p">,</span> <span class="n">QMetaType</span><span class="o">.</span><span class="n">Type</span><span class="o">.</span><span class="n">Double</span><span class="p">)</span>   <span class="c1"># wartość</span>
+<span class="p">]</span>
+
+<span class="c1"># dodanie atrybutów do warstwy</span>
+<span class="n">provider</span> <span class="o">=</span> <span class="n">newlayer</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span>
+<span class="n">provider</span><span class="o">.</span><span class="n">addAttributes</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+<span class="n">newlayer</span><span class="o">.</span><span class="n">updateFields</span><span class="p">()</span>
 </pre></div>
 
+     </div>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Wy%C5%9Bwietlanie-metadanych">Wy&#347;wietlanie metadanych<a class="anchor-link" href="#Wy%C5%9Bwietlanie-metadanych">&#182;</a></h3>
-</div>
-</div>
-</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -15132,13 +15260,41 @@ CRS: EPSG:2180
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Używając odpowiednich metod na rastrze możemy uzyskać następujące informacje:</p>
-<ul>
-<li>liczba wierszy, kolumn i kanałów,</li>
-<li>zakres przestrzenny,</li>
-<li>układ przestrzenny,</li>
-<li>rozdzielczość komórki.</li>
-</ul>
+<p>W kolejnym kroku możemy stworzyć obiekty (klasa <a href="https://qgis.org/pyqgis/master/core/QgsFeature.html">QgsFeature</a>), które składają się z geometrii oraz atrybutów. W poniższym przykładzie użyjemy wcześniej zdefiniowanego prostokąta <code>rect</code> -- najpierw zmienimy jego geometrię na reprezentację WKT (metoda <code>asWkt()</code>), a następnie stworzymy z niego poligon (metoda <code>fromWkt()</code>).</p>
+<p>Innym sposobem konstruowania geometrii obiektów używając współrzędnych jest zastosowanie klasy <a href="https://qgis.org/pyqgis/master/core/QgsFeature.html">QgsPointXY</a> i odpowiednich metod, np. <code>fromPointXY()</code> (do stworzenia punktów), <code>fromPolylineXY()</code> (do stworzenia linii) czy <code>fromPolygonXY()</code> (do stworzenia poligonów).</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsFeature</span><span class="p">,</span> <span class="n">QgsGeometry</span>
+
+<span class="c1"># stworzenie obiektów</span>
+<span class="n">feature</span> <span class="o">=</span> <span class="n">QgsFeature</span><span class="p">()</span>
+<span class="n">polygon_wkt</span> <span class="o">=</span> <span class="n">QgsGeometry</span><span class="o">.</span><span class="n">fromRect</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span><span class="o">.</span><span class="n">asWkt</span><span class="p">()</span>
+<span class="n">polygon_geometry</span> <span class="o">=</span> <span class="n">QgsGeometry</span><span class="o">.</span><span class="n">fromWkt</span><span class="p">(</span><span class="n">polygon_wkt</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Finalnie, należy nowemu obiektowi należy nadać geometrię (metoda <code>setGeometry()</code>) oraz przypisać atrybutom wartości (metoda <code>setAttributes()</code>, po czym wymagane jest dodanie obiektów do warstwy, aktualizacja zasięgu warstwy oraz zapisanie zmian.</p>
 
 </div>
 </div>
@@ -15148,16 +15304,74 @@ CRS: EPSG:2180
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba kolumn (Szerokość):"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">width</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba wierszy (Wysokość):"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">height</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba kanałów:"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">bandCount</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Zakres:"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">extent</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"CRS:"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">crs</span><span class="p">()</span><span class="o">.</span><span class="n">authid</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Rozdzielczość (Rozmiar komórki):"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">rasterUnitsPerPixelX</span><span class="p">(),</span>
-      <span class="n">raster</span><span class="o">.</span><span class="n">rasterUnitsPerPixelY</span><span class="p">())</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># nadanie geometrii oraz wartości atrybutom</span>
+<span class="n">feature</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">polygon_geometry</span><span class="p">)</span>
+<span class="n">feature</span><span class="o">.</span><span class="n">setAttributes</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"Prostokąt"</span><span class="p">,</span> <span class="mi">999</span><span class="p">])</span>
+
+<span class="c1"># dodanie obiektów do warstwy</span>
+<span class="n">newlayer</span><span class="o">.</span><span class="n">addFeature</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+<span class="c1"># aktualizacja zasięgu warstwy</span>
+<span class="n">newlayer</span><span class="o">.</span><span class="n">updateExtents</span><span class="p">()</span>
+<span class="c1"># zapisanie zmian</span>
+<span class="n">newlayer</span><span class="o">.</span><span class="n">commitChanges</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+
+<div class="jp-OutputArea-child">
+
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>True</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Dokonajmy jeszcze weryfikacji stworzonej warstwy.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">newlayer</span><span class="o">.</span><span class="n">getFeatures</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">attributes</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">geometry</span><span class="p">())</span>
 </pre></div>
 
      </div>
@@ -15179,12 +15393,8 @@ CRS: EPSG:2180
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Liczba kolumn (Szerokość): 533
-Liczba wierszy (Wysokość): 608
-Liczba kanałów: 1
-Zakres: 253698.3311999999859836,353734.3616000000038184 : 520058.2303000000538304,657570.7552000000141561
-CRS: EPSG:2180
-Rozdzielczość (Rozmiar komórki): 499.73714652908075 499.7309105263158
+<pre>[1, &#39;Prostokąt&#39;, 999.0]
+&lt;QgsGeometry: Polygon ((340000 480000, 380000 480000, 380000 520000, 340000 520000, 340000 480000))&gt;
 </pre>
 </div>
 </div>
@@ -15193,40 +15403,16 @@ Rozdzielczość (Rozmiar komórki): 499.73714652908075 499.7309105263158
 
 </div>
 
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Co więcej, każdy z kanałów rastra zawiera dodatkowe informacje, takie jak:</p>
-<ul>
-<li>nazwa kanału,</li>
-<li>wartość reprezentująca brak danych (<em>NoData</em>),</li>
-<li>typ danych,</li>
-<li>wartość maksymalna,</li>
-<li>wartość minimalna.</li>
-</ul>
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># nasz raster składa się tylko z jednego kanału</span>
-<span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">bandCount</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Nazwa kanału:"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">bandName</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Wartość NoData:"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span><span class="o">.</span><span class="n">sourceNoDataValue</span><span class="p">(</span><span class="n">band</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Typ danych:"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span><span class="o">.</span><span class="n">dataType</span><span class="p">(</span><span class="n">band</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Wartość maksymalna:"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span><span class="o">.</span><span class="n">bandStatistics</span><span class="p">(</span><span class="n">band</span><span class="p">)</span><span class="o">.</span><span class="n">minimumValue</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Wartość minimalna:"</span><span class="p">,</span> <span class="n">raster</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span><span class="o">.</span><span class="n">bandStatistics</span><span class="p">(</span><span class="n">band</span><span class="p">)</span><span class="o">.</span><span class="n">maximumValue</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># wyświetlenie w QGIS</span>
+<span class="c1"># QgsProject.instance().addMapLayer(newlayer)</span>
 </pre></div>
 
      </div>
@@ -15234,33 +15420,6 @@ Rozdzielczość (Rozmiar komórki): 499.73714652908075 499.7309105263158
 </div>
 </div>
 
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Nazwa kanału: Band 1
-Wartość NoData: 9999.0
-Typ danych: Float32
-Wartość maksymalna: -68.71467590332031
-Wartość minimalna: 459.58660888671875
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -15268,47 +15427,42 @@ Wartość minimalna: 459.58660888671875
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Zapisywanie">Zapisywanie<a class="anchor-link" href="#Zapisywanie">&#182;</a></h3><p>Do zapisu danych rastrowych służy klasa <a href="https://qgis.org/pyqgis/master/core/QgsRasterFileWriter.html">QgsRasterFileWriter</a>.</p>
+<h1 id="%C5%81%C4%85czenie-geometrii-obiekt%C3%B3w">&#321;&#261;czenie geometrii obiekt&#243;w<a class="anchor-link" href="#%C5%81%C4%85czenie-geometrii-obiekt%C3%B3w">&#182;</a></h1><p>Można zrobić to na dwa sposoby:</p>
+<ol>
+<li>Pętla i <code>combine()</code></li>
+<li>Narzędzia processingu <code>processing.run("native:dissolve", parameters)</code></li>
+</ol>
 
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsRasterFileWriter</span><span class="p">,</span> <span class="n">QgsRasterPipe</span><span class="p">,</span> <span class="n">QgsCoordinateTransformContext</span>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># stworzenie nowej pustej geometrii</span>
+<span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span>
 
-<span class="n">output_path</span> <span class="o">=</span> <span class="s2">&quot;test.tif&quot;</span>
-
-<span class="n">writer</span> <span class="o">=</span> <span class="n">QgsRasterFileWriter</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
-<span class="n">writer</span><span class="o">.</span><span class="n">setCreateOptions</span><span class="p">([</span><span class="s2">&quot;COMPRESS=LZW&quot;</span><span class="p">])</span> <span class="c1"># opcje jako lista</span>
-<span class="n">pipe</span> <span class="o">=</span> <span class="n">QgsRasterPipe</span><span class="p">()</span>
-<span class="n">provider</span> <span class="o">=</span> <span class="n">raster</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span>
-<span class="n">pipe</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">provider</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
-
-<span class="n">status</span> <span class="o">=</span> <span class="n">writer</span><span class="o">.</span><span class="n">writeRaster</span><span class="p">(</span>
-    <span class="n">pipe</span> <span class="o">=</span> <span class="n">pipe</span><span class="p">,</span>
-    <span class="n">nCols</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">xSize</span><span class="p">(),</span>
-    <span class="n">nRows</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">ySize</span><span class="p">(),</span>
-    <span class="n">outputExtent</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">extent</span><span class="p">(),</span>
-    <span class="n">crs</span> <span class="o">=</span> <span class="n">provider</span><span class="o">.</span><span class="n">crs</span><span class="p">(),</span>
-    <span class="n">transformContext</span> <span class="o">=</span> <span class="n">QgsCoordinateTransformContext</span><span class="p">()</span>
-<span class="p">)</span>
-
-<span class="c1"># writeRaster zwraca RasterFileWriterResult</span>
-<span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Błąd zapisu&quot;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span> 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OK&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">vector</span><span class="o">.</span><span class="n">getFeatures</span><span class="p">():</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>                  <span class="c1"># pierwsza geometria jako początkowa</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">QgsGeometry</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>                                 <span class="c1"># łączy kolejne geometrie</span>
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+        
+<span class="n">dissolved</span> <span class="o">=</span> <span class="n">QgsFeature</span><span class="p">()</span>
+<span class="n">dissolved</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
 </pre></div>
 
+     </div>
 </div>
 </div>
 </div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -15316,9 +15470,85 @@ Wartość minimalna: 459.58660888671875
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Zadania">Zadania<a class="anchor-link" href="#Zadania">&#182;</a></h1><ol>
-<li>Napisz funkcję, która obliczy wielkość komórki na podstawie zakresu przestrzennego oraz liczby kolumn i wierszy rastra.</li>
-<li>Napisz funkcję (<code>wyswietl_metadane</code>), która zaprezentuje metadane warstwy wektorowej oraz rastrowej w czytelny sposób. Do sprawdzenia typu obiektu wykorzystaj funkcję <code>isinstance</code> (<code>QgsVectorLayer</code> lub <code>QgsRasterLayer</code>).</li>
+<h1 id="Tworzenie-bufor%C3%B3w">Tworzenie bufor&#243;w<a class="anchor-link" href="#Tworzenie-bufor%C3%B3w">&#182;</a></h1>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># stworzenie pustej warstwy w pamięci</span>
+<span class="n">buffer_layer</span> <span class="o">=</span> <span class="n">QgsVectorLayer</span><span class="p">(</span><span class="s2">"Polygon?crs="</span> <span class="o">+</span> <span class="n">vector</span><span class="o">.</span><span class="n">crs</span><span class="p">()</span><span class="o">.</span><span class="n">authid</span><span class="p">(),</span> <span class="s2">"Bufor"</span><span class="p">,</span> <span class="s2">"memory"</span><span class="p">)</span>
+<span class="n">buffer_provider</span> <span class="o">=</span> <span class="n">buffer_layer</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span>
+
+<span class="c1"># odległość buforu w jednostkach warstwy (m)</span>
+<span class="n">buffer_distance</span> <span class="o">=</span> <span class="mf">10000.0</span> <span class="c1"># 10 km</span>
+
+<span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="p">[</span><span class="n">dissolved</span><span class="p">]:</span> <span class="c1"># traktujemy jeden obiekt jako listę</span>
+    <span class="n">geom</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+    <span class="c1"># stworzenie geometrii bufora</span>
+    <span class="n">buffer_geom</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">buffer_distance</span><span class="p">,</span> <span class="n">segments</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="n">buffer_feature</span> <span class="o">=</span> <span class="n">QgsFeature</span><span class="p">()</span>
+    <span class="n">buffer_feature</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">buffer_geom</span><span class="p">)</span>
+    <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">buffer_feature</span><span class="p">)</span>
+
+<span class="c1"># dodanie buforów do warstwy wektorowej</span>
+<span class="n">buffer_provider</span><span class="o">.</span><span class="n">addFeatures</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+<span class="n">buffer_layer</span><span class="o">.</span><span class="n">updateExtents</span><span class="p">()</span>
+
+<span class="c1"># wyświetlenie w QGIS</span>
+<span class="c1"># QgsProject.instance().addMapLayer(buffer_layer)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Reprojekcja-warstwy">Reprojekcja warstwy<a class="anchor-link" href="#Reprojekcja-warstwy">&#182;</a></h1>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Zadania:">Zadania:<a class="anchor-link" href="#Zadania:">&#182;</a></h1><ol>
+<li>Oblicz długość granic i dodaj jako nowy atrybut do warstwy.</li>
+<li>Napisz funkcję, która obliczy podstawowe statystyki opisowe i zastosuj ją dla powierzchni oraz długości.</li>
+<li>Stwórz nową warstwę z obliczonymi centroidami dla powiatów i zapisz ją na dysku w formacie <code>.gpkg</code>.</li>
 </ol>
 
 </div>

@@ -1,0 +1,413 @@
+---
+title: "Algorytmy danych geoprzestrzennych"
+subtitle: "Operacje nakładania warstw wektorowych"
+author: "Krzysztof Dyba"
+format: 
+  revealjs:
+    slide-number: c/t
+    incremental: true
+    embed-resources: true
+css: _style.css
+---
+
+```{r}
+library("terra")
+```
+
+## Nakładanie warstw wektorowych
+
+::: {.fragment}
+Nakładanie warstw wektorowych (*vector overlay*) to podstawowy zbiór operacji
+wykorzystywany w systemach informacji geograficznej do łączenia wektorowych 
+zbiorów danych w celu analizy i zrozumienia relacji przestrzennych.
+:::
+
+::: {.fragment}
+Do analizy mogą zostać wykorzystane różne typy geometrii reprezentujące
+przykładowo drzewa, granice, drogi czy budynki.
+:::
+
+::: {.fragment}
+Proces nakładania łączy geometrię i atrybuty warstw wejściowych, umożliwiając
+sprawdzenie, w jaki sposób cechy z różnych warstw wpływają na siebie w przestrzeni.
+:::
+
+## Zastosowania
+
+- Analizy środowiskowe, np. analiza związku pomiędzy siedliskami gatunków a
+klasami pokrycia terenu
+- Zarządzanie kryzysowe, np. analiza obszarów zagrożonych powodzią uwzględniając
+dane o gęstości zaludnienia
+- Planowanie przestrzenne, np. określanie odpowiednich lokalizacji pod zabudowę
+uwzględniając obszary chronione i aktualną infrastrukturę
+- Analiza rynku, np. powiązanie lokalizacji klientów z danymi demograficznymi
+w celu ukierunkowania sprzedaży do określonej grupy
+
+## Przykład
+
+```{r}
+url = "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_1_states_provinces.zip"
+url = paste0("/vsizip/vsicurl/", url)
+query = "SELECT * from ne_10m_admin_1_states_provinces WHERE admin = 'Poland'"
+admin = vect(url, query = query)
+
+url = "https://naciscdn.org/naturalearth/10m/physical/ne_10m_rivers_lake_centerlines.zip"
+url = paste0("/vsizip/vsicurl/", url)
+rzeki = vect(url)
+```
+
+Wyodrębnienie tylko tych rzek, które przepływają przez wielkopolskę.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+plot(admin, mar = c(1.2, 0, 0, 0))
+plot(rzeki, col = "blue", add = TRUE)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+wynik = intersect(admin[admin$name_alt == "Wielkopolskie"], rzeki)
+plot(admin, mar = c(1.2, 0, 0, 0))
+plot(wynik, col = "blue", lwd = 3, add = TRUE)
+```
+:::
+
+::::
+
+```
+intersect(admin[admin$woj == "Wielkopolskie"], rzeki)
+```
+
+## Algorytmy
+
+- Usuwanie (*Erase*, *Difference*)
+- Przecięcie (*Intersect*) / Koniunkcja
+- Złączenie (*Union*) / Alternatywa
+- Różnica symetryczna (*Symmetrical difference*) / Alternatywa rozłączna 
+- Przykrycie (*Update*, *Cover*)
+- Docinanie (*Clip*)
+
+## Usuwanie
+
+Wynik obejmuje tylko te obiekty z jednej warstwy, które nie nakładają się na
+drugą warstwę.
+
+```r
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+erase(p1, p2)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+plot(p1, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, col = "blue",
+     mar = 0)
+plot(p2, col = "green", alpha = 0.8, add = TRUE)
+```
+:::
+
+::: {.column width="50%"}
+
+```{r}
+result = erase(p1, p2)
+plot(result, xlim = c(0, 15), ylim = c(-10, 10), col = "blue", axes = FALSE,
+     mar = 0)
+```
+:::
+
+::::
+
+**Przykład:** Wykluczenie budynków nieobjętych zasięgiem powodzi.
+
+## Przecięcie
+
+Wynik obejmuje tylko te obiekty, które nakładają się na obu warstwach
+wejściowych.
+
+```r
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+intersect(p1, p2)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+plot(p1, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, col = "blue",
+     mar = 0)
+plot(p2, col = "green", alpha = 0.8, add = TRUE)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+result = intersect(p1, p2)
+plot(result, xlim = c(0, 15), ylim = c(-10, 10), col = "#00cc33", axes = FALSE,
+     mar = 0)
+plot(p1, add = TRUE, lty = 2)
+plot(p2, add = TRUE, lty = 2)
+```
+:::
+
+::::
+
+**Przykład:** Przecięcie warstwy typów gleby z warstwą działek pokaże typ gleby
+w obrębie każdej działki.
+
+## Złączenie
+
+Wynik obejmuje wszystkie obiekty z obu warstw wejściowych, w tym nakładające
+się obszary.
+
+```r
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+union(p1, p2)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+plot(p1, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, col = "blue",
+     mar = 0)
+plot(p2, col = "green", alpha = 0.8, add = TRUE)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+result = union(p1, p2)
+plot(result, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, mar = 0,
+     col = c("blue", "green", "yellow"))
+```
+:::
+
+::::
+
+::: {style="font-size: 70%;"}
+**Przykład:** Złączenie warstwy obszarów zagrożonych powodziami i warstwy
+obszarów zagrożonych osuwiskami, zwróci obszary zagrożone powodzią,
+osuwiskami oraz jednocześnie powodzią i osuwiskami.
+:::
+
+
+## Różnica symetryczna
+
+Wynik obejmuje obszary, w których warstwy wejściowe nie zachodzą na siebie, tj.
+wyklucza obszary przecięcia.
+
+```r
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+symdif(p1, p2)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+plot(p1, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, col = "blue",
+     mar = 0)
+plot(p2, col = "green", alpha = 0.8, add = TRUE)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+result = symdif(p1, p2)
+plot(result, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, mar = 0,
+     col = c("blue", "green", "yellow"))
+```
+:::
+
+::::
+
+**Przykład:** Wykrywanie zmian pokrycia terenu w czasie.
+
+## Przykrycie
+
+Wynikiem jest nowa warstwa zawierająca zaktualizowane obiekty pierwszej warstwy
+wejściowej na podstawie drugiej.
+
+```r
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+cover(p1, p2)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+plot(p1, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, col = "blue",
+     mar = 0)
+plot(p2, col = "green", alpha = 0.8, add = TRUE)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+result = cover(p1, p2)
+plot(result, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, mar = 0,
+     col = c("blue", "green"))
+```
+:::
+
+::::
+
+**Przykład:** Aktualizacja przebiegu granic działek ewidencyjnych.
+
+## Docinanie
+
+Docinanie jest podobną operacją do przecięcia, z tą różnicą, że atrybuty
+pochodzące z drugiej warstwy nie są kopiowane.
+
+```r
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+crop(p1, p2)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((5 5, 5 -5, 15 -5, 15 5, 5 5))")
+plot(p1, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, col = "blue",
+     mar = 0)
+plot(p2, col = "green", alpha = 0.8, add = TRUE)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+result = crop(p1, p2)
+plot(result, xlim = c(0, 15), ylim = c(-10, 10), axes = FALSE, mar = 0,
+     col = "#00cc33")
+plot(p1, lty = 2, add = TRUE)
+plot(p2, lty = 2, add = TRUE)
+```
+
+:::
+
+::::
+
+**Przykład:** Wyodrębnienie dróg, które znajdują się w granicach miasta.
+
+## Zwracane typy geometrii
+
+Wyjściowy typ geometrii przy docinaniu może być identyczny lub niższy.
+
+:::: {.columns}
+
+::: {.column width="45%"}
+
+```{r}
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((0 10, 10 10, 10 20, 0 20, 0 10))")
+
+plot(p1, xlim = c(0, 10), ylim = c(0, 20), axes = FALSE, col = "blue",
+      mar = 0)
+plot(p2, col = "green", add = TRUE)
+```
+
+```{r}
+p3 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p4 = vect("POINT (5 5)")
+plot(p3, col = "green", axes = FALSE, mar = 0)
+plot(p4, add = TRUE, cex = 2)
+```
+:::
+
+::: {.column width="45%"}
+```{r}
+result = crop(p1, p2)
+plot(result, xlim = c(0, 10), ylim = c(0, 20), axes = FALSE, lwd = 4, mar = 0)
+plot(p1, lty = 2, add = TRUE)
+plot(p2, lty = 2, add = TRUE)
+```
+
+```{r}
+result = crop(p3, p4)
+plot(p3, lty = 2, axes = FALSE, mar = 0)
+plot(result, add = TRUE, cex = 2)
+```
+:::
+
+::::
+
+## Srebrne poligony {.center style="text-align: center;"}
+
+## Srebrne poligony
+
+::: {.fragment}
+Pojęcie srebrnego poligonu (*sliver polygon*) odnosi się do małego, wąskiego
+i często niezamierzonego wielokąta, który powstaje w wyniku przetwarzania
+danych przestrzennych, np. podczas operacji przecięcia, łączenia lub
+przycinania warstw wektorowych.
+:::
+
+::: {.fragment}
+Najczęściej powstają na skutek niedopasowanych granic lub ograniczonej precyzji
+zapisu danych, co powoduje niewielkie przerwy pomiędzy obiektami.
+:::
+
+## Przykład
+
+```r
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((0.1 0.1, 10.1 0.1, 10.1 10.1, 0.1 10.1, 0.1 0.1))")
+symdif(p1, p2)
+```
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((0.1 0.1, 10.1 0.1, 10.1 10.1, 0.1 10.1, 0.1 0.1))")
+plot(p1, col = "green", axes = FALSE, mar = 0)
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+result = symdif(p1, p2)
+plot(result, col = "red", axes = FALSE, mar = 0)
+```
+:::
+
+::::
+
+## Konsekwencje
+
+- Błędne obliczenia powierzchni i obwodów
+- Błędy topologiczne
+- Negatywne efekty wizualne
+
+## Rozwiązania
+
+1. Kontrola i czyszczenie danych wejściowych
+2. Generalizacja danych wejściowych (uproszczenie geometrii)
+3. Ustawienia wartości tolerancji podczas operacji
+4. Post-processing (usuwanie poligonów na podstawie wartości progowej)
