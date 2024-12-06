@@ -1,0 +1,15 @@
+vector.startEditing()
+
+new_field = [QgsField("dl_granic_KM", QVariant.Double)]
+vector.dataProvider().addAttributes(new_field)
+vector.updateFields()
+
+granica_idx = vector.fields().indexOf("dl_granic_KM")
+
+for feature in vector.getFeatures():
+    granica = feature.geometry().length()
+    granica = granica / 1000
+    vector.changeAttributeValue(feature.id(), granica_idx, granica)
+
+vector.commitChanges()
+QgsProject.instance().addMapLayer(vector)
