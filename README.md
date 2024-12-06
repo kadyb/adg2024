@@ -7,7 +7,7 @@ analizowania oraz interpretowania danych przestrzennych i są powszechnie stosow
 systemach informacji geograficznej (*GIS*) do zadań takich jak analiza przestrzenna,
 zapytania przestrzenne, optymalizacja tras czy modelowanie środowiska. Do analizy mogą
 zostać wykorzystane zarówno dane wektorowe jak i rastrowe. Część praktyczna zajęć zostanie
-przeprowadzona w środowisku PyQGIS (wymagana jest jedynie instalacja QGIS: https://qgis.org/download/).
+przeprowadzona w środowisku PyQGIS (wymagana jest jedynie instalacja QGIS: <https://qgis.org/download/>).
 
 PyQGIS to interfejs programistyczny aplikacji (*API*) do QGIS. Umożliwia on automatyzację
 zadań, rozszerzanie możliwości i tworzenie nowych wtyczek poprzez dostęp do funkcjonalności
@@ -21,11 +21,13 @@ innymi bibliotekami w środowisku Python, np. `NumPy`, `Pandas` czy `Matplotlib`
 Wykłady:
 
 1. [Wprowadzenie](https://kadyb.github.io/adg2024/wyklady/01_Wprowadzenie.html)
+2. [Nakładanie warstw wektorowych](https://kadyb.github.io/adg2024/wyklady/02_Nakladanie_warstw.html)
 
 Ćwiczenia:
 
 1. [Wprowadzenie do Pythona](https://kadyb.github.io/adg2024/cwiczenia/01_Python.html)
 2. [Wprowadzenie do PyQGIS](https://kadyb.github.io/adg2024/cwiczenia/02_PyQGIS.html)
+3. [Przetwarzanie danych wektorowych](https://kadyb.github.io/adg2024/cwiczenia/03_Przetwarzanie_wektor.html)
 
 # Materiały dodatkowe
 
@@ -37,4 +39,4 @@ Wykłady:
 
 # Kontakt 
 
-W razie pytań proszę o kontakt na krzysztof.dyba@amu.edu.pl
+W razie pytań proszę o kontakt na <krzysztof.dyba@amu.edu.pl>.
