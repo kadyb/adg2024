@@ -1,0 +1,8 @@
+def cell_size(raster):
+    rw = raster.width()
+    rh = raster.height()
+    re = raster.extent()
+    xmin, xmax = re.xMinimum(), re.xMaximum()
+    ymin, ymax = re.yMinimum(), re.yMaximum()
+    csx = (xmax - xmin) / rw
+    csy = (ymax - ymin) / rh
