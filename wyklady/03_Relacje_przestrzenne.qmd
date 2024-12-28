@@ -1,0 +1,319 @@
+---
+title: "Algorytmy danych geoprzestrzennych"
+subtitle: "Relacje przestrzenne"
+author: "Krzysztof Dyba"
+format: 
+  revealjs:
+    slide-number: c/t
+    incremental: true
+    embed-resources: true
+css: _style.css
+---
+
+```{r}
+library("terra")
+```
+
+## Relacja przestrzenna
+
+Relacja przestrzenna określa sposób w jaki obiekty są ze sobą powiązane
+pod względem lokalizacji, odległości i interakcji w przestrzeni. Relacje te
+opisują wzajemne zależności pomiędzy obiektami.
+
+## Rodzaje relacji przestrzennych
+
+- Topologiczne -- opisują zależności pomiędzy obiektami, np. przyleganie
+do siebie dwóch działek katastralnych
+- Odległościowe -- opisują odległość między obiektami, np. odległość
+między dwoma miastami czy lokalizacja najbliższego szpitala
+- Wzorce i rozkład przestrzenny -- opisują rozmieszczenie obiektów w przestrzeni
+(tj. czy są skupione, równomiernie rozłożone lub rozproszone losowo), np.
+rozmieszczenie szkół w mieście
+
+## Zastosowania
+
+::: {style="font-size: 90%;"}
+- Zapytania przestrzenne -- wybieranie obiektów na podstawie ich relacji
+przestrzennej z innymi obiektami, np. wybierz wszystkie budynki, które
+znajdują się w strefie 1 km od centrum miasta
+- Analiza przestrzenna -- modelowanie zjawisk w kontekście geograficznym, np.
+wyznaczenie obszaru, który dotknięty jest przez negatywny czynnik (mapa
+zanieczyszczeń)
+- Połączenia przestrzenne tabel -- obiekty dopasowywane są na podstawie
+określonej relacji topologicznej, a nie klucza (ID) w tabeli
+- Analiza sieciowa -- optymalizacji tras, np. wyznaczenie najkrótszej lub
+najszybszej trasy
+:::
+
+## Predykaty
+
+**Predykat** (*predicate*) to:
+
+- wyrażenie opisujące pewne właściwości lub relacje
+- funkcja orzekająca o spełnieniu jakiegoś warunku (sprawdza go i zwraca
+prawdę bądź fałsz)
+
+\
+
+::: {.fragment}
+**Przykład:**
+Funkcja sprawdzająca czy liczba jest parzysta.
+:::
+
+## Predykaty przestrzenne
+
+**Predykaty przestrzenne** (geometryczne) to wyrażenia logiczne lub warunki
+opisujące relacje topologiczną między obiektami w przestrzeni.
+
+::: {.fragment}
+**Przykłady:**
+:::
+
+- Obiekt A przechodzi przez obiekt B
+- Obiekt A jest całkowicie zawarty w obiekcie B
+- Obiekt A całkowicie zawiera obiekt B
+- Obiekty A i B nie przecinają się ani nie są styczne
+
+##
+
+```{r}
+p1 = vect("POLYGON ((0 0, 8 0, 8 9, 0 9, 0 0))")
+p2 = vect("POLYGON ((5 6, 15 6, 15 15, 5 15, 5 6))")
+p3 = vect("POLYGON ((8 2, 9 2, 9 3, 8 3, 8 2))")
+p4 = vect("POLYGON ((2 6, 3 6, 3 8, 2 8, 2 6))")
+p5 = vect("POLYGON ((2 12, 3 12, 3 13, 2 13, 2 12))")
+p = rbind(p1, p2, p3, p4, p5)
+plot(p, col = rainbow(6, alpha = 0.5), axes = FALSE, mar = 0)
+lines(p, lwd = 2)
+text(p)
+```
+
+## Predykaty przestrzenne
+
+::: {style="font-size: 85%;"}
+- Zawiera (*Contains*)
+- Przechodzi (*Crosses*)
+- Pokrywa (*Covers*)
+- Pokryty przez (*Coveredby*)
+- Rozłączny (*Disjoint*)
+- Równy (*Equals*)
+- Przecina (*Intersects*)
+- Nakłada (*Overlaps*)
+- Dotyka (*Touches*)
+- Wewnątrz (*Within*)
+:::
+
+## Zawiera
+
+Jedna geometria całkowicie zawiera w sobie inną geometrię.
+
+```{r}
+# relate()
+```
+
+Przykład: Powiat zawierający miasto.
+
+## Przechodzi
+
+Dwie geometrie mają częściowo wspólne punkty (nie wszystkie). Zwykle dotyczy
+przecięcia linii i poligonu lub dwóch linii.
+
+```{r}
+# relate()
+```
+
+Przykład: Droga przebiegająca częściowo przez las i miasto.
+
+## Pokrywa
+
+Jedna geometria całkowicie obejmuje drugą, ale nie oznacza to, że są identyczne
+(geometria pokrywająca drugą może być większa).
+
+```{r}
+# relate()
+```
+
+Przykład: Powiat pokrywający miasto.
+
+## Pokryty przez
+
+Jedna geometria znajduje się całkowicie wewnątrz innej geometrii, ale większa
+geometria może wykraczać poza nią.
+
+```{r}
+# relate()
+```
+
+Przykład: Miasto pokryte jest przez powiat.
+
+## Rozłączny
+
+Dwie geometrie nie mają ze sobą żadnego wspólnego punktu (nie przecinają się
+i nie stykają, tj. są rozdzielone).
+
+```{r}
+# relate()
+```
+
+Przykład: Dwa budynki w różnych częściach miasta.
+
+## Równy
+
+Dwie geometrie są dokładnie tekie same (mają identyczne kształty i położenie).
+
+```{r}
+# relate()
+```
+
+Przykład: Budynek zajmujący całą powierzchnię działki katastralnej.
+
+## Przecina
+
+Dwie geometrie mają co najmniej jeden punkt wspólny.
+
+```{r}
+# relate()
+```
+
+Przykład: Droga przecinająca linię kolejową (przejazd kolejowy).
+
+## Nakłada
+
+Dwie geometrie dzielą części swojego wnętrza, ale nie całość (częściowo się
+nakładają).
+
+```{r}
+# relate()
+```
+
+Przykład: Obszar parku narodowego pokrywający się częściwowo z obszarem lasu.
+
+## Dotyka
+
+Dwie geometrie mają wspólną granicę, ale nie pokrywają się (stykają się tylko
+na krawędzi).
+
+```{r}
+# relate()
+```
+
+Przykład: Dwie sąsiadujące ze sobą działki katastralne.
+
+## Wewnątrz
+
+Jedna geometria jest całkowicie zawarta w innej geometrii.
+
+```{r}
+# relate()
+```
+
+Przykład: Miasto znajdujące się w powiecie.
+
+## Implementacje
+
+Predykaty przestrzenne są implementowane w różnym oprogramowaniu geoinformacyjnym,
+w tym:
+
+- [GEOS](https://libgeos.org/doxygen/classgeos_1_1geom_1_1Geometry.html) (QGIS, Grass GIS, terra, sf, shapely)
+- [JTS Topology Suite](https://locationtech.github.io/jts/jts-features.html)
+- [Boost.Geometry](https://beta.boost.org/doc/libs/1_82_0/libs/geometry/doc/html/geometry/reference/spatial_indexes/group__predicates.html)
+- [S2](http://s2geometry.io/about/overview)
+- [ArcGIS](https://developers.arcgis.com/documentation/spatial-analysis-services/geometry-analysis/spatial-relationship/)
+- [PostGIS](https://postgis.net/docs/using_postgis_query.html)
+
+## Model *DE-9IM* {.center style="text-align: center;"}
+
+## Model DE-9IM
+
+Model DE-9IM (*Dimensionally Extended 9 Intersection Model*) to model
+topologiczny stosowany w systemach informacji geograficznej do opisu
+relacji przestrzennych między dwoma obiektami geometrycznymi, takimi jak
+punkty, linie i poligony.
+
+Jest fundamentalnym konceptem w topologii przestrzennej.
+
+## Założenia
+
+Model DE-9IM testuje przecięcia między wnętrzem, granicą i zewnętrzem
+dwóch geometrii definiowanych w następujący sposób:
+
+::: {.nonincremental}
+- wnętrze (*Interior*) -- główna część obiektu (rdzeń)
+- granica (*Boundary*) -- krawędź obiektu
+- zewnętrze (*Exterior*) -- przestrzeń poza obiektem
+:::
+
+**Uwaga!** W przypadku linii, granicą jest punkt początkowy oraz końcowy linii.
+Natomiast punkt w ogóle nie posiada granic.
+
+## Założenia
+
+Model określa wymiar każdego możliwego przecięcia między tymi częściami w
+postaci macierzy 3 x 3, w której każda komórka reprezentuje przecięcie
+dwóch obiektów (A i B).
+
+|          |          |          |          |
+|:--------:|:--------:|:--------:|:--------:|
+|          | **I(B)** | **B(B)** | **E(B)** |
+| **I(A)** | I/I      | I/B      | I/E      |
+| **B(A)** | B/I      | B/B      | B/E      |
+| **E(A)** | E/I      | E/B      | E/E      |
+
+## Założenia
+
+::: {style="font-size: 90%;"}
+Komórki macierzy mogą przyjmować następujące wartości:
+
+::: {.nonincremental}
+- F -- przecięcie jest puste (fałsz, brak przecięcia)
+- T -- przecięcie nie jest puste (prawda)
+- `*` -- wymiar przecięcia nie ma znaczenia
+:::
+
+W przypadku wystąpienia przecięcia można uszczegółowić typ zwróconej geometrii:
+
+::: {.nonincremental}
+- 0 -- przecięcie jest punktem (0-wymiarowe)
+- 1 -- przecięcie jest linią (1-wymiarowe)
+- 2 -- przecięcie jest poligonem (2-wymiarowe)
+:::
+:::
+
+## Założenia
+
+Wynik jest zakodowany jako 9-znakowy łańcuch tekstu, gdzie każdy znak odpowiada
+komórce w macierzy, czytany od lewej do prawej, od góry do dołu. Na przykład:
+
+- `FF2FF1212`
+- `T*F**FFF*` (*Equals*)
+- `FF*FF****` (*Disjoint*)
+
+## Predykat a model DE-9IM
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**Predykat przestrzenny:**
+
+- sprawdza czy zachodzi dana relacja
+- zwraca wartość logiczną
+- jest prosty w interpretacji
+:::
+
+::: {.column width="50%"}
+**Model DE-9IM:**
+
+- szczegółowa analiza topologiczna
+- zwraca macierz 9-komórkową
+- jest bardziej złożony i trudniejszy w interpretacji
+:::
+
+::::
+
+## Przykład
+
+![](https://postgis.net/workshops/postgis-intro/_images/de9im3.jpg){fig-align=center}
+
+::: {.r-stack}
+<https://postgis.net/workshops/postgis-intro/de9im.html>
+:::
