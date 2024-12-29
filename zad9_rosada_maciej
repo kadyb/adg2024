@@ -1,0 +1,13 @@
+powiaty_centroids = QgsVectorLayer("Point?crs=" + vector.crs().toWkt(), "centroidy", "memory")
+pc_provider = powiaty_centroids.dataProvider()
+pc_provider.addAttributes(vector.fields())
+pc_provider.updateFields()
+
+for feature in vector.getFeatures():
+    centroid = feature.geometry().centroid()
+    new_feature = QgsFeature()
+    new_feature.setGeometry(centroid)
+    new_feature.setAttributes(feature.attributes())
+    pc_provider.addFeature(new_feature)
+
+QgsVectorFileWriter.writeAsVectorFormat(powiaty_centroids, "C:\Users\macie\Documents\adg\robocze", "UTF-8", vector.crs(), "GPKG")
