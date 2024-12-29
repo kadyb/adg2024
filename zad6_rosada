@@ -1,0 +1,18 @@
+def wyswietl_metadane(layer):
+    if isinstance(layer, QgsRasterLayer):
+        print("Typ: Rastrowa")
+        print(f"Nazwa: {layer.name()}")
+        print(f"Źródło danych: {layer.source()}")
+        print(f"Rozdzielczość: {layer.width()} x {layer.height()}")
+        print(f"Zakres przestrzenny: {layer.extent().toString()}")
+        print(f"Układ: {layer.crs().authid()}")
+    elif isinstance(layer, QgsVectorLayer):
+        print("Typ: Wektorowa")
+        print(f"Nazwa: {layer.name()}")
+        print(f"Źródło danych: {layer.dataProvider().dataSourceUri()}")
+        print(f"Liczba obiektów: {layer.featureCount()}")
+        print(f"Typ geometrii: {layer.geometryType()}")
+        print(f"Układ: {layer.crs().authid()}")
+
+wyswietl_metadane(vector)
+wyswietl_metadane(raster)
