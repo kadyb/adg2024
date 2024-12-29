@@ -6,3 +6,4 @@ def cell_size(raster):
     ymin, ymax = re.yMinimum(), re.yMaximum()
     csx = (xmax - xmin) / rw
     csy = (ymax - ymin) / rh
+    return csx, csy
