@@ -1,4 +1,14 @@
 # ---| zad 12 - analiza teledetekcyjna |--- #
+# biblioteki
+import os
+import qgis.core as qc
+import numpy as np
+import pandas as pd
+import sys
+import matplotlib.pyplot as plt
+from PyQt5.QtWidgets import QApplication
+import random
+app = QApplication(sys.argv)
 
 # tworzenie próbki
 def GetSample(raster):
