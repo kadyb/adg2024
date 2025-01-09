@@ -240,7 +240,7 @@ plot(bbox, col = NA, border = "red", lwd = 2, lty = 2, add = TRUE)
 ```
 
 ```
-SpatExtent : 7.067, 91.287, 7.527, 89.509 (xmin, xmax, ymin, ymax)
+SpatExtent: 7.067, 91.287, 7.527, 89.509 (xmin, xmax, ymin, ymax)
 Powierzchnia: 6904 m^2
 ```
 
@@ -304,6 +304,26 @@ plot(pts)
 plot(ch, border = "red", add = TRUE)
 ```
 
+## Algorytm Jarvisa
+
+1. Znajdź najbardziej wysunięty punkt na lewo (punkt o najmniejszej
+współrzędnej X).
+2. Znajdź następny punkt otoczki, który tworzy najmniejszy kąt przeciwnie
+do ruchu wskazówek zegara.
+3. Po znalezieniu kolejnego punktu, ustaw go jako bieżący i powtórz
+krok 2.
+4. Kontynuuj ten proces, aż wrócisz do punktu początkowego.
+
+::: {style="text-align: center;"}
+[**Animacja** (Wikipedia)](https://upload.wikimedia.org/wikipedia/commons/9/9c/Animation_depicting_the_gift_wrapping_algorithm.gif)
+:::
+
+## Bufor
+
+**Bufor** to strefa lub obszar utworzony wokół obiektu przestrzennego
+w określonej odległości. Zazwyczaj używany jest do reprezentowania obszaru
+wpływu lub bliskości wokół obiektu.
+
 ## Bufor
 
 ```{r warning=FALSE}
@@ -320,7 +340,16 @@ dissolve = disagg(aggregate(buf))
 plot(dissolve, border = rainbow(15))
 ```
 
-## Centroidy
+## Centroid
+
+**Centroid** to geometryczny środek obiektu przestrzennego. Inaczej mówiąc,
+jest to pojedynczy punkt, który reprezentuje średnią arytmetyczną wyliczoną
+ze współrzędnych wszystkich wierzchołków.
+
+W przypadku obiektu punktowego, centroid jest po prostu lokalizacją samego
+punktu. 
+
+## Centroid
 
 ```{r}
 cent = centroids(dissolve, inside = FALSE)
@@ -328,7 +357,7 @@ plot(dissolve, border = rainbow(15))
 plot(cent, add = TRUE)
 ```
 
-## Centroidy
+## Centroid
 
 ```{r}
 poly = vect("POLYGON ((10 10, 40 10, 40 40, 35 15, 15 15, 10 40, 10 10))")
@@ -361,7 +390,7 @@ plot(cent2, cex = 1.6, add = TRUE)
 \
 Centroid nie gwarantuje, że będzie znajdował się wewnątrz geometrii.
 
-## Centroidy
+## Centroid
 
 Lokalizacja centroidów rzeczywistych i punktów na powierzchni nie jest
 identyczna.
@@ -382,13 +411,102 @@ add_legend("topright", legend = labels, pch = 20, col = c("darkgreen", "brown"),
            cex = 0.7, pt.cex = 1.4, bty = "n")
 ```
 
-## Poligony Voronoi
+## Uproszczenie geometrii
 
 ```{r}
-vor = voronoi(pts, bnd = ext(pts) + 10)
-plot(vor, col = rainbow(15))
+v_simpl = simplifyGeom(v, tolerance = 0.01, preserveTopology = FALSE)
+plot(v_simpl, col = "lightgrey", main = "Algorytm Douglasa Peuckera")
+```
+
+## Algorytm Douglasa Peuckera
+
+::: {style="font-size: 80%;"}
+Algorytm Douglasa Peuckera jest jedną z najczęściej stosowanych metod
+upraszczania geometrii. Działa poprzez rekurencyjne usuwanie punktów, które
+znajdują się w określonej odległości od linii łączącej dwa punkty.
+
+**Kroki:**
+
+1. Zacznij od połączenia pierwszego i ostatniego wierzchołka w linii prostej.
+2. Znajdź wierzchołek położony prostopadle najdalej od tej linii.
+3. Jeśli odległość tego wierzchołka jest większa niż zdefiniowana odległość
+(tolerancja), to zostaje on zachowany.
+4. Jeśli odległość jest mniejsza niż tolerancja, to wierzchołek zostaje usunięty.
+5. Powtarzaj, dopóki wszystkie wierzchołki nie przekroczą progu tolerancji.
+
+::: {style="text-align: center;"}
+[**Animacja** (Wikipedia)](https://upload.wikimedia.org/wikipedia/commons/3/30/Douglas-Peucker_animated.gif)
+:::
+:::
+
+## Diagram Woronoja
+
+**Diagram Woronoja** jest to podział płaszczyzny na regiony na podstawie
+odległości do określonego zestawu punktów. Każdy region, zwany komórką Woronoja
+lub wielokątem Thiessena, składa się ze wszystkich punktów, które są bliżej
+określonego punktu początkowego niż jakiegokolwiek innego punktu początkowego.
+
+Do ich wygenerowania najczęściej stosuje się algorytm Fortune'a o złożoności
+$O(n \log n)$.
+
+## Diagram Woronoja
+
+```{r}
+vor = voronoi(pts, bnd = ext(pts))
+plot(vor, col = rainbow(10))
 plot(pts, add = TRUE)
 ```
+
+::: {style="text-align: center;"}
+[**Animacja** (Wikipedia)](https://upload.wikimedia.org/wikipedia/commons/d/d9/Voronoi_growth_euclidean.gif)
+:::
+
+## Diagram Woronoja
+
+Dwa podstawowe zastosowania to:
+
+- Interpolacja przestrzenna, np. szacowanie opadów na podstawie pomiarów ze
+stacji meteorologicznych poprzez zdefiniowanie najbliższych obszarów wokół stacji.
+- Wyznaczanie obszarów, np. określenie obszaru działalności konkretnej remizy
+strażackiej.
+
+## Triangulacja Delone
+
+**Triangulacja Delone** jest to metoda tworzenia sieci trójkątów z zestawu
+punktów w taki sposób, że żaden punkt nie znajduje się wewnątrz okręgu żadnego
+trójkąta, dzięki czemu trójkąty są jak najbardziej regularne.
+
+::: {style="font-size: 85%;"}
+::: {.nonincremental}
+**Algorytmy:**
+
+- Dziel i zwyciężaj (*Divide and conquer*) -- dzielenie punktów na mniejsze
+podzbiory, triangulacja każdego podzbioru, a następnie scalanie.
+- Przyrostowe (*Incremental*) -- dodawanie punktów jeden po drugim i
+aktualizowanie triangulacji w celu zachowania własności Delone.
+- Odwracania (*Flip*) -- rozpoczęcie od dowolnej triangulacji, a następnie
+"odwracanie" krawędzi w celu spełnienia warunku Delone.
+:::
+:::
+
+## Triangulacja Delone
+
+```{r}
+delone = delaunay(pts)
+plot(delone, col = rainbow(10))
+plot(pts, add = TRUE)
+```
+
+## Triangulacja Delone
+
+**Związek z diagramem Woronoja**
+
+Krawędzie triangulacji Delone odpowiadają wspólnej granicy pomiędzy dwiema
+komórkami Woronoja. Natomiast, wierzchołki diagramu Woronoja leżą w środkach
+okręgów opisanych trójkątów Delone.
+
+Ta dualność jest fundamentalną relacją i sprawia, że te dwie struktury są
+ściśle ze sobą powiązane.
 
 ## Transformacje geometryczne
 
@@ -479,8 +597,6 @@ plot(poly, lty = 2, xlim = c(30, 60), ylim = c(30, 50),
      main = "θ = 90°  x0 = 50  y0 = 40")
 plot(poly2, col = "lightblue", add = TRUE)
 ```
-
-## Uproszczenie geometrii
 
 ## Inne operacje
 

@@ -41,8 +41,6 @@ wyznaczenie obszaru, który dotknięty jest przez negatywny czynnik (mapa
 zanieczyszczeń)
 - Połączenia przestrzenne tabel -- obiekty dopasowywane są na podstawie
 określonej relacji topologicznej, a nie klucza (ID) w tabeli
-- Analiza sieciowa -- optymalizacji tras, np. wyznaczenie najkrótszej lub
-najszybszej trasy
 :::
 
 ## Predykaty
@@ -108,10 +106,20 @@ text(p)
 Jedna geometria całkowicie zawiera w sobie inną geometrię.
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((2 4, 7 4, 7 8, 2 8, 2 4))")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 12, 0, 0))
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+text(x = 0.6, y = 9.5, labels = "P1")
+text(x = 2.6, y = 7.5, labels = "P2")
 ```
 
-Przykład: Powiat zawierający miasto.
+```
+                          P1 zawiera P2: PRAWDA
+                          P2 zawiera P1: FAŁSZ
+```
+
+**Przykład:** Powiat zawierający miasto.
 
 ## Przechodzi
 
@@ -119,10 +127,21 @@ Dwie geometrie mają częściowo wspólne punkty (nie wszystkie). Zwykle dotyczy
 przecięcia linii i poligonu lub dwóch linii.
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((2 2, 8 2, 8 8, 2 8, 2 2))")
+l1 = vect("LINESTRING (1 6, 10 6)")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 12, 0, 0),
+     xlim = c(1, 8))
+plot(l1, col = "lightgreen", lwd = 7, add = TRUE)
+text(x = 2.4, y = 7.6, labels = "P1", cex = 1.5)
+text(x = 1.2, y = 6.3, labels = "L1", cex = 1.5)
 ```
 
-Przykład: Droga przebiegająca częściowo przez las i miasto.
+```
+            L1 przechodzi przez P1: PRAWDA
+            P1 przechodzi przez L1: PRAWDA
+```
+
+**Przykład:** Droga przebiegająca częściowo przez las i miasto.
 
 ## Pokrywa
 
@@ -130,10 +149,20 @@ Jedna geometria całkowicie obejmuje drugą, ale nie oznacza to, że są identyc
 (geometria pokrywająca drugą może być większa).
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((2 4, 7 4, 7 8, 2 8, 2 4))")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 12, 0, 0))
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+text(x = 0.6, y = 9.5, labels = "P1", cex = 1.5)
+text(x = 2.6, y = 7.5, labels = "P2", cex = 1.5)
 ```
 
-Przykład: Powiat pokrywający miasto.
+```
+              P1 pokrywa P2: PRAWDA
+              P2 pokrywa P1: FAŁSZ
+```
+
+**Przykład:** Powiat pokrywający miasto.
 
 ## Pokryty przez
 
@@ -141,10 +170,20 @@ Jedna geometria znajduje się całkowicie wewnątrz innej geometrii, ale większ
 geometria może wykraczać poza nią.
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((2 4, 7 4, 7 8, 2 8, 2 4))")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 12, 0, 0))
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+text(x = 0.6, y = 9.5, labels = "P1", cex = 1.5)
+text(x = 2.6, y = 7.5, labels = "P2", cex = 1.5)
 ```
 
-Przykład: Miasto pokryte jest przez powiat.
+```
+              P1 jest pokryty przez P2: FAŁSZ
+              P2 jest pokryty przez P1: PRAWDA
+```
+
+**Przykład:** Miasto pokryte jest przez powiat.
 
 ## Rozłączny
 
@@ -152,30 +191,62 @@ Dwie geometrie nie mają ze sobą żadnego wspólnego punktu (nie przecinają si
 i nie stykają, tj. są rozdzielone).
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))")
+p2 = vect("POLYGON ((4 5, 8 5, 8 9, 4 9, 4 5))")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 14, 0, 0),
+     xlim = c(0, 10), ylim = c(0, 10))
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+text(x = 0.7, y = 3.4, labels = "P1", cex = 1.5)
+text(x = 4.7, y = 8.4, labels = "P2", cex = 1.5)
 ```
 
-Przykład: Dwa budynki w różnych częściach miasta.
+```
+              P1 jest rozłączny od P2: PRAWDA
+              P2 jest rozłączny od P1: PRAWDA
+```
+
+**Przykład:** Dwa budynki w różnych częściach miasta.
 
 ## Równy
 
-Dwie geometrie są dokładnie tekie same (mają identyczne kształty i położenie).
+Dwie geometrie są dokładnie takie same (mają identyczne kształt i położenie).
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))")
+p2 = vect("POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 12, 0, 0))
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+text(x = 0.3, y = 3.8, labels = "P1", cex = 1.5)
+text(x = 3.7, y = 3.8, labels = "P2", cex = 1.5)
 ```
 
-Przykład: Budynek zajmujący całą powierzchnię działki katastralnej.
+```
+              P1 jest równy P2: PRAWDA
+              P2 jest równy P1: PRAWDA
+```
+
+**Przykład:** Budynek zajmujący całą powierzchnię działki katastralnej.
 
 ## Przecina
 
 Dwie geometrie mają co najmniej jeden punkt wspólny.
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((2 2, 6 2, 6 6, 2 6, 2 2))")
+p2 = vect("POLYGON ((4 4, 7 4, 7 7, 4 7, 4 4))")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 12, 0, 0),
+     xlim = c(2, 7), ylim = c(2, 7))
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+text(x = 2.3, y = 5.8, labels = "P1", cex = 1.5)
+text(x = 4.3, y = 6.8, labels = "P2", cex = 1.5)
 ```
 
-Przykład: Droga przecinająca linię kolejową (przejazd kolejowy).
+```
+                  P1 przecina P2: PRAWDA
+                  P2 przecina P1: PRAWDA
+```
+
+**Przykład:** Droga przecinająca linię kolejową (przejazd kolejowy).
 
 ## Nakłada
 
@@ -183,10 +254,21 @@ Dwie geometrie dzielą części swojego wnętrza, ale nie całość (częściowo
 nakładają).
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((2 2, 6 2, 6 6, 2 6, 2 2))")
+p2 = vect("POLYGON ((4 4, 7 4, 7 7, 4 7, 4 4))")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 12, 0, 0),
+     xlim = c(2, 7), ylim = c(2, 7))
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+text(x = 2.3, y = 5.8, labels = "P1", cex = 1.5)
+text(x = 4.3, y = 6.8, labels = "P2", cex = 1.5)
 ```
 
-Przykład: Obszar parku narodowego pokrywający się częściwowo z obszarem lasu.
+```
+            P1 nakłada się z P2: PRAWDA
+            P2 nakłada się z P1: PRAWDA
+```
+
+**Przykład:** Obszar parku narodowego pokrywający się częściowo z obszarem lasu.
 
 ## Dotyka
 
@@ -194,20 +276,41 @@ Dwie geometrie mają wspólną granicę, ale nie pokrywają się (stykają się 
 na krawędzi).
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0))")
+p2 = vect("POLYGON ((4 0, 8 0, 8 4, 4 4, 4 0))")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 12, 0, 0),
+     xlim = c(0, 8))
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+text(x = 0.4, y = 3.7, labels = "P1", cex = 1.5)
+text(x = 4.4, y = 3.7, labels = "P2", cex = 1.5)
 ```
 
-Przykład: Dwie sąsiadujące ze sobą działki katastralne.
+```
+                    P1 dotyka P2: PRAWDA
+                    P2 dotyka P1: PRAWDA
+```
+
+**Przykład:** Dwie sąsiadujące ze sobą działki katastralne.
 
 ## Wewnątrz
 
 Jedna geometria jest całkowicie zawarta w innej geometrii.
 
 ```{r}
-# relate()
+p1 = vect("POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0))")
+p2 = vect("POLYGON ((2 4, 7 4, 7 8, 2 8, 2 4))")
+plot(p1, col = "lightblue", alpha = 0.7, axes = FALSE, mar = c(0, 12, 0, 0))
+plot(p2, col = "lightgreen", alpha = 0.7, add = TRUE)
+text(x = 0.6, y = 9.5, labels = "P1")
+text(x = 2.6, y = 7.5, labels = "P2")
 ```
 
-Przykład: Miasto znajdujące się w powiecie.
+```
+                    P1 jest wewnątrz P2: FAŁSZ
+                    P2 jest wewnątrz P1: PRAWDA
+```
+
+**Przykład:** Miasto znajdujące się w powiecie.
 
 ## Implementacje
 
@@ -288,6 +391,14 @@ komórce w macierzy, czytany od lewej do prawej, od góry do dołu. Na przykład
 - `T*F**FFF*` (*Equals*)
 - `FF*FF****` (*Disjoint*)
 
+## Przykład
+
+![](https://postgis.net/workshops/postgis-intro/_images/de9im3.jpg){fig-align=center}
+
+::: {.r-stack}
+<https://postgis.net/workshops/postgis-intro/de9im.html>
+:::
+
 ## Predykat a model DE-9IM
 
 :::: {.columns}
@@ -309,11 +420,3 @@ komórce w macierzy, czytany od lewej do prawej, od góry do dołu. Na przykład
 :::
 
 ::::
-
-## Przykład
-
-![](https://postgis.net/workshops/postgis-intro/_images/de9im3.jpg){fig-align=center}
-
-::: {.r-stack}
-<https://postgis.net/workshops/postgis-intro/de9im.html>
-:::

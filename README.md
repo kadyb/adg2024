@@ -39,8 +39,8 @@ i zapisać ją jako PDF.*
 # Materiały dodatkowe
 
 - [Python Tutorial](https://docs.python.org/3/tutorial/)
-- [QGIS Python API](https://qgis.org/pyqgis/3.34/)
-- [PyQGIS Developer Cookbook](https://docs.qgis.org/3.34/en/docs/pyqgis_developer_cookbook/)
+- [QGIS Python API](https://qgis.org/pyqgis/3.40/)
+- [PyQGIS Developer Cookbook](https://docs.qgis.org/3.40/en/docs/pyqgis_developer_cookbook/)
 - [PyQGIS Masterclass](https://courses.spatialthoughts.com/pyqgis-masterclass.html) Ujaval Gandhi 
 - [PyQGIS 101: Introduction to QGIS Python programming for non-programmers](https://anitagraser.com/pyqgis-101-introduction-to-qgis-python-programming-for-non-programmers/) Anita Graser
 
