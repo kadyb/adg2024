@@ -1,0 +1,609 @@
+---
+title: "Algorytmy danych geoprzestrzennych"
+subtitle: "Operacje geometryczne"
+author: "Krzysztof Dyba"
+format: 
+  revealjs:
+    slide-number: c/t
+    incremental: true
+    embed-resources: true
+css: _style.css
+---
+
+```{r}
+library("terra")
+set.seed(1)
+```
+
+## Operacje geometryczne
+
+**Operacje geometryczne** to zbiór technik stosowanych do przetwarzania i
+analizowania danych wektorowych.
+
+Umożliwiają one wykonywanie różnych zadań, takich jak tworzenie, modyfikowanie,
+łączenie, uproszczenie czy transformacje geometrii obiektów wektorowych.
+
+## Generowanie punktów
+
+```{r}
+n = 100
+zakres = c(xmin = 0, xmax = 100, ymin = 0, ymax = 100)
+x_wsp = runif(n, zakres["xmin"], zakres["xmax"])
+y_wsp = runif(n, zakres["ymin"], zakres["ymax"])
+mat = matrix(c(x_wsp, y_wsp), ncol = 2)
+```
+
+```{r}
+pts = vect(mat)
+plot(pts)
+```
+
+## Generowanie punktów
+
+**R**
+
+```r
+n = 100
+zakres = c(xmin = 0, xmax = 100, ymin = 0, ymax = 100)
+x_wsp = runif(n, zakres["xmin"], zakres["xmax"])
+y_wsp = runif(n, zakres["ymin"], zakres["ymax"])
+mat = matrix(c(x_wsp, y_wsp), ncol = 2)
+```
+
+**Python**
+
+```python
+import random
+n = 100
+zakres = {"xmin": 0, "xmax": 100, "ymin": 0, "ymax": 100}
+x_wsp = []
+y_wsp = []
+for _ in range(n):
+  x_wsp.append(random.uniform(zakres["xmin"], zakres["xmax"]))
+  y_wsp.append(random.uniform(zakres["ymin"], zakres["ymax"]))
+mat = list(zip(x_wsp, y_wsp))
+```
+
+## Generowanie punktów w poligonach
+
+1. Wygenerowanie punktu w zasięgu poligonu
+2. Sprawdzenie czy punkt znajduje się w poligonie
+
+::: {.fragment}
+```r
+n = 10
+licznik = 1
+lista = list()
+
+while (licznik <= n) {
+  x = runif(1, zakres["xmin"], zakres["xmax"])
+  y = runif(1, zakres["ymin"], zakres["ymax"])
+  pt = vect(cbind(x, y))
+  warunek = relate(pt, poly, relation = "within")
+  if (isTRUE(warunek)) {
+    lista = append(lista, pt)
+    licznik = licznik + 1
+  }
+}
+```
+:::
+
+## Generowanie punktów w poligonach
+
+```{r warning=FALSE}
+poly = vect("POLYGON ((30 10, 10 40, 40 40, 30 10))")
+smp = spatSample(as.polygons(ext(poly)), size = 19)
+idx = relate(smp, poly, relation = "within")
+```
+
+```{r}
+plot(poly, border = "blue")
+plot(smp[idx], col = "blue", add = TRUE)
+plot(smp[!idx], col = "grey", alpha = 0.7, add = TRUE)
+```
+
+## Tworzenie geometrii
+
+```{r}
+plot(pts, main = "Linia")
+idx = c(60, 66, 84, 57, 45, 31, 25)
+l = as.lines(pts[idx])
+plot(l, col = "red", lwd = 2, add = TRUE)
+text(46, 21, "P1")
+text(26, 80, "P7")
+```
+
+## Tworzenie geometrii
+
+```{r warning=FALSE}
+plot(pts, main = "Poligon")
+idx = c(68, 59, 13, 8, 36, 37, 46, 68)
+poly = as.polygons(as.lines(pts[idx]))
+plot(poly, col = "red", border = NULL, add = TRUE)
+text(62, 25, "P1")
+text(71, 25, "P8")
+```
+
+## Tworzenie geometrii
+
+**Well-known text (WKT)**
+
+```
+POLYGON ((40 30, 60 30, 50 55, 40 30))
+LINESTRING (50 30, 50 15)
+MULTIPOINT ((45 43), (55 43), (42 34), (58 34))
+```
+
+```{r}
+poly = vect("POLYGON ((40 30, 60 30, 50 55, 40 30))")
+l = vect("LINESTRING (50 30, 50 15)")
+p = vect("MULTIPOINT ((45 43), (55 43), (42 34), (58 34))")
+plot(poly, col = "darkgreen", border = NA, xlim = c(30, 70), ylim = c(15, 55),
+     mar = c(1.5, 12, 1, 0))
+plot(l, col = "brown", lwd = 8, add = TRUE)
+plot(p, col = "red", cex = 2, add = TRUE)
+```
+
+## Generowanie siatki
+
+```{r}
+n = 10
+mat = matrix(rep(NA, times = 2 * n^2), ncol = 2)
+iter = 1
+for (x in seq(1, 100, by = 10)) {
+  for (y in seq(1, 100, by = 10)) {
+    mat[iter, ] = c(x, y)
+    iter = iter + 1
+  }
+}
+```
+
+```{r}
+pts_grid = vect(mat)
+plot(pts_grid, main = "Punkty")
+```
+
+## Generowanie siatki
+
+::::: columns
+::: {.column width="50%"}
+**R**
+
+```r
+n = 10
+mat = matrix(rep(NA, times = 2 * n^2),
+             ncol = 2)
+iter = 1
+
+for (x in seq(1, 100, by = 10)) {
+  for (y in seq(1, 100, by = 10)) {
+    mat[iter, ] = c(x, y)
+    iter = iter + 1
+  }
+}
+```
+:::
+
+::: {.column width="50%"}
+**Python**
+
+```python
+n = 10
+lista = []
+counter = 0
+
+for x in range(1, 101, 10):
+    for y in range(1, 101, 10):
+        lista.append([x, y])
+        counter += 1
+```
+:::
+:::::
+
+::: {.fragment}
+**1. Jakie są różnice między tymi dwoma blokami kodu?**
+:::
+::: {.fragment}
+**2. Alternatywne podejście w R?**
+:::
+
+## Generowanie siatki
+
+```{r}
+rast_grid = rast(pts_grid)
+poly_grid = as.polygons(rast_grid)
+plot(poly_grid, main = "Poligony")
+```
+
+## Zakres przestrzenny
+
+**Zakres przestrzenny** (minimalny prostokąt ograniczający, obwiednia) to
+prosta geometryczna reprezentacja zasięgu przestrzennego obiektów. Jest to
+najmniejszy prostokąt, który całkowicie pokrywa obiekty, a jego boki są
+równoległe do osi układu współrzędnych.
+
+::: {.nonincremental}
+Zakres przestrzenny jest definiowany przez cztery wartości:
+
+- Minimalna długość geograficzna (`X_min`).
+- Maksymalna długość geograficzna (`X_maks`).
+- Minimalna szerokość geograficzna (`Y_min`).
+- Maksymalna szerokość geograficzna (`Y_maks`).
+:::
+
+## Zakres przestrzenny
+
+```{r}
+plot(pts[50:65], xlim = c(0, 100), ylim = c(0, 100))
+bbox = ext(pts[50:65])
+plot(bbox, col = NA, border = "red", lwd = 2, lty = 2, add = TRUE)
+```
+
+```
+SpatExtent: 7.067, 91.287, 7.527, 89.509 (xmin, xmax, ymin, ymax)
+Powierzchnia: 6904 m^2
+```
+
+## Obrócony prostokąt ograniczający
+
+**Obrócony prostokąt ograniczający** (*minimal bounding rotated rectangle*) to
+najmniejszy prostokąt, który całkowicie pokrywa obiekty, przy czym prostokąt
+może się obracać, aby osiągnąć minimalną powierzchnię.
+
+## Obrócony prostokąt ograniczający
+
+```{r}
+plot(pts[50:65], xlim = c(0, 100), ylim = c(0, 100))
+r_bbox = minRect(pts[50:65])
+plot(r_bbox, col = NA, border = "red", lwd = 2, lty = 2, add = TRUE)
+```
+
+```
+Powierzchnia: 6856 m^2
+```
+
+## Minimalne koło ograniczające
+
+```{r}
+plot(pts[50:65], xlim = c(0, 100), ylim = c(0, 100))
+bc = minCircle(pts[50:65])
+plot(bc, col = NA, border = "red", lwd = 2, lty = 2, add = TRUE)
+```
+
+```
+Powierzchnia: 6910 m^2
+```
+
+## Otoczka wypukła
+
+**Otoczka wypukła** to obiekt geometryczny, który reprezentuje najmniejszy
+wielokąt wypukły. Można to porównać do rozciągania gumy wokół gwoździ.
+
+::: {.nonincremental}
+::: {style="font-size: 85%;"}
+**Przykładowe algorytmy:**
+
+- Gift Wrapping (Jarvis March): $O(nh)$
+- Graham's Scan: $O(n \log n)$
+- QuickHull: $O(n \log n)$
+- Monotone Chain (Andrew's Algorithm): $O(n \log n)$
+- Chan's Algorithm: $O(n \log h)$
+:::
+:::
+
+```
+n - liczba punktów wejściowych
+h - liczba punktów na otoczce
+```
+
+## Otoczka wypukła
+
+```{r}
+ch = convHull(pts)
+plot(pts)
+plot(ch, border = "red", add = TRUE)
+```
+
+## Algorytm Jarvisa
+
+1. Znajdź najbardziej wysunięty punkt na lewo (punkt o najmniejszej
+współrzędnej X).
+2. Znajdź następny punkt otoczki, który tworzy najmniejszy kąt przeciwnie
+do ruchu wskazówek zegara.
+3. Po znalezieniu kolejnego punktu, ustaw go jako bieżący i powtórz
+krok 2.
+4. Kontynuuj ten proces, aż wrócisz do punktu początkowego.
+
+::: {style="text-align: center;"}
+[**Animacja** (Wikipedia)](https://upload.wikimedia.org/wikipedia/commons/9/9c/Animation_depicting_the_gift_wrapping_algorithm.gif)
+:::
+
+## Bufor
+
+**Bufor** to strefa lub obszar utworzony wokół obiektu przestrzennego
+w określonej odległości. Zazwyczaj używany jest do reprezentowania obszaru
+wpływu lub bliskości wokół obiektu.
+
+## Bufor
+
+```{r warning=FALSE}
+smp = spatSample(as.polygons(ext(pts)), size = 30)
+buf = buffer(smp, width = 6)
+plot(buf)
+plot(smp, add = TRUE)
+```
+
+## Łączenie geometrii
+
+```{r}
+dissolve = disagg(aggregate(buf))
+plot(dissolve, border = rainbow(15))
+```
+
+## Centroid
+
+**Centroid** to geometryczny środek obiektu przestrzennego. Inaczej mówiąc,
+jest to pojedynczy punkt, który reprezentuje średnią arytmetyczną wyliczoną
+ze współrzędnych wszystkich wierzchołków.
+
+W przypadku obiektu punktowego, centroid jest po prostu lokalizacją samego
+punktu. 
+
+## Centroid
+
+```{r}
+cent = centroids(dissolve, inside = FALSE)
+plot(dissolve, border = rainbow(15))
+plot(cent, add = TRUE)
+```
+
+## Centroid
+
+```{r}
+poly = vect("POLYGON ((10 10, 40 10, 40 40, 35 15, 15 15, 10 40, 10 10))")
+cent1 = centroids(poly, inside = FALSE)
+cent2 = centroids(poly, inside = TRUE)
+```
+
+::::: columns
+::: {.column width="50%"}
+Centroid rzeczywisty
+
+```{r}
+plot(poly, col = "lightblue", mar = c(1.3, 0, 0, 0))
+plot(cent1, cex = 1.6, add = TRUE)
+```
+:::
+
+::: {.column width="50%"}
+::: {.fragment}
+Punkt na powierzchni
+
+```{r}
+plot(poly, col = "lightblue", mar = c(1.3, 0, 0, 0))
+plot(cent2, cex = 1.6, add = TRUE)
+```
+:::
+:::
+:::::
+
+\
+Centroid nie gwarantuje, że będzie znajdował się wewnątrz geometrii.
+
+## Centroid
+
+Lokalizacja centroidów rzeczywistych i punktów na powierzchni nie jest
+identyczna.
+
+```{r}
+f = system.file("ex/lux.shp", package = "terra")
+v = vect(f)
+c1 = centroids(v, inside = FALSE)
+c2 = centroids(v, inside = TRUE)
+```
+
+```{r}
+plot(v, mar = c(1.5, 12, 0, 0))
+plot(c1, col = "darkgreen", add = TRUE)
+plot(c2, col = "brown", add = TRUE)
+labels = c("Rzeczywisty\ncentroid", "Punkt na\npowierzchni")
+add_legend("topright", legend = labels, pch = 20, col = c("darkgreen", "brown"),
+           cex = 0.7, pt.cex = 1.4, bty = "n")
+```
+
+## Uproszczenie geometrii
+
+```{r}
+v_simpl = simplifyGeom(v, tolerance = 0.01, preserveTopology = FALSE)
+plot(v_simpl, col = "lightgrey", main = "Algorytm Douglasa Peuckera")
+```
+
+## Algorytm Douglasa Peuckera
+
+::: {style="font-size: 80%;"}
+Algorytm Douglasa Peuckera jest jedną z najczęściej stosowanych metod
+upraszczania geometrii. Działa poprzez rekurencyjne usuwanie punktów, które
+znajdują się w określonej odległości od linii łączącej dwa punkty.
+
+**Kroki:**
+
+1. Zacznij od połączenia pierwszego i ostatniego wierzchołka w linii prostej.
+2. Znajdź wierzchołek położony prostopadle najdalej od tej linii.
+3. Jeśli odległość tego wierzchołka jest większa niż zdefiniowana odległość
+(tolerancja), to zostaje on zachowany.
+4. Jeśli odległość jest mniejsza niż tolerancja, to wierzchołek zostaje usunięty.
+5. Powtarzaj, dopóki wszystkie wierzchołki nie przekroczą progu tolerancji.
+
+::: {style="text-align: center;"}
+[**Animacja** (Wikipedia)](https://upload.wikimedia.org/wikipedia/commons/3/30/Douglas-Peucker_animated.gif)
+:::
+:::
+
+## Diagram Woronoja
+
+**Diagram Woronoja** jest to podział płaszczyzny na regiony na podstawie
+odległości do określonego zestawu punktów. Każdy region, zwany komórką Woronoja
+lub wielokątem Thiessena, składa się ze wszystkich punktów, które są bliżej
+określonego punktu początkowego niż jakiegokolwiek innego punktu początkowego.
+
+Do ich wygenerowania najczęściej stosuje się algorytm Fortune'a o złożoności
+$O(n \log n)$.
+
+## Diagram Woronoja
+
+```{r}
+vor = voronoi(pts, bnd = ext(pts))
+plot(vor, col = rainbow(10))
+plot(pts, add = TRUE)
+```
+
+::: {style="text-align: center;"}
+[**Animacja** (Wikipedia)](https://upload.wikimedia.org/wikipedia/commons/d/d9/Voronoi_growth_euclidean.gif)
+:::
+
+## Diagram Woronoja
+
+Dwa podstawowe zastosowania to:
+
+- Interpolacja przestrzenna, np. szacowanie opadów na podstawie pomiarów ze
+stacji meteorologicznych poprzez zdefiniowanie najbliższych obszarów wokół stacji.
+- Wyznaczanie obszarów, np. określenie obszaru działalności konkretnej remizy
+strażackiej.
+
+## Triangulacja Delone
+
+**Triangulacja Delone** jest to metoda tworzenia sieci trójkątów z zestawu
+punktów w taki sposób, że żaden punkt nie znajduje się wewnątrz okręgu żadnego
+trójkąta, dzięki czemu trójkąty są jak najbardziej regularne.
+
+::: {style="font-size: 85%;"}
+::: {.nonincremental}
+**Algorytmy:**
+
+- Dziel i zwyciężaj (*Divide and conquer*) -- dzielenie punktów na mniejsze
+podzbiory, triangulacja każdego podzbioru, a następnie scalanie.
+- Przyrostowe (*Incremental*) -- dodawanie punktów jeden po drugim i
+aktualizowanie triangulacji w celu zachowania własności Delone.
+- Odwracania (*Flip*) -- rozpoczęcie od dowolnej triangulacji, a następnie
+"odwracanie" krawędzi w celu spełnienia warunku Delone.
+:::
+:::
+
+## Triangulacja Delone
+
+```{r}
+delone = delaunay(pts)
+plot(delone, col = rainbow(10))
+plot(pts, add = TRUE)
+```
+
+## Triangulacja Delone
+
+**Związek z diagramem Woronoja**
+
+Krawędzie triangulacji Delone odpowiadają wspólnej granicy pomiędzy dwiema
+komórkami Woronoja. Natomiast, wierzchołki diagramu Woronoja leżą w środkach
+okręgów opisanych trójkątów Delone.
+
+Ta dualność jest fundamentalną relacją i sprawia, że te dwie struktury są
+ściśle ze sobą powiązane.
+
+## Transformacje geometryczne
+
+- Przesunięcie
+- Przeskalowanie
+- Transpozycja
+- Odbicie
+- Obrócenie
+
+## Przesunięcie
+
+```{r}
+poly = vect("POLYGON ((40 30, 60 30, 50 40, 40 30))")
+poly2 = shift(poly, dx = 10, dy = 5)
+
+plot(poly, lty = 2, xlim = c(40, 70), ylim = c(30, 45),
+     main = "Δx = 10  Δy = 5", mar = c(1.5, 3, 1.5, 0))
+plot(poly2, col = "lightblue", add = TRUE)
+```
+
+```
+                          x  y                   x  y
+                    [1,] 40 30             [1,] 50 35
+                    [2,] 60 30             [2,] 70 35
+                    [3,] 50 40    ---->    [3,] 60 45
+                    [4,] 40 30             [4,] 50 35
+```
+
+## Przeskalowanie
+
+```{r}
+poly = vect("POLYGON ((40 30, 60 30, 50 40, 40 30))")
+poly2 = rescale(poly, fx = 0.5, fy = 0.5)
+cent = centroids(as.polygons(ext(poly)))
+
+plot(poly, lty = 2, xlim = c(40, 60), ylim = c(30, 40),
+     main = "Δx = 0.5  Δy = 0.5")
+plot(poly2, col = "lightblue", add = TRUE)
+plot(cent, col = "red", add = TRUE)
+```
+
+```
+                  współczynnik * (wierzchołek - centroid) + centroid
+```
+
+## Transpozycja
+
+```{r}
+poly = vect("POLYGON ((40 30, 60 30, 50 40, 40 30))")
+poly2 = t(poly)
+
+plot(poly, lty = 2, xlim = c(30, 60), ylim = c(30, 60),
+     mar = c(1.5, 12, 0, 0))
+plot(poly2, col = "lightblue", add = TRUE)
+```
+
+```
+                              x  y                   x  y
+                        [1,] 40 30             [1,] 30 40
+                        [2,] 60 30             [2,] 30 60
+                        [3,] 50 40    ---->    [3,] 40 50
+                        [4,] 40 30             [4,] 30 40
+```
+
+## Odbicie
+
+```{r}
+poly = vect("POLYGON ((40 30, 60 30, 50 40, 40 30))")
+poly2 = flip(poly, direction = "vertical")
+
+plot(poly, lty = 2, xlim = c(40, 60), ylim = c(20, 40),
+     main = "Odbicie pionowe")
+plot(poly2, col = "lightblue", add = TRUE)
+```
+
+```
+            Odbicie poziome: (2a - x, y), gdzie a to linia wertykalna
+            Odbicie pionowe: (x, 2b - y), gdzie b to linia horyzontalna
+```
+
+## Obrócenie
+
+```{r}
+poly = vect("POLYGON ((40 30, 60 30, 50 40, 40 30))")
+poly2 = spin(poly, angle = 90, x0 = 50, y0 = 40)
+
+plot(poly, lty = 2, xlim = c(30, 60), ylim = c(30, 50),
+     main = "θ = 90°  x0 = 50  y0 = 40")
+plot(poly2, col = "lightblue", add = TRUE)
+```
+
+## Inne operacje
+
+- Statystyki geometrii, np. długość, obwód, powierzchnia, liczba wierzchołków
+- Walidacja i naprawa geometrii
+- Usuwanie zduplikowanych wierzchołków
+- Uzupełnienie dziur w poligonach
+- Reprojekcje
+- ...
+
