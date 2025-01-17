@@ -1,0 +1,263 @@
+---
+title: "Algorytmy danych geoprzestrzennych"
+subtitle: "Obliczenia geodezyjne"
+author: "Krzysztof Dyba"
+format: 
+  revealjs:
+    slide-number: c/t
+    incremental: true
+    embed-resources: true
+css: _style.css
+---
+
+```{r}
+#| message: false
+library("sf")
+
+url = "https://naciscdn.org/naturalearth/110m/cultural/ne_110m_admin_0_countries.zip"
+f = paste0("/vsizip/", "/vsicurl/", url)
+world = read_sf(f)
+```
+
+## Jaki kształt ma Ziemia? {style="text-align: center;"}
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/North_America_from_low_orbiting_satellite_Suomi_NPP.jpg/768px-North_America_from_low_orbiting_satellite_Suomi_NPP.jpg)
+
+::: {style="font-size: 60%;"}
+Blue Marble 2012, Suomi NPP
+:::
+
+## Geoida
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Geoid_undulation_to_scale.jpg/720px-Geoid_undulation_to_scale.jpg){fig-align="center"}
+
+::: {style="text-align: center;"}
+::: {style="font-size: 60%;"}
+[International Centre for Global Earth Models](https://icgem.gfz-potsdam.de)
+
+<https://essd.copernicus.org/articles/11/647/2019/>
+:::
+:::
+
+## Geoida
+
+**Geoida** to model kształtu Ziemi, który przedstawia złożoną, nieregularną
+powierzchnię, na którą siła grawitacji działa wszędzie prostopadle do
+powierzchni.
+
+Geoida nie ma matematycznie zdefiniowanego kształtu. Jej kształt wynika z
+różnic w ziemskim polu grawitacyjnym spowodowanymi zmianami w gęstości i
+rozkładzie masy Ziemi (np. występowanie gór i dolin). 
+
+Źródłem danych zazwyczaj są satelitarne pomiary grawitacyjne (np. misja GRACE).
+
+## Matematyczne reprezentacje
+
+::::: columns
+::: {.column width="60%"}
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Ellipsoide.svg/628px-Ellipsoide.svg.png)
+:::
+
+::: {.column width="40%"}
+**Sfera** (góra)
+
+**Elipsoida obrotowa** (lewo dół)
+
+**Elipsoida** (prawo dół)
+:::
+:::::
+
+::: {style="font-size: 50%;"}
+[Wikipedia](https://en.wikipedia.org/wiki/Ellipsoid)
+::: 
+
+## Elipsoida
+
+**Elipsoida** to obiekt geometryczny, w którym wszystkie płaskie przekroje są
+elipsami lub okręgami. Wszystkie trzy osie mogą mieć różne długości.
+
+$$
+\frac{x^2}{a^2} + \frac{y^2}{a^2} + \frac{z^2}{b^2} = 1
+$$
+
+## Elipsoida obrotowa (sferoida)
+
+**Elipsoida obrotowa** to obiekt geometryczny utworzony przez obrót elipsy
+wokół jednej z jej osi. Jeśli elipsa zostanie obrócona wokół mniejszej osi,
+to w rezultacie powstanie elipsoida spłaszczona, która przypomina kształtem
+Ziemię.
+
+Jest to szczególny przypadek elipsoidy, w której dwie z trzech osi są równe.
+
+$$
+\frac{x^2 + y^2}{a^2} + \frac{z^2}{c^2} = 1
+$$
+
+::: {style="font-size: 75%;"}
+Jeśli:
+
+$c < a$ -- elipsoida spłaszczona
+
+$c > a$ -- elipsoida wydłużona
+:::
+
+## Sfera
+
+**Sfera** to idealnie okrągły obiekt geometryczny, w którym każdy punkt na
+powierzchni jest w równej odległości od środka. Jest to podstawowe i ogólne
+przybliżenie kształtu Ziemi, ponieważ nie uwzględnia spłaszczenia na biegunach.
+
+Jest to szczególny przypadek elipsoidy, w której wszystkie trzy osie mają równą
+długość.
+
+$$
+x^2 + y^2 + z^2 = r^2
+$$
+
+## Obrazowanie Ziemi na mapie
+
+**Podstawowy problem**
+
+Przedstawienie Ziemi na mapie obejmuje rzutowanie trójwymiarowego kształtu
+na dwuwymiarową powierzchnię. Ponieważ powierzchnia Ziemi jest zaokrąglona,
+proces ten wprowadza zniekształcenia związane ze kształtem, powierzchnią,
+odległością czy kierunkiem.
+
+\
+\
+
+::: {.fragment}
+::: {style="text-align: center;"}
+**Jakie jest rozwiązanie?**
+:::
+:::
+
+## Odwzorowanie kartograficzne
+
+**Odwzorowanie kartograficzne** to matematyczna transformacja szerokości i
+długości geograficznej z powierzchni sfery lub elipsoidy na płaszczyznę.
+
+::: {.nonincremental}
+**Podstawowe typy odwzorowań:**
+
+- Walcowe -- Ziemia rzutowana jest na cylinder, który następnie jest rozwijany
+tworząc płaską mapę.
+- Stożkowe -- Ziemia rzutowana jest na stożek, który jest rozwijany.
+- Azymutalne (płaszczyznowe) -- Ziemia rzutowana jest na płaską płaszczyznę,
+wyśrodkowaną w określonym punkcie.
+:::
+
+## Przykład
+
+```{r}
+world_mollweide = st_transform(st_geometry(world), crs = "+proj=moll")
+g = st_geometry(st_graticule(lat = c(-89.9, seq(-80, 80, 20), 89.9)))
+g = st_transform(g, crs = "+proj=moll")
+plot(g, col = "grey", main = "Odwzorowanie Mollweidego")
+plot(world_mollweide, add = TRUE)
+```
+
+## Przykład
+
+```{r}
+crs_laea = "+proj=laea +x_0=0 +y_0=0 +lon_0=10 +lat_0=40"
+world_laea = st_transform(st_geometry(world), crs = crs_laea)
+g = st_geometry(st_graticule(lat = c(-89.9, seq(-80, 80, 30), 89.9)))
+g = st_transform(g, crs = crs_laea)
+plot(g, col = "grey", main = "Odwzorowanie azymutalne Lamberta")
+plot(world_laea, add = TRUE)
+```
+
+## Elipsy Tissota
+
+## Wnioski
+
+- Przedstawianie Ziemi na mapie to skomplikowany proces wymagający kompromisów.
+- Każde odwzorowanie ma swój własny zestaw zniekształceń.
+- Różne cele wymagają odmiennych podejść.
+- Odwzorowanie jest zawsze przybliżeniem.
+
+## Obliczenia {.center style="text-align: center;"}
+
+## Odległość
+
+```{r}
+pts = c(st_point(c(21, 52.2)), st_point(c(-74, 40.71)))
+pts = st_sfc(pts, crs = "EPSG:4326")
+pts = st_cast(pts, "POINT")
+```
+
+```{r}
+line = st_sfc(st_linestring(st_coordinates(pts)), crs = "EPSG:4326")
+great_circle = st_segmentize(line, dfMaxLength = 1000) # 1000 m
+```
+
+```{r}
+pts_equidist = st_transform(pts, "+proj=aeqd")
+# st_distance(pts_equidist) / 1000
+# 8115,859 km
+```
+
+```{r}
+plot(st_geometry(world), axes = TRUE)
+plot(pts, pch = 20, add = TRUE)
+plot(line, col = "red", lwd = 2, add = TRUE)
+text("8116 km", x = -35, y = 35, col = "red")
+plot(great_circle, col = "blue", lwd = 2, add = TRUE)
+text("6855 km", x = -30, y = 70, col = "blue")
+```
+
+::: {style="font-size: 80%;"}
+[Odległość euklidesowa]{style="color:red;"}: 8116 km \
+(Odwzorowanie azymutalne równoodległościowe)
+
+[Odległość sferyczna]{style="color:blue;"}: 6855 km
+:::
+
+## Odległość euklidesowa
+
+**Odległość euklidesowa** to miara odległości w linii prostej między dwoma
+punktami obliczana z następującego równania:
+
+$$
+d = \sqrt{(\Delta x)^2+(\Delta y)^2} = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
+$$
+
+Wynika ona bezpośrednio z twierdzenia Pitagorasa o trójkątach prostokątnych:
+
+$$
+a^2 + b^2 = c^2
+$$
+
+gdzie $a$ i $b$ to długość przyprostokątnych, a $c$ to długość
+przeciwprostokątnej.
+
+## Odległość sferyczna
+
+**Odległość sferyczna** (ortodroma) to najkrótsza odległość między dwoma
+punktami na powierzchni sfery.
+
+Wzory:
+
+1. Równanie haversine
+2. Z długości cięciwy
+
+## Odległość elipsoidalna
+
+## Odległość powierzchniowa (z NMT)
+
+## Odległość powierzchniowa (z NMT)
+
+## Powierzchnia
+
+## Rzeczywista wielkość komórek
+
+## Precyzja współrzędnych
+
+::: {style="text-align: center;"}
+![](https://imgs.xkcd.com/comics/coordinate_precision.png)
+
+::: {style="font-size: 60%;"}
+<https://xkcd.com/2170>
+:::
+:::
