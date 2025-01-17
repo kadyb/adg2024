@@ -1,0 +1,18 @@
+def decimal_to_dms(decimal, is_latitude=True):
+    if is_latitude:
+        direction = "N" if decimal >= 0 else "S"
+    else:
+        direction = "E" if decimal >= 0 else "W"
+        
+    decimal = abs(decimal)
+    degrees = int(decimal)
+    minutes = int((decimal - degrees) * 60)
+    seconds = round((decimal - degrees - minutes / 60) * 3600, 2)
+    
+    return f"{degrees}°{minutes}'{seconds}\" {direction}"
+
+latitude = 54.2928
+longitude = 12.7356
+
+print(decimal_to_dms(latitude, is_latitude=True))
+print(decimal_to_dms(longitude, is_latitude=False)) 
