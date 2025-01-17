@@ -1,0 +1,16 @@
+import math
+
+def harvesine(lat1, lon1, lat2, lon2):
+    lat1, lon1, lat2, lon2 = map(math.radians, [la1, lon1, lat2, lon2])
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = 2 * math.asin(math.sqrt(math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2))
+    r = 6371.0
+    distance = r * a
+    return distance
+
+w_lat, w_lon = 52.2297, 21.0122
+r_lat, r_lon = 41.9028, 12.4964
+
+haversine_distance = haversine(w_lat, w_lon, r_lat, r_lon)
+print(haversine_distance)
