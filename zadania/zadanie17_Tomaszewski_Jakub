@@ -1,0 +1,61 @@
+def xy_from_colrow(raster, col, row):
+    if raster.isValid() == True:
+        ext = raster.extent()
+        width = raster.width()
+        height = raster.height()
+        
+        if 0 <= col < width and 0 <= row < height:
+            res_x = ext.width() / width
+            res_y = ext.height() / height
+            xmin = ext.xMinimum()
+            ymax = ext.yMaximum()
+            
+            x = xmin + (col + 0.5) * res_x
+            y = ymax - (row + 0.5) * res_y
+        
+            return x, y
+        
+        else:
+            print("Podane parametry znajduą się poza zasięgiem rastra!")
+            return None
+    
+    else:
+        print("Niepoprawna warstwa rastrowa!")
+        return None
+
+
+def colrow_from_xy(raster, x, y):
+    if raster.isValid() == True:
+        ext = raster.extent()
+        width = raster.width()
+        height = raster.height()
+        xmin = ext.xMinimum()
+        xmax = ext.xMaximum()
+        ymin = ext.yMinimum()
+        ymax = ext.yMaximum()
+        
+        if xmin <= x <= xmax and ymin <= y <= ymax:
+            import math
+            res_x = ext.width() / width
+            res_y = ext.height() / height
+            
+            col = math.floor((x - xmin) / res_x)
+            row = math.floor((ymax - y) / res_y)
+        
+            return col, row
+        
+        else:
+            print("Podane parametry znajduą się poza zasięgiem rastra!")
+            return None
+    
+    else:
+        print("Niepoprawna warstwa rastrowa!")
+        return None
+
+# w zasięgu
+xy_from_colrow(raster, 25, 50)
+colrow_from_xy(raster, 266441.62843649153, 632334.344218421)
+
+# Poza zasięgiem
+xy_from_colrow(raster, 643881, 577641)
+colrow_from_xy(raster, 322025201.8440643, -288007741.99758685)
