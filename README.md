@@ -25,6 +25,7 @@ innymi bibliotekami w środowisku Python, np. `NumPy`, `Pandas` czy `Matplotlib`
 3. [Relacje przestrzenne](https://kadyb.github.io/adg2024/wyklady/03_Relacje_przestrzenne.html)
 4. [Operacje geometryczne](https://kadyb.github.io/adg2024/wyklady/04_Operacje_geometryczne.html)
 5. [Obliczenia geodezyjne](https://kadyb.github.io/adg2024/wyklady/05_Obliczenia_geodezyjne.html)
+6. Operacje rastrowe
 
 *Aby pobrać prezentację w formacie PDF należy wcisnąć `E`, następnie `CTRL` + `P`
 i zapisać ją jako PDF.*
@@ -37,6 +38,9 @@ i zapisać ją jako PDF.*
 4. [Przetwarzanie danych rastrowych](https://kadyb.github.io/adg2024/cwiczenia/04_Przetwarzanie_raster.html)
 5. [Próbkowanie](https://kadyb.github.io/adg2024/cwiczenia/05_Probkowanie.html)
 6. [Obliczenia geodezyjne](https://kadyb.github.io/adg2024/cwiczenia/06_Obliczenia_geodezyjne.html)
+7. [Transformacje](https://kadyb.github.io/adg2024/cwiczenia/07_Transformacje.html)
+8. Skrypty geoprzetwarzania w QGIS
+   
 
 # Materiały dodatkowe
 
