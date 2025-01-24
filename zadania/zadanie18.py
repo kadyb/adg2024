@@ -1,37 +1,31 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 24 11:08:10 2025
-
-@author: krzys
-"""
-
 from shapely.geometry import Polygon
-from shapely.affinity import translate, scale
+from shapely.affinity import scale, rotate
 import matplotlib.pyplot as plt
 
-# Definicja funkcji do rysowania poligonu
-def plot_polygon(polygon, title):
+# Funkcja do rysowania poligonów
+def plot_polygon(polygon, title, color):
     x, y = polygon.exterior.xy
-    plt.plot(x, y, label=title)
-    plt.fill(x, y, alpha=0.5)
+    plt.plot(x, y, label=title, color=color)
+    plt.fill(x, y, alpha=0.3, color=color)
 
-# Definicja oryginalnego poligonu
+# Oryginalny poligon
 original_polygon = Polygon([(40, 30), (60, 30), (50, 40), (40, 30)])
 
-# Przesunięcie poligonu o dx=10 i dy=5
-shifted_polygon = translate(original_polygon, xoff=10, yoff=5)
+# Odbicie względem osi Y (zmiana znaku współrzędnej X)
+mirrored_polygon = scale(original_polygon, xfact=-1, yfact=1, origin='centroid')
 
-# Skalowanie poligonu względem jego centroidu o współczynnik 1.5
-scaled_polygon = scale(original_polygon, xfact=1.5, yfact=1.5, origin='centroid')
+# Obrót o 45 stopni wokół centroidu
+rotated_polygon = rotate(original_polygon, angle=45, origin='centroid')
 
-# Rysowanie oryginalnego i przekształconych poligonów
-plt.figure()
-plot_polygon(original_polygon, 'Oryginalny Poligon')
-plot_polygon(shifted_polygon, 'Przesunięty Poligon')
-plot_polygon(scaled_polygon, 'Skalowany Poligon')
+# Tworzenie wykresu
+plt.figure(figsize=(8, 6))
+plot_polygon(original_polygon, 'Oryginalny', 'blue')
+plot_polygon(mirrored_polygon, 'Odbicie (Y)', 'red')
+plot_polygon(rotated_polygon, 'Obrót (45°)', 'green')
+
 plt.legend()
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.title('Transformacje Geometrii Poligonu')
+plt.title('Transformacje Geometrii: Odbicie i Obrót')
 plt.grid(True)
 plt.show()
