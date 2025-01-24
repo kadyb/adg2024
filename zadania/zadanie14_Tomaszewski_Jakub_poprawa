@@ -1,0 +1,25 @@
+def decimal_to_dms(dec, lat = True):
+    ab_dec = abs(dec)
+    deg = int(ab_dec)
+    minutes = int((ab_dec - deg) * 60)
+    sec = round(((ab_dec - deg) * 60 - minutes) * 60, 2)
+
+    if lat:
+        if dec <= 0:
+            direction = "S"
+        else:
+            direction = "N"
+            
+    else:
+        if dec <= 0:
+            direction = "W"
+        else:
+            direction = "E"
+
+    return deg, minutes, sec, direction
+
+deg, minutes, sec, direction = decimal_to_dms(-80.5256)
+print(f"{deg}° {minutes}' {sec}\" {direction}")
+
+deg, minutes, sec, direction = decimal_to_dms(65.9752)
+print(f"{deg}° {minutes}' {sec}\" {direction}")
