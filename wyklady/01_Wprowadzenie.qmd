@@ -5,6 +5,7 @@ author: "Krzysztof Dyba"
 format: 
   revealjs:
     slide-number: c/t
+    incremental: true
     embed-resources: true
 css: _style.css
 ---
@@ -12,6 +13,7 @@ css: _style.css
 ## Informacje o zajęciach
 
 ::::: columns
+::: {.nonincremental}
 ::: {.column width="50%"}
 #### Wykłady
 
@@ -25,6 +27,7 @@ css: _style.css
 -   liczba godzin: 30
 -   część praktyczna w PyQGIS
 -   zaliczenie: projekt końcowy + aktywność na zajęciach
+:::
 :::
 :::::
 
@@ -65,25 +68,14 @@ przetwarza je zgodnie z określonymi zasadami i generuje dane wyjściowe.
 ## Cechy algorytmu
 
 ::: {style="font-size: 90%;"}
-::: {.fragment}
 - **Jednoznaczność** -- każdy krok algorytmu musi być precyzyjnie i jednoznacznie
 zdefiniowany bez miejsca na otwarte interpretacje.
-:::
-
-::: {.fragment}
 - **Skończoność** -- algorytm musi zakończyć działanie po skończonej liczbie
 kroków, tj. nie może działać w nieskończoność.
-:::
-
-::: {.fragment}
 - **Efektywność** -- każdy krok algorytmu musi być wykonywalny i osiągalny
 przy użyciu dostępnych zasobów.
-:::
-
-::: {.fragment}
 - **Poprawność** -- algorytm powinien generować poprawne dane wyjściowe (dla
 poprawnych danych wejściowych).
-:::
 :::
 
 ## Przykłady algorytmów
@@ -105,21 +97,11 @@ wejściowe), aby otrzymać potrawę (dane wyjściowe).
 ::: {.column width="50%"}
 
 ::: {style="font-size: 90%;"}
-::: {.fragment}
 - Algorytmy sortowania (np. bąbelkowe, pozycyjne)
-:::
-::: {.fragment}
 - Algorytmy wyszukiwania (np. liniowe, binarne)
-:::
-::: {.fragment}
 - Algorytmy szyfrowania (np. algorytm Huffmana)
-:::
-::: {.fragment}
 - Algorytmy uczenia maszynowego
-:::
-::: {.fragment}
 - i wiele innych
-:::
 :::
 
 :::
@@ -180,18 +162,12 @@ W przeciwieństwie do algorytmu, cechuje się uproszczoną formą, przez co jest
 **Kroki**:
 :::
 
-::: {.fragment}
 1. Ustaw pierwszą liczbę z listy jako największą.
-:::
-::: {.fragment}
 2. Dla każdej liczby na liście:
-:::
-::: {.fragment}
+
     Jeśli bieżąca liczba jest większa od największej, to ustaw ją na bieżącą.
-:::
-::: {.fragment}
+
 3. Zwróć największą liczbę.
-:::
 
 ## Przykład -- schemat blokowy
 
@@ -316,52 +292,30 @@ do między innymi:
 ## Przykłady algorytmów geoprzestrzennych {style="font-size: 90%;"}
 
 ::: {style="font-size: 70%;"}
-::: {.fragment}
 - Algorytmy indeksowania przestrzennego:
   - Drzewo czwórkowe (*quadtree*).
   - R-drzewo (*R-tree*).
-:::
-::: {.fragment}
 - Algorytmy interpolacji przestrzennej:
   - Odwrotne ważenie odległością (*Inverse Distance Weighting*).
   - Kriging.
-:::
-::: {.fragment}
 - Algorytmy analizy sieci:
   - Algorytm Dijkstry.
   - Algorytm A* (*A-star search algorithm*).
-:::
-::: {.fragment}
 - Algorytmy geometryczne:
   - Bufor.
   - Otoczka wypukła.
-:::
 :::
 
 ## Przykłady zastosowań
 
 ::: {style="font-size: 75%;"}
-::: {.fragment}
 - Zapytania przestrzenne (np. znalezienie punktów na określonym obszarze).
-:::
-::: {.fragment}
 - Operacje geometryczne (np. stworzenie buforu obiektu liniowego).
-:::
-::: {.fragment}
 - Transformacja współrzędnych (np. konwersja pomiędzy układami współrzędnych).
-:::
-::: {.fragment}
 - Interpolacja przestrzenna (np. stworzenie ciągłej powierzchni z danych punktowych).
-:::
-::: {.fragment}
 - Optymalizacja trasy (np. znalezienie najszybszej trasy do celu).
-:::
-::: {.fragment}
 - Analizy ukształtowania terenu (np. obliczenie nachylenia terenu).
-:::
-::: {.fragment}
 - **Inne??**
-:::
 :::
 
 ## Technologie -- języki programowania
@@ -370,33 +324,41 @@ do między innymi:
 ::: {.column width="25%"}
 ![](https://www.r-project.org/logo/Rlogo.png){width=70%}
 
+::: {.nonincremental}
 - [sf](https://github.com/r-spatial/sf)
 - [stars](https://github.com/r-spatial/stars)
 - [terra](https://github.com/rspatial/terra)
+:::
 :::
 
 ::: {.column width="25%"}
 ![](https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg)
 
+::: {.nonincremental}
 - [GeoPandas](https://github.com/geopandas/geopandas)
 - [Rasterio](https://github.com/rasterio/rasterio)
 - [rioxarray](https://github.com/corteva/rioxarray)
+:::
 :::
 
 ::: {.column width="30%"}
 ![](https://upload.wikimedia.org/wikipedia/commons/1/1f/Julia_Programming_Language_Logo.svg)
 
+::: {.nonincremental}
 - [GeometryOps.jl](https://github.com/JuliaGeo/GeometryOps.jl)
 - [Rasters.jl](https://github.com/rafaqz/Rasters.jl)
+:::
 :::
 
 ::: {.column width="20%"}
 ![](https://raw.githubusercontent.com/Benio101/cpp-logo/refs/heads/master/cpp_logo.svg){height=100}
 
+::: {.nonincremental}
 - [**GDAL**](https://gdal.org)
 - [**GEOS**](https://libgeos.org/)
 - [PDAL](https://pdal.io)
 - [S2](http://s2geometry.io/)
+:::
 :::
 :::::
 
@@ -427,6 +389,7 @@ do między innymi:
 ::: {style="font-size: 40%;"}
 328 algorytmów (narzędzi) w 26 kategoriach:
 
+::: {.nonincremental}
 - Kafle 3D
 - Kartografia
 - Bazy danych
@@ -441,6 +404,7 @@ do między innymi:
 - Przetwarzanie chmury punktów (3 moduły)
 - Przetwarzanie rastrów (4 moduły)
 - Przetwarzanie wektorów (8 modułów)
+:::
 :::
 
 :::
@@ -461,6 +425,7 @@ do między innymi:
 ::: {style="font-size: 40%;"}
 802 algorytmów (narzędzi) w 16 kategoriach:
 
+::: {.nonincremental}
 - Klimat i pogoda
 - Różne
 - Raster (*grid*)
@@ -477,6 +442,7 @@ do między innymi:
 - Analiza terenu
 - Narzędzia (*tool chains*)
 - Wizualizacje
+:::
 :::
 
 :::
@@ -497,6 +463,7 @@ do między innymi:
 ::: {style="font-size: 40%;"}
 444 algorytmów (narzędzi) w 10 kategoriach:
 
+::: {.nonincremental}
 - Wizualizacja
 - Ogólne
 - Przetwarzanie rastrów
@@ -507,6 +474,7 @@ do między innymi:
 - Przetwarzanie czasowe
 - Kartografia
 - Różne
+:::
 :::
 
 :::
@@ -580,7 +548,7 @@ flowchart TD
     D --> E[GDAL]
     A --> F{{<a href='https://github.com/stevenpawley/Rsagacmd'>Rsagacmd</a>}}
     F --> G[Saga GIS]
-    A --> H{{<a href='https://github.com/rsbivand/rgrass'>rgrass</a>}}
+    A --> H{{<a href='https://github.com/OSGeo/rgrass'>rgrass</a>}}
     H --> I[Grass GIS]
     A --> J{{<a href='https://github.com/r-spatial/qgisprocess'>qgisprocess</a>}}
     J --> K[QGIS]
