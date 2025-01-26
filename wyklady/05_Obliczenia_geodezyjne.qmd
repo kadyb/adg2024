@@ -168,16 +168,185 @@ plot(g, col = "grey", main = "Odwzorowanie azymutalne Lamberta")
 plot(world_laea, add = TRUE)
 ```
 
-## Elipsy Tissota
+## Elipsa Tissota
+
+**Elipsa (wskaźnik) Tissota** to matematyczna koncepcja używana w kartografii do
+opisu zniekształcenia kształtów i rozmiarów, które występuje podczas odwzorowania
+zakrzywionej powierzchni Ziemi na mapie.
+
+Została opracowana przez francuskiego matematyka Nicolasa Auguste'a Tissota w
+XIX wieku.
+
+## Elipsa Tissota
+
+W idealnym odwzorowaniu wskaźnik byłby okręgiem, wskazującym, że kształt i
+rozmiar obszaru są zachowane. Jednakże, w rzeczywistości wskaźniki te przyjmują
+kształt elips o różnych rozmiarach i orientacjach, w szczególności:
+
+- jeśli oś wielka i mała elipsy nie są równe, to występuje zniekształcenie
+kształtu,
+- jeśli rozmiar elipsy różni się od oryginalnego okręgu, to występuje
+zniekształcenie skali,
+- jeśli osie elipsy nie są prostopadłe, to występuje zniekształcenie kątów
+(rotacja).
+
+## Elipsa Tissota
+
+::: {style="text-align: center;"}
+Odwzorowanie Mercatora
+:::
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Tissot_indicatrix_world_map_Mercator_proj.svg/772px-Tissot_indicatrix_world_map_Mercator_proj.svg.png){fig-align="center"}
+
+::: {style="text-align: center;"}
+::: {style="font-size: 60%;"}
+Eric Gaba ([Wikipedia](https://commons.wikimedia.org/wiki/File:Tissot_indicatrix_world_map_Mercator_proj.svg))
+:::
+:::
 
 ## Wnioski
 
 - Przedstawianie Ziemi na mapie to skomplikowany proces wymagający kompromisów.
-- Każde odwzorowanie ma swój własny zestaw zniekształceń.
+- Każde odwzorowanie ma swój własny zbiór zniekształceń.
 - Różne cele wymagają odmiennych podejść.
 - Odwzorowanie jest zawsze przybliżeniem.
 
-## Obliczenia {.center style="text-align: center;"}
+## Współrzędne geograficzne {.center style="text-align: center;"}
+
+## Współrzędne geograficzne
+
+**Współrzędne geograficzne** to zestaw dwóch liczb (szerokości i długości
+geograficznej) służący do określenia położenia punktu na powierzchni Ziemi.
+Mierzone są w stopniach, które są jednostkami miary kątowej.
+
+Szerokość geograficzna ($ϕ$) określa, jak daleko na północ (N) lub południe (S)
+znajduje się lokalizacja od równika. Zakres od 0° na równiku do 90° na
+biegunach.
+
+Długość geograficzna ($λ$) określa, jak daleko na wschód (E) lub zachód (W)
+znajduje się lokalizacja od południka zerowego. Zakres od 0° na południku
+zerowym do 180°.
+
+## Format zapisu
+
+::: {.nonincremental}
+Zazwyczaj podawane są w jednym z dwóch formatów:
+
+1. Stopnie (°), minuty (') i sekundy (''). Jeden stopień podzielony jest na 60
+minut, a jedna minuta na 60 sekund. Przykładowo: 52°17'34" N, 16°44'08" E.
+2. Stopnie dziesiętne. Przykładowo: 52,2927° N, 16,7355° E.
+:::
+
+**Nie ma jednoznacznej reguły odnośnie kolejności zapisu szerokości i długości
+geograficznej. W zależności od standardu mogą być różne!**
+
+## Konwersja
+
+**Konwersja stopni, minut i sekund na stopnie dziesiętne:**
+
+$$
+\text{Stopnie dziesiętne} = \text{Stopnie} + \frac{\text{Minuty}}{60} + \frac{\text{Sekundy}}{3600}
+$$
+
+**Konwersja stopni dziesiętnych na stopnie, minuty i sekundy:**
+
+$$
+\text{Stopnie} = \text{int}(\text{Stopnie dziesiętne})
+$$
+
+$$
+\text{Minuty} = \text{int}\left((\text{Stopnie dziesiętne} - \text{Stopnie}) \times 60\right)
+$$
+
+$$
+\text{Sekundy} = \left((\text{Stopnie dziesiętne} - \text{Stopnie}) \times 60 - \text{Minuty}\right) \times 60
+$$
+
+## Implementacja
+
+```{r}
+#| echo: true
+decimal_to_dms = function(decimal_degrees, is_lat) {
+  if (isTRUE(is_lat)) {
+    if (decimal_degrees >= 0) direction = "N"
+    else direction = "S" }
+  else {
+    if (decimal_degrees >= 0) direction = "E"
+    else direction = "W" }
+    
+  decimal_degrees = abs(decimal_degrees)
+  degrees = as.integer(decimal_degrees)
+  minutes = as.integer((decimal_degrees - degrees) * 60)
+  seconds = ((decimal_degrees - degrees) * 60 - minutes) * 60
+  seconds = round(seconds)
+  result = paste0(degrees, "°", minutes, "'", seconds, "''", " ", direction)
+  return(result)
+}
+```
+
+```{r}
+# decimal_to_dms(52.2927, is_lat = TRUE)
+#> [1] "52°17'34'' N"
+# decimal_to_dms(16.7355, is_lat = FALSE)
+#> [1] "16°44'8'' E"
+```
+
+```
+decimal_to_dms(52.2927, is_lat = TRUE)
+#> "52°17'34'' N"
+decimal_to_dms(16.7355, is_lat = FALSE)
+#> "16°44'8'' E"
+```
+
+## Implementacja
+
+```{r}
+#| echo: true
+dms_to_decimal = function(dms_string) {
+  dms_string = gsub("°", " ", dms_string)
+  dms_string = gsub("'", " ", dms_string)
+  parts = unlist(strsplit(dms_string, " "))
+  parts = parts[parts != ""]
+  
+  degrees = as.numeric(parts[1])
+  minutes = as.numeric(parts[2])
+  seconds = as.numeric(parts[3])
+  direction = parts[4]
+  
+  decimal = degrees + (minutes / 60) + (seconds / 3600)
+  decimal = round(decimal, 4)
+  if (direction %in% c("S", "W")) decimal = -decimal
+  return(decimal)
+}
+```
+
+```{r}
+# dms_to_decimal("52°17'34'' N")
+#> 52.2928
+# dms_to_decimal("16°44'08'' E")
+#> 16.7356
+```
+
+```
+dms_to_decimal("52°17'34'' N")
+#> 52.2928
+dms_to_decimal("16°44'08'' E")
+#> 16.7356
+```
+
+## Precyzja współrzędnych
+
+::: {style="text-align: center;"}
+![](https://imgs.xkcd.com/comics/coordinate_precision.png)
+
+::: {style="font-size: 60%;"}
+<https://xkcd.com/2170>
+:::
+:::
+
+## Płaska czy okrągła? {style="text-align: center;" .center}
+
+Wpływ kształtu Ziemi na wyniki analizy przestrzennej
 
 ## Odległość
 
@@ -214,6 +383,13 @@ text("6855 km", x = -30, y = 70, col = "blue")
 [Odległość sferyczna]{style="color:blue;"}: 6855 km
 :::
 
+## Rodzaje odległości
+
+1. Odległość euklidesowa
+2. Odległość sferyczna
+3. Odległość elipsoidalna
+4. Odległość powierzchniowa
+
 ## Odległość euklidesowa
 
 **Odległość euklidesowa** to miara odległości w linii prostej między dwoma
@@ -232,32 +408,289 @@ $$
 gdzie $a$ i $b$ to długość przyprostokątnych, a $c$ to długość
 przeciwprostokątnej.
 
+## Odległość euklidesowa
+
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Euclidean_distance_2d.svg/640px-Euclidean_distance_2d.svg.png)
+
+::: {style="text-align: center;"}
+::: {style="font-size: 60%;"}
+[Wikipedia](https://commons.wikimedia.org/wiki/File:Euclidean_distance_2d.svg)
+:::
+:::
+
 ## Odległość sferyczna
 
+::::: columns
+::: {.nonincremental}
+::: {.column width="70%"}
 **Odległość sferyczna** (ortodroma) to najkrótsza odległość między dwoma
-punktami na powierzchni sfery.
+punktami na powierzchni sfery. Istnieje kilka wzorów do jej obliczenia:
 
-Wzory:
+1. Sferyczne prawo cosinusów.
+2. Długość cięciwy koła wielkiego.
+3. Wzór haversine.
+:::
 
-1. Równanie haversine
-2. Z długości cięciwy
+::: {.column width="30%"}
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Ortodroma.svg/240px-Ortodroma.svg.png)
+
+::: {style="text-align: center;"}
+::: {style="font-size: 60%;"}
+[Wikipedia](https://commons.wikimedia.org/wiki/File:Ortodroma.svg)
+:::
+:::
+
+:::
+:::
+:::::
+
+## Sferyczne prawo cosinusów
+
+$$
+\Delta\sigma = \arccos\left(\sin(\phi_1)\sin(\phi_2) + \cos(\phi_1)\cos(\phi_2)\cos(\lambda_2 - \lambda_1)\right)
+$$
+
+$$
+d = r \times \Delta\sigma,
+$$
+gdzie:
+
+$\Delta\sigma$ to kąt środkowy między punktami na sferze,
+
+$r$ to średnia długość promienia Ziemi wynosząca 6371,009 km.
+
+## Długość cięciwy
+
+::: {style="font-size: 85%;"}
+
+$$
+\Delta{x} = \cos(\phi_2)\cos(\lambda_2) - \cos(\phi_1)\cos(\lambda_1)
+$$
+
+$$
+\Delta{y} = \cos(\phi_2)\sin(\lambda_2) - \cos(\phi_1)\sin(\lambda_1)
+$$
+
+$$
+\Delta{z} = \sin(\phi_2) - \sin(\phi_1)
+$$
+
+$$
+\Delta\sigma_\text{c} = \sqrt{(\Delta{x})^2 + (\Delta{y})^2 + (\Delta{z})^2}
+$$
+$$
+d = 2 r \arcsin \frac{\Delta\sigma_\text{c}}{2},
+$$
+
+gdzie:
+
+$\Delta\sigma_\text{c}$ to długość cięciwy koła wielkiego.
+
+:::
 
 ## Odległość elipsoidalna
 
-## Odległość powierzchniowa (z NMT)
+**Odległość elipsoidalna** to najkrótsza odległość między dwoma punktami na
+powierzchni elipsoidy. Jej obliczenie jest złożonym zadaniem i obejmuje
+rozwiązanie zestawu równań nieliniowych.
 
-## Odległość powierzchniowa (z NMT)
+Najczęściej stosowaną metodą jest opracowana przez polsko-amerykańskiego geodetę
+Thaddeusa Vincenty'ego w 1975 r. Jednak, ograniczeniem mogą być problemy ze
+zbieżnością w przeciwległych punktach.
 
-## Powierzchnia
+W przypadku zastosowań wymagających najwyższej precyzji stosuje się algorytm
+Karneya (2013 r.) uważany za najdokładniejszą metodę.
 
-## Rzeczywista wielkość komórek
+## Odległość powierzchniowa
 
-## Precyzja współrzędnych
-
-::: {style="text-align: center;"}
-![](https://imgs.xkcd.com/comics/coordinate_precision.png)
-
-::: {style="font-size: 60%;"}
-<https://xkcd.com/2170>
+::: {style="font-size: 85%;"}
+**Odległość powierzchniowa** to rzeczywista odległość mierzona wzdłuż
+powierzchni terenu, uwzględniająca zmiany wysokości i nierówności powierzchni.
+Inaczej nazywana jest pomiarem trójwymiarowym (X, Y, Z). Do wyliczenia
+niezbędny jest numeryczny model terenu.
 :::
+
+```{r}
+#| message: false
+library("terra")
+r = rast("../dane/DEM.tif") * 10
+coords = matrix(c(386878, 360000, 386878, 640000), ncol = 2, byrow = TRUE)
+line = vect(coords, type = "lines", crs = "EPSG:2180")
+```
+
+```{r}
+plot(r, main = "Wysokość terenu [m n.p.m.]")
+plot(line, lwd = 4, col = "red", add = TRUE)
+```
+
+## Odległość powierzchniowa
+
+::: {.nonincremental}
+1. Wyodrębnij wartości wysokości terenu wzdłuż linii.
+2. Oblicz odległość euklidesową w trzech wymiarach (X, Y, Z) między kolejnymi
+punktami.
 :::
+
+```r
+points = extract(r, line, xy = TRUE)
+
+total_length = 0
+for (i in 2:nrow(points)) {
+  p1 = c(points$X[i - 1], points$Y[i - 1], points$Z[i - 1])
+  p2 = c(points$X[i], points$Y[i], points$Z[i])
+  distance = sqrt(sum((p2 - p1)^2))
+  total_length = total_length + distance
+}
+
+print(total_length)
+```
+
+## Odległość powierzchniowa
+
+```{r}
+# perim(line) / 1000 # w km
+#> 280
+```
+
+```{r}
+points = extract(r, line, ID = FALSE, xy = TRUE)
+
+total_length = 0
+for (i in 2:nrow(points)) {
+  p1 = c(points$x[i - 1], points$y[i - 1], points$DEM[i - 1])
+  p2 = c(points$x[i], points$y[i], points$DEM[i])
+  distance = sqrt(sum((p2 - p1)^2))
+  total_length = total_length + distance
+}
+
+# total_length / 1000
+#> 282.9913
+```
+
+```{r}
+# wygladzenie profilu terenu
+elev = loess(points$DEM ~ seq_along(points$DEM), span = 0.1)
+elev = elev$fitted
+
+# odleglosc miedzy punktami
+dist = perim(line) / length(elev) / 1000
+dist = cumsum(rep(dist, length(elev)))
+```
+
+```{r}
+plot(elev / 1000 ~ dist, type = "l", ylim = c(0, 2), col = "coral4", lwd = 3,
+     xlab = "Odległość planarna [km]", ylab = "Wysokość [km n.p.m]")
+```
+
+**Odległość planarna:** 280 km
+
+**Odległość powierzchniowa:** 283 km
+
+## Powierzchnia poligonów
+
+```{r}
+plot(st_geometry(world), main = "Odwzorowanie walcowe równoodległościowe", axes = TRUE)
+plot(st_geometry(world[world$ADM0_A3 == "GRL", ]), col = "purple", add = TRUE)
+plot(st_geometry(world[world$ADM0_A3 == "COD", ]), col = "blue", add = TRUE)
+```
+
+::: {style="font-size: 75%;"}
+Powierzchnia:
+
+- Grenlandia: 2 166 086 km$^2$
+- Demokratyczna Republika Konga: 2 345 409 km$^2$
+:::
+
+## Powierzchnia poligonów
+
+```{r}
+crs_laea = "+proj=laea +x_0=0 +y_0=0 +lon_0=-10 +lat_0=20"
+world_laea = st_transform(world, crs = crs_laea)
+```
+
+```{r}
+plot(st_geometry(world_laea), main = "Odwzorowanie azymutalne Lamberta")
+plot(st_geometry(world_laea[world_laea$ADM0_A3 == "GRL", ]), col = "purple", add = TRUE)
+plot(st_geometry(world_laea[world_laea$ADM0_A3 == "COD", ]), col = "blue", add = TRUE)
+```
+
+## Powierzchnia poligonów
+
+```{r}
+sel = c("ALB", "AND", "AUT", "BEL", "BIH", "BLR", "BGR", "CHE", "CYP",
+        "CZE", "DEU", "DNK", "ESP", "EST", "FIN", "FRA", "GBR", "GRC",
+        "HRV", "HUN", "IRL", "ISL", "ITA", "LIE", "LTU", "LUX", "LVA",
+        "MCO", "MDA", "MKD", "MLT", "MNE", "NLD", "NOR", "POL", "PRT",
+        "ROU", "SMR", "SRB", "SVK", "SVN", "SWE", "TUR", "UKR", "VAT")
+europe = st_geometry(world[world$ADM0_A3 %in% sel, ])
+area_4326 = st_area(europe)
+area_4326 = units::set_units(area_4326, "km^2")
+
+# odwzorowanie azymutalne równopowierzchniowe
+europe_3035 = st_transform(europe, crs = "EPSG:3035")
+area_3035 = st_area(europe_3035)
+area_3035 = units::set_units(area_3035, "km^2")
+```
+
+```{r}
+plot(area_4326 ~ area_3035, pch = 20, cex = 2,
+     main = "Odwzorowanie azymutalne Lamberta",
+     xlab = "Powierzchnia planarna", ylab = "Powierzchnia sferyczna")
+abline(1, 1)
+```
+
+Każda kropka reprezentuje jeden kraj europejski.
+
+## Powierzchnia poligonów
+
+```{r}
+europe_mercator = st_transform(europe, crs = "EPSG:3857")
+area_mercator = st_area(europe_mercator)
+area_mercator = units::set_units(area_mercator, "km^2")
+```
+
+```{r}
+plot(area_4326 ~ area_mercator, pch = 20, cex = 2,
+     main = "Odwzorowanie sferyczne Mercatora (EPSG:3857)",
+     xlab = "Powierzchnia planarna", ylab = "Powierzchnia sferyczna")
+abline(1, 1)
+```
+
+## Rzeczywisty rozmiar komórek
+
+```{r}
+r = rast(xmin = 150000, ymin = 120000, xmax = 880000, ymax = 810000,
+         resolution = 1000, crs = "EPSG:2180")
+cell_size = cellSize(r)
+```
+
+```{r}
+url = "https://www.gis-support.pl/downloads/2022/polska.zip"
+f = paste0("/vsizip/", "/vsicurl/", url)
+poland = vect(f, what = "geom")
+```
+
+```r
+r = rast(xmin = 150000, ymin = 120000, xmax = 880000, ymax = 810000,
+         resolution = 1000, crs = "EPSG:2180")
+res(r)[1] * res(r)[2]
+#> 1 000 000
+```
+
+```{r}
+plot(cell_size / prod(res(r)), main = "Iloraz powierzchni")
+plot(poland, add = TRUE)
+```
+
+**Średnia powierzchnia komórek na sferze:** 1 000 307 m$^2$
+
+## Porównanie modeli
+
+|               |            Kartezjański            |      Elipsoidalny     |
+|---------------|:----------------------------------:|:---------------------:|
+| Model Ziemi   |             Płaszczyzna            |       Elipsoida       |
+| Współrzędne   |              Metryczne             |      Geograficzne     |
+| Dokładność    | Umiarkowana (ignorowana krzywizna) |         Wysoka        |
+| Złożoność     |              Mniejsza              |        Większa        |
+| Przeznaczenie |        Mała skala (lokalna)        | Duża skala (globalna) |
+

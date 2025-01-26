@@ -548,7 +548,7 @@ flowchart TD
     D --> E[GDAL]
     A --> F{{<a href='https://github.com/stevenpawley/Rsagacmd'>Rsagacmd</a>}}
     F --> G[Saga GIS]
-    A --> H{{<a href='https://github.com/rsbivand/rgrass'>rgrass</a>}}
+    A --> H{{<a href='https://github.com/OSGeo/rgrass'>rgrass</a>}}
     H --> I[Grass GIS]
     A --> J{{<a href='https://github.com/r-spatial/qgisprocess'>qgisprocess</a>}}
     J --> K[QGIS]

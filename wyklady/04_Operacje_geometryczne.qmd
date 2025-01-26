@@ -596,6 +596,13 @@ poly2 = spin(poly, angle = 90, x0 = 50, y0 = 40)
 plot(poly, lty = 2, xlim = c(30, 60), ylim = c(30, 50),
      main = "θ = 90°  x0 = 50  y0 = 40")
 plot(poly2, col = "lightblue", add = TRUE)
+plot(vect("POINT (50 40)"), col = "red", add = TRUE)
+```
+
+```
+                  θ  = -θ * pi / 180
+                  x' = (x - x0) * cos(θ) - (y - y0) * sin(θ) + x0
+                  y' = (x - x0) * sin(θ) + (y - y0) * cos(θ) + y0
 ```
 
 ## Inne operacje
