@@ -1,12 +1,12 @@
-import math
-
 def haversine(fi1, lambda1, fi2, lambda2, r = 6378):
+    import math as m
     
-    fi1, lambda1, fi2, lambda2 = math.radians(fi1), math.radians(lambda1), math.radians(fi2), math.radians(fi2)
+    fi1, lambda1, fi2, lambda2 = m.radians(fi1), m.radians(lambda1), m.radians(fi2), m.radians(lambda2)
     del_fi = fi2 - fi1
     del_lamb = lambda2 - lambda1
     
-    d = 2*r*math.asin(math.sqrt((1-math.cos(del_fi)+math.cos(fi1)*math.cos(fi2)*(1-math.cos(del_lamb))))/2)
+    li = 1 - m.cos(del_fi) + m.cos(fi1) * m.cos(fi2) * (1 - m.cos(del_lamb))
+    d = 2 * r * m.asin(m.sqrt((li) / 2))
 
     return d
 
