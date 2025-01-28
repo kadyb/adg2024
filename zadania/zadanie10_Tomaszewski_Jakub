@@ -1,0 +1,120 @@
+import os
+import qgis.core as qc
+from qgis import processing
+from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
+
+filepath = os.path.join(os.path.expanduser("~"), "Documents", "ADP", "adg2024-main", "dane")
+os.chdir(filepath)
+
+blue = qc.QgsRasterLayer("landsat/LC09_L2SP_188032_20240930_20241001_02_T1_SR_B2.TIF", "blue")
+green = qc.QgsRasterLayer("landsat/LC09_L2SP_188032_20240930_20241001_02_T1_SR_B3.TIF", "green")
+red = qc.QgsRasterLayer("landsat/LC09_L2SP_188032_20240930_20241001_02_T1_SR_B4.TIF", "red")
+panchr = qc.QgsRasterLayer("landsat/LC09_L1TP_188032_20240930_20240930_02_T1_B8.TIF", "panchr")
+    
+print(blue.isValid(), green.isValid(), red.isValid(), panchr.isValid())
+kan_rep = [blue, green, red]
+kan_naz = ["blue", "green", "red"]
+
+repro_param = {
+    "INPUT": '',
+    "SOURCE_CRS": "EPSG:32633",
+    "TARGET_CRS": "EPSG:32633",
+    "TARGET_RESOLUTION": 15,  # rozdzielczość
+    "RESAMPLING": 1,            # numer metody
+    "OUTPUT": ''
+}
+
+for rast, naz in zip(kan_rep, kan_naz):
+    repro_param["INPUT"] = rast
+    repro_param["OUTPUT"] = f"landsat/{naz}_15m.tif"
+    
+    processing.run("gdal:warpreproject", repro_param)
+
+blue = qc.QgsRasterLayer("landsat/blue_15m.tif")
+green = qc.QgsRasterLayer("landsat/green_15m.tif")
+red = qc.QgsRasterLayer("landsat/red_15m.tif")
+print(blue.isValid(), green.isValid(), red.isValid())
+
+blue_psh = QgsRasterCalculatorEntry()
+blue_psh.raster = blue
+blue_psh.bandNumber = 1
+blue_psh.ref = "blue@1"
+
+green_psh = QgsRasterCalculatorEntry()
+green_psh.raster = green
+green_psh.bandNumber = 1
+green_psh.ref = "green@1"
+
+red_psh = QgsRasterCalculatorEntry()
+red_psh.raster = red
+red_psh.bandNumber = 1
+red_psh.ref = "red@1"
+
+panchr_psh = QgsRasterCalculatorEntry()
+panchr_psh.raster = panchr
+panchr_psh.bandNumber = 1
+panchr_psh.ref = "panchr@1"
+
+wej = [blue_psh, green_psh, red_psh, panchr_psh]
+
+calculator = QgsRasterCalculator(
+    "(blue@1 / (blue@1 + green@1 + red@1)) * panchr@1",  #metoda Brovey'a
+    "landsat/blue_psh.tif",                    # outputFile
+    "GTiff",                         # outputFormat
+    blue.extent(),                 # outputExtent
+    blue.crs(),                    # outputCrs
+    blue.width(),                  # nOutputColumns
+    blue.height(),                 # nOutputRows
+    wej,                             # rasterEntries
+    QgsCoordinateTransformContext()  # transformContext
+)
+
+status = calculator.processCalculation()
+if status != 0:
+    print("Błąd zapisu")
+else: 
+    print("OK")
+
+calculator = QgsRasterCalculator(
+    "(green@1 / (blue@1 + green@1 + red@1)) * panchr@1",  #metoda Brovey'a
+    "landsat/green_psh.tif",                    # outputFile
+    "GTiff",                         # outputFormat
+    green.extent(),                 # outputExtent
+    green.crs(),                    # outputCrs
+    green.width(),                  # nOutputColumns
+    green.height(),                 # nOutputRows
+    wej,                             # rasterEntries
+    QgsCoordinateTransformContext()  # transformContext
+)
+
+status = calculator.processCalculation()
+if status != 0:
+    print("Błąd zapisu")
+else: 
+    print("OK")
+
+calculator = QgsRasterCalculator(
+    "(red@1 / (blue@1 + green@1 + red@1)) * panchr@1",  #metoda Brovey'a
+    "landsat/red_psh.tif",                    # outputFile
+    "GTiff",                         # outputFormat
+    red.extent(),                 # outputExtent
+    red.crs(),                    # outputCrs
+    red.width(),                  # nOutputColumns
+    red.height(),                 # nOutputRows
+    wej,                             # rasterEntries
+    QgsCoordinateTransformContext()  # transformContext
+)
+
+status = calculator.processCalculation()
+if status != 0:
+    print("Błąd zapisu")
+else: 
+    print("OK")
+    
+params = {
+    "INPUT": ["landsat/red_psh.tif", "landsat/green_psh.tif", "landsat/blue_psh.tif"],
+    "SEPARATE": True,
+    "NODATA_OUTPUT": 9999,
+    "OUTPUT": "landsat/RGB_pansharpened.tif"
+}
+processing.run("gdal:merge", params)
