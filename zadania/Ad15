@@ -1,0 +1,16 @@
+import math as m
+
+def haversine(fi1, lambda1, fi2, lambda2, r = 6378):
+   f1 = m.radians(fi1)
+   f2 = m.radians(fi2)
+   lam1 = m.radians(lambda1)
+   lam2 = m.radians(lambda2)
+   del_fi = f2 - f1
+   del_lam = lam2 - lam1
+   d = 2*r*m.asin(m.sqrt((1-m.cos(del_fi)+m.cos(fi1)*m.cos(fi2)*(1-m.cos(del_lam))))/2)
+   return d
+
+fi1, lambda1 = 52.2297, 21.0122
+fi2, lambda2 = 41.9028, 12.4964
+
+haversine(fi1, lambda1, fi2, lambda2)
