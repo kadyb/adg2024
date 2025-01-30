@@ -1,29 +1,23 @@
-import os
-
-path = os.path.join(os.path.expanduser('~'),'algorytmy_geo')
-os.chdir(path)
-
-
-def DecimalToDMS(coords, v_lvl = True):
+def DecimalToDMS(coords, is_lat = True):
     if coords == 0:
-        res = str(coords) + '°'
-        return res
+        result = str(coords) + '°'
+        return result
     if coords > 0:
-        if v_lvl is True:
+        if is_lat is True:
             w_dir = 'N'
         else:
             w_dir = 'E'
     if coords < 0:
-        if v_lvl is True:
+        if is_lat is True:
             w_dir = 'S'
         else:
             w_dir = 'W'
     minutes = round(coords - int(coords),len(str(coords))) * 60
     seconds = round(minutes - int(minutes),len(str(minutes))) * 60
-    res = str(abs(int(coords))) + "°" + str(abs(int(minutes))) + "'" + str(abs(seconds)) + "\"" + w_dir
-    return res 
+    result = str(abs(int(coords))) + "°" + str(abs(int(minutes))) + "'" + str(abs(seconds)) + "\"" + w_dir
+    return result 
 
-# przykłady
 dms = DecimalToDMS(52.2928)
 dms2 = DecimalToDMS(-17.63582,False)
 dms0 = DecimalToDMS(0)
+
