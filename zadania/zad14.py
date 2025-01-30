@@ -1,20 +1,23 @@
-def DecimalToDMS(coords, is_lat = True):
-    if coords == 0:
-        result = str(coords) + '°'
+def DecimalToDMS(coord, is_lat = True):
+    if coord == 0:
+        result = str(coord) + '°'
         return result
-    if coords > 0:
+    if coord > 0:
         if is_lat is True:
             w_dir = 'N'
         else:
             w_dir = 'E'
-    if coords < 0:
+    if coord < 0:
         if is_lat is True:
             w_dir = 'S'
         else:
             w_dir = 'W'
-    minutes = round(coords - int(coords),len(str(coords))) * 60
-    seconds = round(minutes - int(minutes),len(str(minutes))) * 60
-    result = str(abs(int(coords))) + "°" + str(abs(int(minutes))) + "'" + str(abs(seconds)) + "\"" + w_dir
+    minutes = (coord - int(coord)) * 60
+    seconds = round(((minutes-int(minutes))*60),5)
+    result = str(abs(int(coord))) + "°"\ 
+            + str(abs(int(minutes))) + "'"\ 
+            + str(abs(seconds)) + "\""\ 
+            + w_dir
     return result 
 
 dms = DecimalToDMS(52.2928)
