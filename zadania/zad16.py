@@ -4,18 +4,19 @@ from math import sqrt
 
 def SurfaceDistance(v):
     if not v.isValid():
-        raise Exception('Nieprawidłowy plik')
-    sum_dist = 0
+        raise Exception('Nieprawidłowy plik.')
+                
     crs = qc.QgsCoordinateReferenceSystem("EPSG:2180")
     dest_crs = qc.QgsCoordinateReferenceSystem("EPSG:2177")
     trans_context = qc.QgsCoordinateTransformContext()
     transform = qc.QgsCoordinateTransform(crs, dest_crs, trans_context)
-    for f in range(1,v.featureCount()-1):
-        f1 = csv_file.getFeature(f)
-        f2 = csv_file.getFeature(f+1)
-                
-        pt1 = qc.QgsVector3D(float(f1[1]), float(f1[2]), float(f1[3]))
-        pt2 = qc.QgsVector3D(float(f2[1]), float(f2[2]), float(f2[3]))
+    sum_dist = 0
+    
+    feat = list(v.getFeatures())
+    for f in range(v.featureCount()-1): # MUSI BYĆ, BO INACZEJ ZWRÓCI BŁĄD INDEKSOWANIA
+        pt1 = qc.QgsVector3D(float(feat[f][1]), float(feat[f][2]), float(feat[f][3]))
+        pt2 = qc.QgsVector3D(float(feat[f+1][1]), float(feat[f+1][2]), float(feat[f+1][3]))
+        
         pt1 = transform.transform(pt1)
         pt2 = transform.transform(pt2)
         
