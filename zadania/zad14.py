@@ -1,8 +1,4 @@
 import os
-import qgis.core as qc
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 path = os.path.join(os.path.expanduser('~'),'algorytmy_geo')
 os.chdir(path)
