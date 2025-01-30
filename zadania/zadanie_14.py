@@ -1,9 +1,4 @@
-import os
-
-# zad 14 Zaimplementuj funkcję decimal_to_dms() umożliwiającą konwersję stopni dziesiętnych na 
-# wartość DMS. W funkcji uwzględnij argument logiczny is_lat, który pozwoli określić czy 
-# współrzędna wejściowa reprezentuje szerokość czy długość geograficzną i zwróci wynik z 
-# odpowiednim kierunkiem geograficznym.
+# zad 14 Zaimplementuj funkcję decimal_to_dms() umożliwiającą konwersję stopni dziesiętnych na wartość DMS. W funkcji uwzględnij argument logiczny is_lat, który pozwoli określić czy współrzędna wejściowa reprezentuje szerokość czy długość geograficzną i zwróci wynik z odpowiednim kierunkiem geograficznym.
 
 def decimal_to_dms(decimal, is_lat):
     stopnie10 = abs(decimal)
@@ -20,7 +15,7 @@ def decimal_to_dms(decimal, is_lat):
             kier = "E"
         else:
             kier = "W"
-    print(f"{stopnie}°{minuty}'{sekundy}°{kier}")
+    return str(stopnie) + "°" + str(minuty) + "'" + str(sekundy) + '" ' + str(kier)
     
 decimal_to_dms(52.2928, True)
 decimal_to_dms(16.7356, False)
