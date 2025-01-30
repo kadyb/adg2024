@@ -9,6 +9,7 @@ def SurfaceDistance(v):
     crs = qc.QgsCoordinateReferenceSystem("EPSG:2180")
     dest_crs = qc.QgsCoordinateReferenceSystem("EPSG:2177")
     trans_context = qc.QgsCoordinateTransformContext()
+    transform = qc.QgsCoordinateTransform(crs, dest_crs, trans_context)
     for f in range(1,v.featureCount()-1):
         f1 = csv_file.getFeature(f)
         f2 = csv_file.getFeature(f+1)
@@ -17,7 +18,6 @@ def SurfaceDistance(v):
         pt2 = qc.QgsVector3D(float(f2[1]), float(f2[2]), float(f2[3]))
         pt1 = transform.transform(pt1)
         pt2 = transform.transform(pt2)
-        transform = qc.QgsCoordinateTransform(crs, dest_crs, trans_context)
         
         sum_dist += sqrt(
                 pow(pt2.x() - pt1.x(),2) +
