@@ -6,17 +6,15 @@ from qgis.core import QgsGeometry
 path = os.path.join(os.path.expanduser("~"),"Documents/adg/04")
 os.chdir(path)
 
-# Zadanie 13: Zaimplementuj funkcję losowania stratyfikowanego sample_strata(wektor, n), która 
-# zagwarantuje, że dla każdego poligonu zostanie zwrócona dokładna liczba punktów wskazana 
-# przez użytkownika, a wynik zostanie zapisany jako warstwa wektorowa. Do analizy wykorzystaj 
-# dane z pliku powiaty.gpkg
+# Zadanie 13: Zaimplementuj funkcję losowania stratyfikowanego sample_strata(wektor, n), która zagwarantuje, że dla każdego poligonu zostanie zwrócona dokładna liczba punktów wskazana przez użytkownika, a wynik zostanie zapisany jako warstwa wektorowa. Do analizy wykorzystaj dane z pliku powiaty.gpkg
+
 powiaty = QgsVectorLayer("powiaty.gpkg", "powiaty")
 print(powiaty.isValid())
 
 def sample_strata(wektor, n):
     # typ geometrii i układ współrzędnych
     geometry_type = "Point"
-    crs = "EPSG:2180"
+    crs = wektor.crs().authid()
     # stworzenie nowej warstwy wektorowej
     newlayer = QgsVectorLayer(geometry_type+"?crs="+crs, "losowe_punkty", "memory")
     print(newlayer.isValid())
@@ -41,6 +39,6 @@ def sample_strata(wektor, n):
     newlayer.updateExtents()
     # zapisanie zmian
     newlayer.commitChanges()
-    QgsProject.instance().addMapLayer(newlayer)
+    _writer = QgsVectorFileWriter.writeAsVectorFormat(newlayer,sciezka_zapisu,'utf-8',driverName='ESRI Shapefile')
 
-sample_strata(powiaty, 50)
+sample_strata(powiaty, 50, "C:/Users/Komputer/Documents/adg/04/punkty.shp")
