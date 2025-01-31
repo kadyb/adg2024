@@ -1,0 +1,120 @@
+def transpose_geom(wkt):
+    import qgis.core as qc
+    
+    geom = qc.QgsGeometry.fromWkt(wkt)
+    geom_type = geom.type().name
+    vert = geom.vertices()
+    
+    t = []
+    for v in vert:
+        tx = v.y()
+        ty = v.x()
+        t.append(qc.QgsPointXY(tx, ty))
+
+    if geom_type == "Point":
+        return t
+    elif geom_type == "Line":
+        new_geom = qc.QgsGeometry.fromPolylineXY(t)
+    elif geom_type == "Polygon":
+        new_geom = qc.QgsGeometry.fromPolygonXY([t])
+    else:
+        raise ValueError("Nieobsługiwana geometria!")
+    return new_geom
+
+def rotate_geom(wkt, θ): #Kąt θ w stopniach
+    import qgis.core as qc
+    import math as m
+    
+    geom = qc.QgsGeometry.fromWkt(wkt)
+    geom_type = geom.type().name
+    vert = geom.vertices()
+    
+    if type(θ) == int or type(θ) == float: 
+        θrad = m.radians(θ)
+    else:
+        raise ValueError("Podany kąt θ nie jest liczbą!")
+        
+    px = geom.centroid().asPoint()[0]   #Obrót wokół centroidu
+    py = geom.centroid().asPoint()[1]
+
+    rot = []
+    for v in vert:
+        rx = (v.x() - px) * m.cos(θrad) - (v.y() - py) * m.sin(θrad) + px
+        ry = (v.x() - px) * m.sin(θrad) + (v.y() - py) * m.cos(θrad) + py
+        rot.append(qc.QgsPointXY(rx, ry))
+        
+    if geom_type == "Point":
+        return rot
+    elif geom_type == "Line":
+        rot_geom = qc.QgsGeometry.fromPolylineXY(rot)
+    elif geom_type == "Polygon":
+        rot_geom = qc.QgsGeometry.fromPolygonXY([rot])
+    else:
+        raise ValueError("Nieobsługiwana geometria!")
+        
+    return rot_geom
+
+def geometry_to_coords(geom):
+    import qgis.core as qc
+    
+    if type(geom) == str:
+        geom = qc.QgsGeometry.fromWkt(geom)
+    
+    geom_type = geom.type().name
+    
+    if geom_type == "Point":
+        x, y = geom.asPoint()
+    elif geom_type == "Line":
+        pts = geom.asPolyline()
+        x, y = zip(*pts)
+    elif geom_type == "Polygon":
+        pts = geom.asPolygon()
+        for p in pts:
+            x, y = zip(*p)
+    else:
+        raise ValueError("Nieobsługiwana geometria!")
+    
+    return x, y
+
+
+gmtr = "POLYGON ((40 30, 60 30, 50 40, 40 30))"
+
+# Wywołanie funkcji transpozycji
+wynik = transpose_geom(gmtr)
+print(f"Oryginalna geometria:     {gmtr}\nTransponowana geometria: {wynik}")
+
+geometry_to_coords(gmtr)
+geometry_to_coords(wynik)
+
+# Wizualizacja wyników
+import matplotlib.pyplot as plt
+x1 = geometry_to_coords(gmtr)[0]
+y1 = geometry_to_coords(gmtr)[1]
+x2 = geometry_to_coords(wynik)[0]
+y2 = geometry_to_coords(wynik)[1]
+
+plt.figure(figsize = (4, 3))
+plt.plot(x1, y1, color = "grey", linestyle = "dashed", zorder = 1)
+plt.fill(x2, y2, color = "blue", zorder = 2)
+plt.title("Transpozycja")
+plt.show()
+
+# Wywołanie funkcji obrotu
+st = -45
+wynik = rotate_geom(gmtr, st)
+print(f"Oryginalna geometria: {gmtr}\nObrócona geometria:  {wynik}")
+
+# Wizualizacja wyników
+geometry_to_coords(gmtr)
+geometry_to_coords(wynik)
+
+x1 = geometry_to_coords(gmtr)[0]
+y1 = geometry_to_coords(gmtr)[1]
+x2 = geometry_to_coords(wynik)[0]
+y2 = geometry_to_coords(wynik)[1]
+
+plt.figure(figsize = (4, 3))
+plt.plot(x1, y1, color = "grey", linestyle = "dashed", zorder = 1)
+plt.fill(x2, y2, color = "blue", zorder = 2)
+plt.title(f"Obrtót o {st}°")
+plt.show()
