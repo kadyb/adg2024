@@ -1,0 +1,15 @@
+def stats(layer, attr):
+    val = [feature[attr] for feature in layer.getFeatures() if feature[attr] is not None]
+    return {
+        "count": len(val),
+        "min": min(val),
+        "max": max(val),
+        "mean": sum(val) / len(val),
+        "median": sorted(val)[len(val) // 2] if len(val) % 2 == 1 else 
+                  (sorted(values)[len(val) // 2 - 1] + sorted(val)[len(val) // 2]) / 2
+    }
+
+area_stats = stats(vector, "pole_km2")
+border_stats = stats(vector, "border_len_km")
+print(area_stats)
+print(border_stats)
