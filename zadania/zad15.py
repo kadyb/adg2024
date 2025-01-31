@@ -1,26 +1,20 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 24 10:49:22 2025
-
-@author: krzys
-"""
-
-from math import radians, sin, cos, sqrt, atan2
+import math
 
 def haversine(lat1, lon1, lat2, lon2):
-    promien_ziemi = 6371.0  # w kilometrach
-    
-    lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
-    
-    delta_lat = lat2 - lat1
-    delta_lon = lon2 - lon1
+    R = 6371
+    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+    return R * c
 
-    a = sin(delta_lat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(delta_lon / 2) ** 2
-    c = 2 * atan2(sqrt(a), sqrt(1 - a))
+lat_warszawa = 52.2296756
+lon_warszawa = 21.0122287
 
-    odleglosc = round(promien_ziemi * c, 2)
+lat_rzym = 41.9027835
+lon_rzym = 12.4963655
 
-    return f"Odległość: {odleglosc} km"
-
-# Przykładowe wywołanie
-print(haversine(52.2298, 21.0118, 41.902, 12.4964))
+odleglosc = haversine(lat_warszawa, lon_warszawa, lat_rzym, lon_rzym)
+odleglosc_zaokraglona = round(odleglosc, 2)
+print("Odległość między Warszawą a Rzymem wynosi:", odleglosc_zaokraglona, "km")
