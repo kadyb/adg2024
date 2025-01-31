@@ -1,0 +1,62 @@
+def transpose(wkt):
+    geometry = QgsGeometry.fromWkt(wkt)
+    geom_type = geometry.type()  
+    vertices = list(geometry.vertices())
+
+    transposed = []
+    for vertex in vertices:
+        new_x = vertex.y()  # Zamiana miejscami x i y
+        new_y = vertex.x()
+        transposed.append(QgsPointXY(new_x, new_y))
+
+    if geom_type == 0:  # Point
+        return QgsGeometry.fromPointXY(transposed[0])
+    elif geom_type == 1:  # LineString
+        new_geom = QgsGeometry.fromPolylineXY(transposed)
+    elif geom_type == 2:  # Polygon
+        new_geom = QgsGeometry.fromPolygonXY([transposed])
+    else:
+        raise ValueError("Nieobsługiwana geometria.")
+
+    return new_geom
+
+wkt_polygon = "POLYGON ((40 30, 60 30, 50 40, 40 30))"
+polygon_geom = QgsGeometry.fromWkt(wkt_polygon)
+transposed_geom = transpose(wkt_polygon)
+
+print("Oryginalny poligon:", polygon_geom.asWkt())
+print("Transponowany poligon:", transposed_geom.asWkt())
+
+
+def mirror(wkt, axis, value):
+    geometry = QgsGeometry.fromWkt(wkt)
+    geom_type = geometry.type() 
+    vertices = list(geometry.vertices())
+
+    mirrored = []
+    for vertex in vertices:
+        if axis == "vertical":  
+            new_x = 2 * value - vertex.x()
+            new_y = vertex.y()
+        elif axis == "horizontal":  
+            new_x = vertex.x()
+            new_y = 2 * value - vertex.y()
+        else:
+            raise ValueError("Niepoprawna oś odbicia. Użyj 'vertical' lub 'horizontal'.")
+
+        mirrored.append(QgsPointXY(new_x, new_y))
+
+    if geom_type == 1:  # LineString
+        new_geom = QgsGeometry.fromPolylineXY(mirrored)
+    elif geom_type == 2:  # Polygon
+        new_geom = QgsGeometry.fromPolygonXY([mirrored])
+    else:
+        raise ValueError("Nieobsługiwana geometria.")
+
+    return new_geom
+
+mirror_geom_v = mirror(wkt_polygon, "vertical", 50)
+print("Odbicie pionowe:", mirror_geom_v.asWkt())
+
+mirror_geom_h = mirror(wkt_polygon, "horizontal", 35)
+print("Odbicie poziome:", mirror_geom_h.asWkt())
