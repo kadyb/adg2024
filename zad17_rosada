@@ -1,0 +1,42 @@
+def xy_from_colrow(raster, col, row):
+    extent = raster.extent()
+    width = raster.width()
+    height = raster.height()
+    
+    if not (0 <= col < width and 0 <= row < height):
+        print("Poza zasięgiem")
+        return None
+    
+    x_res = extent.width() / width
+    y_res = extent.height() / height
+    x_min = extent.xMinimum()
+    y_max = extent.yMaximum()
+    
+    x = x_min + (col + 0.5) * x_res
+    y = y_max - (row + 0.5) * y_res
+
+    print(x, y)
+
+xy_from_colrow(dem, 1, 1)
+
+def colrow_from_xy(raster, x, y):
+    extent = raster.extent()
+    width = raster.width()
+    height = raster.height()
+    x_res = extent.width() / width
+    y_res = extent.height() / height
+    x_min = extent.xMinimum()
+    x_max = extent.xMaximum()
+    y_min = extent.yMinimum()
+    y_max = extent.yMaximum()
+    
+    if not (x_min <= x <= x_max and y_min <= y <= y_max):
+        print("Poza zasięgiem")
+        return None
+    
+    col = floor((x - x_min) / x_res)
+    row = floor((y_max - y) / y_res)
+    
+    print(col, row)
+    
+colrow_from_xy(dem, 254447.9369197936, 656821.1588342106)
