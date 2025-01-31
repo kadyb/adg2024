@@ -7510,1564 +7510,190 @@ a.anchor-link {
 <!-- End of mermaid configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
 <main>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c7b4c6f4">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=db7e40f8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><font size="5"><strong>Algorytmy danych geoprzestrzennych</strong></font><br/>
-<font size="4">Wprowadzenie do Pythona</font></p>
+<font size="4">Skrypty geoprzetwarzania w QGIS</font></p>
 <p><font size="4">Krzysztof Dyba</font></p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7f61c4de">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=1d7d8e30">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Python to interpretowany język programowania wysokiego poziomu, powszechnie stosowany w różnych zastosowaniach takich jak tworzenie stron internetowych, analiza danych i uczenie maszynowe, pisanie skryptów i automatyzacja procesów czy zarządzanie systemami (<em>DevOps</em>). Jest także używany w systemach informacji geograficznej do przetwarzania i analizowania danych przestrzennych. Jest aktualnie najpopularniejszym językiem programowania.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=206deaff">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Cechy języka Python:</p>
+<p>Narzędzia przetwarzania (<em>Processing Toolbox</em>) w QGIS są kompleksowym systemem do uruchamiania algorytmów analizy geoprzestrzennej. Algorytmy te mogą pochodzić z różnych źródeł:</p>
+<ol>
+<li>Natywne algorytmy (wbudowane bezpośrednio w QGIS i napisane w C++ dla większej wydajności).</li>
+<li>Zewnętrzne algorytmy (pochodzące z różnych aplikacji, np. SAGA GIS czy GRASS GIS).</li>
+<li><strong>Własne skrypty przetwarzania</strong>.</li>
+</ol>
+<p>Skrypty przetwarzania są pisane przy użyciu języka Python i wykorzystują QGIS Python API (PyQGIS) do interakcji z danymi przestrzennymi. Skrypty te muszą przestrzegać określonej struktury, w tym definiować dane wejściowe, wyjściowe i logikę algorytmu. Istnieje kilka możliwości ich zastosowania:</p>
 <ul>
-<li>darmowy i otwarty,</li>
-<li>język interpretowany (kod wykonywany jest linia po linii, bez potrzeby kompilacji),</li>
-<li>język wysokiego poziomu (pominięcie aspektów związanych z zarządzaniem pamięcią),</li>
-<li>dynamiczne typowanie (zmienne nie wymagają jawnych deklaracji przed użyciem),</li>
-<li>wsparcie dwóch paradygmatów programowania, tj. obiektowego i funkcjonalnego,</li>
-<li>duży ekosystem (biblioteki, wsparcie, tutoriale),</li>
-<li>indeksowanie od 0.</li>
+<li>bezpośrednie uruchomienie z poziomu interfejsu QGIS,</li>
+<li>wykorzystanie w kreatorze modeli (<em>model designer</em>) do tworzenia złożonych przepływów pracy,</li>
+<li>użycie do przetwarzania wsadowego,</li>
+<li>odwołanie się z poziomu wbudowanej konsoli Python.</li>
 </ul>
+<p>Aby stworzyć nowy skrypt przetwarzania w QGIS należy:</p>
+<ol>
+<li>Otworzyć panel algorytmów w zakładce Processing (<code>CTRL</code> + <code>ALT</code> + <code>T</code>).</li>
+<li>Kliknąć ikonę "Twórz nowy skrypt" (alternatywnie można wykorzystać gotowy szablon).</li>
+<li>Napisać kod zgodnie z wymaganą strukturą.</li>
+<li>Zapisać plik z rozszerzeniem <code>.py</code> w katalogu ze skryptami w QGIS (będzie dostępny w zakładce "Skrypty" w panelu algorytmów).</li>
+</ol>
+<h1 id="Struktura-skryptu">Struktura skryptu<a class="anchor-link" href="#Struktura-skryptu">¶</a></h1><p>Do tworzenia skryptów przetwarzania można wybrać jeden z dwóch sposobów:</p>
+<ol>
+<li>Wykorzystanie klasy <a href="https://qgis.org/pyqgis/3.40/core/QgsProcessingAlgorithm.html">QgsProcessingAlgorithm</a>. Szablon dostępny jest <a href="https://docs.qgis.org/3.40/en/docs/user_manual/processing/scripts.html#scripts-extend">tutaj</a>.</li>
+<li>Wykorzystanie dekoratora <code>@alg</code>, który umożliwia modyfikację metody lub klasy bez bezpośredniej zmiany ich kodu (<em>wrapping</em>). Jest to sposób uproszczony z brakiem możliwości użycia we wtyczkach. Szablon dostępny jest <a href="https://docs.qgis.org/3.40/en/docs/user_manual/processing/scripts.html#scripts-alg">tutaj</a>.</li>
+</ol>
+<p>Przykładowe skrypty znajdziesz w <a href="https://github.com/qgis/QGIS/tree/master/python/plugins/processing/algs/qgis">repozytorium QGIS</a>.</p>
+<h1 id="Wy%C5%9Bwietlenie-metadanych">Wyświetlenie metadanych<a class="anchor-link" href="#Wy%C5%9Bwietlenie-metadanych">¶</a></h1><p>Zacznijmy od napisania prostego skryptu używając dekoratora <code>@alg</code>, który umożliwi wyświetlenie metadanych warstwy wektorowej. Obligatoryjnie musimy zdefiniować cztery elementy:</p>
+<ol>
+<li>Dekorator <code>@alg</code> służący do definiowania nazwy i lokalizacji algorytmu w panelu algorytmów.</li>
+<li>Dekorator <code>@alg.input</code> służący do definiowania danych wejściowych.</li>
+<li>Dekorator <code>@alg.output</code> służący do definiowania danych wyjściowych.</li>
+<li>Logikę algorytmu.</li>
+</ol>
+<p>Dane wyjściowe muszą zostać jawnie zdefiniowane, tzn. należy dokładnie wskazać, co jest wynikiem działania algorytmu. W przeciwnym razie nie będzie można poprawnie użyć skryptu w przetwarzaniu sekwencyjnym (np. w modelerze). Algorytm może przyjmować i zwracać dane różnego typu (niekoniecznie warstwy), np. łańcuchy tekstu, liczby czy wartości logiczne. Wszystkie typy danych wejściowych i wyjściowych dla algorytmów przetwarzania znajdziesz <a href="https://docs.qgis.org/3.40/en/docs/user_manual/processing/parameters.html">tutaj</a>. Do przetwarzania przydatne będą również metody ewaluacji parametrów opisane <a href="https://qgis.org/pyqgis/3.40/core/QgsProcessingParameters.html">tutaj</a>. Jeśli algorytm posiada poprawnie zdefiniowane wyjście (warstwa wektorowa, rastrowa, chmura punktów), to automatycznie zostanie dodane do projektu.</p>
+<p>Danymi wejściowymi w naszej funkcji będzie warstwa wektorowa wybrana przez użytkownika za pomocą interfejsu, a danymi wyjściowymi łańcuch tekstu opisujące metadane tej warstwy (np. nazwa, źródło, liczba obiektów, typ geometrii, zakres przestrzenny oraz układ przestrzenny) jako słownik.</p>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=86ad0fec">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=43df08a4">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Przegl%C4%85d-funkcjonalno%C5%9Bci">Przegląd funkcjonalności<a class="anchor-link" href="#Przegl%C4%85d-funkcjonalno%C5%9Bci">¶</a></h1><p>W tej sekcji znajdziesz błyskawiczny przegląd funkcjonalności Pythona. Pełna wersja tutorialu w języku angielskim dostępna jest <a href="https://docs.python.org/3/tutorial/">tutaj</a>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=ae0a61fe">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Zmienne">Zmienne<a class="anchor-link" href="#Zmienne">¶</a></h2><p>Do przypisania wartości do zmiennej stosuje się znak równości <code>=</code>.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=c0605434">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">5</span>          <span class="c1"># liczba</span>
-<span class="n">y</span> <span class="o">=</span> <span class="s2">"parasol"</span>  <span class="c1"># tekst</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=af601009">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Utworzone zmienne można wyświetlić używając funkcji <code>print()</code>.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3f61d50d">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>5
-parasol
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=aadaf397">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Typy-danych">Typy danych<a class="anchor-link" href="#Typy-danych">¶</a></h2><p>Domyślnie wspierane są następujące typy danych:</p>
-<ul>
-<li>liczba całkowita <strong>int</strong> (np. -10, 0, 10),</li>
-<li>liczba zmiennoprzecinkowa <strong>float</strong> (np. 0.01, 21.37),</li>
-<li>łańcuchy tekstu <strong>str</strong> (np. "Ala ma kota.", 'rower'),</li>
-<li>wartości logiczne <strong>bool</strong> (True, False).</li>
-</ul>
-<p>Do sprawdzenia typu danych służy funkcja <code>type()</code>.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f20a0290">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>int</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f04d9542">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>float</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=32f49015">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="s2">"Ala ma kota."</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>str</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=f4df4edd">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">type</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>bool</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=de2c2857">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Możemy również dokonać konwersji między typami:</p>
-<ul>
-<li>z liczby zmiennoprzecinkowej na całkowitą (część dziesiętna zostaje usunięta!),</li>
-<li>z liczby całkowitej na zmiennoprzecinkową,</li>
-<li>z liczby na tekst i na odwrót.</li>
-</ul>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=95625fb0">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># konwersja liczby zmiennoprzecinkowej na całkowitą</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mf">3.14</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mf">3.99</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>3
-3
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=31a395a6">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># konwersja tekstu na liczbę</span>
-<span class="nb">str</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>'10'</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2c5ba9ef">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Struktury-danych">Struktury danych<a class="anchor-link" href="#Struktury-danych">¶</a></h2><p>Do podstawowych struktur danych należą:</p>
-<ul>
-<li>lista,</li>
-<li>słownik.</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a43d931f">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Lista">Lista<a class="anchor-link" href="#Lista">¶</a></h3><p>Lista jest uporządkowanym, modyfikowalnym i dynamicznym zbiorem elementów, które mogą być dowolnego typu danych. Definiuje się ją poprzez umieszczenie elementów między nawiasami kwadratowymi <code>[]</code>, które oddzielone są przecinkami. Listy można również zagnieżdżać.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a274ba7e">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># stworzenie listy</span>
-<span class="n">ls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">35</span><span class="p">,</span> <span class="s2">"rower"</span><span class="p">,</span> <span class="mf">53.61</span><span class="p">,</span> <span class="s2">"plecak"</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[35, 'rower', 53.61, 'plecak', True]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=695eb0a4">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Funkcja <code>len()</code> zwraca liczbę elementów w liście.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=c359d41f">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[10]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>5</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=44e04a81">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Dostęp do poszczególnych elementów listy możemy uzyskać za pomocą ich indeksu.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=af077b35">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># dostęp do elementów listy</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># pierwszy element</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># drugi element</span>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.processing</span> <span class="kn">import</span> <span class="n">alg</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># pierwszy element od końca</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="c1"># drugi element od końca</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>35
-rower
-True
-plecak
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=da498594">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># zakresy indeksów</span>
-<span class="c1"># ls[początek:koniec]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span> <span class="c1"># od trzeciego do czwartego obiektu</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="c1"># od początku do trzeciego obiektu</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> <span class="c1"># od czwartego obiektu do końca</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[53.61, 'plecak']
-[35, 'rower', 53.61]
-['plecak', True]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9912bf22">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Używając indeksów można zastąpić poszczególne elementy listy.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=e5239bb3">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ls</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[35, 'rower', 53.61, 'plecak', False]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0acd5402">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Możemy również modyfikować zawartość listy za pomocą różnych metod:</p>
-<ul>
-<li><code>append()</code> -- dodaje element na końcu listy,</li>
-<li><code>insert(indeks, element)</code> -- dodaje element w określonym miejscu,</li>
-<li><code>remove()</code> -- usuwa element według wartości,</li>
-<li><code>reverse()</code> -- odwraca kolejność elementów listy.</li>
-</ul>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=28692a5f">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">999</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[35, 'rower', 53.61, 'plecak', False, 999]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=fd5fd5e0">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ls</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s2">"nowy"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[35, 'rower', 53.61, 'plecak', False, 999, 'nowy']
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=293137ba">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ls</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">"rower"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>[35, 53.61, 'plecak', False, 999, 'nowy']
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=9696b6c0">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ls</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>['nowy', 999, False, 'plecak', 53.61, 35]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2b272a41">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Nie są to jednak wszystkie dostępne metody. Aby odkryć pozostałe, wykonaj Zadanie 4.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=67427a1f">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="S%C5%82ownik">Słownik<a class="anchor-link" href="#S%C5%82ownik">¶</a></h3>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c66dd873">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Słownik jest strukturą danych używaną do przechowywania zbiorów danych w formacie pary klucz-wartość. W przeciwieństwie list, które są indeksowane liczbami całkowitymi, słowniki są indeksowane za pomocą unikalnych, niemodyfikowalnych kluczy. Każdy klucz jest unikatowy w słowniku i pełni funkcję identyfikatora umożliwiającego dostęp do powiązanej z nim wartości.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=7b6675f9">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Słowniki są definiowane za pomocą nawiasów klamrowych <code>{}</code>, pary klucz-wartość są określane za pomocą dwukropka <code>:</code>, a kolejne pary są rozdzielone przecinkami <code>,</code> w następujący sposób:</p>
-<p><code>slownik = {klucz_1: wartosc_1, klucz_2: wartosc_2, ...}</code></p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2f2b9aa4">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># stworzenie słownika</span>
-<span class="n">osoby</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"imie"</span><span class="p">:</span> <span class="s2">"Ania"</span><span class="p">,</span>
-    <span class="s2">"wiek"</span><span class="p">:</span> <span class="mi">21</span><span class="p">,</span>
-    <span class="s2">"miasto"</span><span class="p">:</span> <span class="s2">"Poznań"</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=b5c5de60">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Dostęp do wartości powiązanej z kluczem możemy uzyskać za pomocą nawiasów kwadratowych <code>[]</code> i klucza:</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=537e0858">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">osoby</span><span class="p">[</span><span class="s2">"imie"</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Ania
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cac9623f">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Dostępne są również metody <code>keys()</code> oraz <code>values()</code>, które zwracają wszystkie klucze oraz wartości.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=983b95b9">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">osoby</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">osoby</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>dict_keys(['imie', 'wiek', 'miasto'])
-dict_values(['Ania', 21, 'Poznań'])
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9a7f6d1a">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Słowniki są modyfikowalne, co oznacza, że można dodawać, modyfikować lub usuwać pary klucz-wartość po utworzeniu słownika.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=59958f83">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># dodanie nowej pary klucz-wartość</span>
-<span class="n">osoby</span><span class="p">[</span><span class="s2">"wzrost"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">165</span>
+<span class="nd">@alg</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"vector_metadata"</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Print metadata of vector layer"</span><span class="p">,</span>
+     <span class="n">group</span> <span class="o">=</span> <span class="s2">"examplescripts"</span> <span class="p">,</span> <span class="n">group_label</span> <span class="o">=</span> <span class="s2">"Example scripts"</span><span class="p">)</span>
+<span class="nd">@alg</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="nb">type</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">VECTOR_LAYER</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">"INPUT"</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Input vector layer"</span><span class="p">)</span>
+<span class="nd">@alg</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="nb">type</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">"OUTPUT"</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Metadata"</span><span class="p">)</span>
 
-<span class="c1"># modyfikacja wartości</span>
-<span class="n">osoby</span><span class="p">[</span><span class="s2">"wiek"</span><span class="p">]</span> <span class="o">=</span> <span class="mi">41</span>
+<span class="k">def</span> <span class="nf">vector_metadata</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">feedback</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Print metadata of vector layer</span>
+<span class="sd">    """</span>
+    
+    <span class="c1"># QgsVectorLayer</span>
+    <span class="n">layer</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">parameterAsVectorLayer</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="s2">"INPUT"</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+    
+    <span class="n">name</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+    <span class="n">data_source</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span><span class="o">.</span><span class="n">dataSourceUri</span><span class="p">()</span>
+    <span class="n">num_features</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">featureCount</span><span class="p">()</span>
+    <span class="n">geometry_type</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">geometryType</span><span class="p">()</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">extent</span><span class="p">()</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="n">precision</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">crs</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">crs</span><span class="p">()</span><span class="o">.</span><span class="n">authid</span><span class="p">()</span>
+    
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"Layer name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s2">"Data source"</span><span class="p">:</span> <span class="n">data_source</span><span class="p">,</span>
+        <span class="s2">"Number of features"</span><span class="p">:</span> <span class="n">num_features</span><span class="p">,</span>
+        <span class="s2">"Geometry type"</span><span class="p">:</span> <span class="n">geometry_type</span><span class="p">,</span>
+        <span class="s2">"Extent"</span><span class="p">:</span> <span class="n">extent</span><span class="p">,</span>
+        <span class="s2">"CRS"</span><span class="p">:</span> <span class="n">crs</span>
+    <span class="p">}</span>
+    
+    <span class="c1"># sprawdź czy użytkownik anulował operację</span>
+    <span class="k">if</span> <span class="n">feedback</span><span class="o">.</span><span class="n">isCanceled</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">{}</span>
 
-<span class="c1"># usunięcie pary klucz-wartość</span>
-<span class="k">del</span> <span class="n">osoby</span><span class="p">[</span><span class="s2">"miasto"</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">output</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d7ebf32c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="Stworzenie-bufor%C3%B3w">Stworzenie buforów<a class="anchor-link" href="#Stworzenie-bufor%C3%B3w">¶</a></h1><p>Zobaczmy teraz jak wygląda bardziej zaawansowany skrypt, który stworzy bufory geometrii i zapisze wynik w lokalizacji określonej przez użytkownika. Jako wynik działania zostanie zwrócona ścieżka do utworzonego pliku.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=124e332e">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qgis.processing</span> <span class="kn">import</span> <span class="n">alg</span>
+<span class="kn">from</span> <span class="nn">qgis.core</span> <span class="kn">import</span> <span class="n">QgsVectorLayer</span><span class="p">,</span> <span class="n">QgsFeature</span><span class="p">,</span> <span class="n">QgsVectorFileWriter</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">osoby</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>{'imie': 'Ania', 'wiek': 41, 'wzrost': 165}
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=216ade26">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Operatory">Operatory<a class="anchor-link" href="#Operatory">¶</a></h2>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=04e01eb1">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Python obsługuje różne operatory do wykonywania operacji arytmetycznych, porównawczych, logicznych, przypisania i innych.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=521ba17b">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Arytmetyczne:">Arytmetyczne:<a class="anchor-link" href="#Arytmetyczne:">¶</a></h3><ul>
-<li>Dodawanie <code>+</code>,</li>
-<li>Odejmowanie <code>-</code>,</li>
-<li>Mnożenie <code>*</code>,</li>
-<li>Dzielenie <code>/</code>,</li>
-<li>Modulo <code>%</code> (reszta z dzielenia),</li>
-<li>Potęgowanie <code>**</code>.</li>
-</ul>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=1dd86f7b">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">b</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="nd">@alg</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"buffers"</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Calculate buffers"</span><span class="p">,</span>
+     <span class="n">group</span> <span class="o">=</span> <span class="s2">"examplescripts"</span> <span class="p">,</span> <span class="n">group_label</span> <span class="o">=</span> <span class="s2">"Example scripts"</span><span class="p">)</span>
+<span class="nd">@alg</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="nb">type</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">SOURCE</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">"INPUT"</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Input vector layer"</span><span class="p">)</span>
+<span class="nd">@alg</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="nb">type</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">DISTANCE</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">"BUFFERDIST"</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Buffer distance"</span><span class="p">)</span>
+<span class="nd">@alg</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="nb">type</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">"SEGMENTS"</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Buffer segments"</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+<span class="nd">@alg</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="nb">type</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">VECTOR_LAYER_DEST</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">"OUTPUT_PATH"</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Output path"</span><span class="p">)</span>
+<span class="nd">@alg</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="nb">type</span> <span class="o">=</span> <span class="n">alg</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">"OUTPUT"</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">"Buffers"</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="n">b</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">%</span> <span class="n">b</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">**</span> <span class="n">b</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">buffers</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">feedback</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Calculate buffers</span>
+<span class="sd">    """</span>
+    
+    <span class="n">layer</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">parameterAsVectorLayer</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="s2">"INPUT"</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+    <span class="n">bufferdist</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">parameterAsDouble</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="s2">"BUFFERDIST"</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+    <span class="n">segments</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">parameterAsInt</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="s2">"SEGMENTS"</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+    <span class="n">output_path</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">parameterAsOutputLayer</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="s2">"OUTPUT_PATH"</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+    
+    <span class="n">crs</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">crs</span><span class="p">()</span><span class="o">.</span><span class="n">authid</span><span class="p">()</span>
+    <span class="n">buffer_layer</span> <span class="o">=</span> <span class="n">QgsVectorLayer</span><span class="p">(</span><span class="s2">"Polygon?crs="</span> <span class="o">+</span> <span class="n">crs</span><span class="p">,</span> <span class="s2">"Buffer"</span><span class="p">,</span> <span class="s2">"memory"</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">feedback</span><span class="o">.</span><span class="n">isCanceled</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    
+    <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">layer</span><span class="o">.</span><span class="n">getFeatures</span><span class="p">():</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="n">feature</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span>
+        <span class="n">buffer_geom</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">bufferdist</span><span class="p">,</span> <span class="n">segments</span><span class="p">)</span>
+        <span class="n">buffer_feature</span> <span class="o">=</span> <span class="n">QgsFeature</span><span class="p">()</span>
+        <span class="n">buffer_feature</span><span class="o">.</span><span class="n">setGeometry</span><span class="p">(</span><span class="n">buffer_geom</span><span class="p">)</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">buffer_feature</span><span class="p">)</span>
+        
+    <span class="n">buffer_layer</span><span class="o">.</span><span class="n">dataProvider</span><span class="p">()</span><span class="o">.</span><span class="n">addFeatures</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    <span class="n">buffer_layer</span><span class="o">.</span><span class="n">updateExtents</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">feedback</span><span class="o">.</span><span class="n">isCanceled</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    
+    <span class="n">QgsVectorFileWriter</span><span class="o">.</span><span class="n">writeAsVectorFormatV3</span><span class="p">(</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="n">buffer_layer</span><span class="p">,</span>
+        <span class="n">fileName</span> <span class="o">=</span> <span class="n">output_path</span><span class="p">,</span>
+        <span class="n">transformContext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">transformContext</span><span class="p">(),</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">QgsVectorFileWriter</span><span class="o">.</span><span class="n">SaveVectorOptions</span><span class="p">()</span>
+    <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"OUTPUT"</span><span class="p">:</span> <span class="n">output_path</span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>13
-7
-30
-3.3333333333333335
-1
-1000
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=fac1d62f">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d5e8a681">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Por%C3%B3wnawcze">Porównawcze<a class="anchor-link" href="#Por%C3%B3wnawcze">¶</a></h3><ul>
-<li>Operator równości <code>==</code>,</li>
-<li>Operator negacji równości <code>!=</code>,</li>
-<li>Operatory nierówności <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>.</li>
-</ul>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=40ec5cda">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">b</span> <span class="o">=</span> <span class="mi">3</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="n">b</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>False
-True
-False
-True
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f36997e7">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Logiczne">Logiczne<a class="anchor-link" href="#Logiczne">¶</a></h3><ul>
-<li>Koniunkcja <code>and</code> (<code>True</code>, jeśli obie wartości są prawdziwe),</li>
-<li>Alternatywa <code>or</code> (<code>True</code>, jeśli przynajmniej jedna wartość jest prawdziwa),</li>
-<li>Negacja <code>not</code> (odwraca wartość logiczną).</li>
-</ul>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5e44e123">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">a</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>True
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cf03e41d">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [25]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="kc">True</span> <span class="ow">and</span> <span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="kc">True</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>False
-True
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=c3e59aec">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Instrukcje-warunkowe">Instrukcje warunkowe<a class="anchor-link" href="#Instrukcje-warunkowe">¶</a></h2>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d905fbf1">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Instrukcje warunkowe są podstawowymi mechanizmami przepływu pracy, które pozwalają na wykonywanie różnych bloków kodu w zależności od tego czy określony warunek jest prawdziwy czy fałszywy. W Pythonie do formułowania instrukcji warunkowych używa się wyrażeń <code>if</code>, <code>elif</code> oraz <code>else</code>. Warunki są sprawdzane (i wykonywane) w takiej kolejności w jakiej zostały zapisane.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=bab4cfa4">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">10</span>
-
-<span class="c1"># sprawdza jeden warunek</span>
-<span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba jest większa od 0."</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba jest mniejsza od 0 lub równa 0."</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Liczba jest większa od 0.
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=7751495b">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="c1"># sprawdza dwa warunki</span>
-<span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba jest większa od 0."</span><span class="p">)</span>
-<span class="k">elif</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba jest mniejsza od 0."</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Liczba to 0."</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Liczba to 0.
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=674f787a">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="P%C4%99tle">Pętle<a class="anchor-link" href="#P%C4%99tle">¶</a></h2><p>Pętle to instrukcje przepływu pracy używane do wielokrotnego wykonywania bloku kodu. Są one niezbędne do automatyzacji powtarzających się zadań. W Pythonie istnieją dwa typy pętli: <code>for</code> oraz <code>while</code>.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=aaebe8b0">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="P%C4%99tla-for">Pętla <code>for</code><a class="anchor-link" href="#P%C4%99tla-for">¶</a></h3><p>Służy do iteracji po sekwencji, np. lista, łańcuch znaków, zakres (lub dowolnym iterowalnym obiekcie) i wykonuje zdefiniowaną akcję dla każdego elementu.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=167299fb">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ls</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">,</span> <span class="s2">"b"</span><span class="p">,</span> <span class="s2">"c"</span><span class="p">]</span>
-
-<span class="c1"># iteracja po elementach listy</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ls</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>a
-b
-c
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=60bae4f0">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [29]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># iteracja po zakresie liczb</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>0
-1
-2
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cd2f118a">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Zauważ, że numeracja rozpoczyna się od 0.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=97c3e3f4">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="P%C4%99tla-while">Pętla <code>while</code><a class="anchor-link" href="#P%C4%99tla-while">¶</a></h3><p>Służy do wielokrotnej iteracji, dopóki określony warunek jest prawdziwy. Oznacza to, że pętla zakończy się wtedy, kiedy warunek nie zostanie spełniony. Używając tego rodzaju pętli, należy upewnić się, że jest ona skończona!</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ca9a81c4">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">licznik</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">while</span> <span class="n">licznik</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">licznik</span><span class="p">)</span>
-    <span class="n">licznik</span> <span class="o">+=</span> <span class="mi">1</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>0
-1
-2
-3
-4
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=08ffd322">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Wykonywanie pętli można kontrolować za pomocą wyrażeń:</p>
-<ul>
-<li><code>break</code> -- natychmiastowe wyjście z pętli,</li>
-<li><code>continue</code> -- pominięcie bieżącej iteracji i przejście do następnej,</li>
-<li><code>pass</code> -- brak akcji (nic się nie dzieje).</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=aa4b3013">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Funkcje">Funkcje<a class="anchor-link" href="#Funkcje">¶</a></h2><p>Funkcja to blok kodu wielokrotnego użytku, który wykonuje określone zadanie. Umożliwiają organizowanie kodu w mniejsze moduły, dzięki czemu kod programu jest czytelniejszy i łatwiejszy do zrozumienia. Funkcje mogą przyjmować dane wejściowe, przetwarzać je i zwracać dane wyjściowe. Funkcje definiuje się za pomocą słowa kluczowego <code>def</code>, po którym następuje nazwa funkcji i nawiasy <code>()</code> z argumentami.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=978985d2">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [31]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">pole_prostokata</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Opcjonalna dokumentacja opisująca funkcję"""</span>
-    <span class="n">P</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
-    <span class="k">return</span> <span class="n">P</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cd729f4b">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Aby wykonać funkcję, należy ją wywołać, używając jej nazwy wraz z nawiasami. Jeśli funkcja przyjmuje argumenty, to należy je określić w nawiasie.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=36dfc8a7">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [32]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">pole_prostokata</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[32]:</div>
-<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
-<pre>50</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=34b66d7e">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Obs%C5%82uga-wyj%C4%85tk%C3%B3w">Obsługa wyjątków<a class="anchor-link" href="#Obs%C5%82uga-wyj%C4%85tk%C3%B3w">¶</a></h2><p>Obsługa wyjątków jest mechanizmem umożliwiającym zarządzanie i reagowanie na błędy lub nieoczekiwane zdarzenia, które mogą wystąpić podczas wykonywania kodu. Przyczyny błędów w programie mogą być zróżnicowane, np. nieprawidłowy format danych wejściowych, brak pliku w określonej lokalizacji, dzielenie przez zero, itd.</p>
-<p>Podstawowym narzędziem Pythona do obsługi wyjątków jest blok <code>try-except</code>:</p>
-<ul>
-<li><code>try</code> -- obejmuje blok kodu, który potencjalnie może spowodować wyjątek,</li>
-<li><code>except</code> -- określa typów wyjątków, które powinny zostać wychwycone.</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=a259b514">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Wśród podstawowych klas wyjątków możemy znaleźć:</p>
-<ul>
-<li><code>TypeError</code> (operacja wykonywana jest na niezgodnym typie danych),</li>
-<li><code>ZeroDivisionError</code> (próba dzielenia przez 0),</li>
-<li><code>FileNotFoundError</code> (żądany jest plik, który nie istnieje),</li>
-<li><code>SyntaxError</code> (nieprawidłowa składnia języka Python).</li>
-</ul>
-<p>Wszystkie klasy są opisane <a href="https://docs.python.org/3/library/exceptions.html">tutaj</a>.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=615524a1">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [33]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">dzielenie</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">wynik</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">/</span> <span class="n">n</span>
-    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"Nieprawidłowy typ danych!"</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">"Nie można dzielić przez 0!"</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">wynik</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=23cc192a">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>W powyższym przykładzie najpierw wykonywany jest kod w bloku <code>try</code>. Następnie, jeżeli w bloku <code>try</code> wystąpi wyjątek określony w klauzulach <code>except</code>, to zostanie wykonany odpowiedni blok <code>except</code>, np. wyświetlenie komunikatu o błędzie, zastosowanie alternatywnego podejścia. Jeżeli nie wystąpił żaden wyjątek, to zostanie wykonany blok <code>else</code>.</p>
-<p>Przetestuj samodzielnie, co stanie się w poniższych wariantach:</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=01e87edc">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [34]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">dzielenie</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span>
-<span class="n">dzielenie</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">dzielenie</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Nieprawidłowy typ danych!
-Nie można dzielić przez 0!
-2.0
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=4397ddb7">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Używając instrukcji <code>raise</code> możemy wywołać wyjątek, jeśli wystąpi określony warunek, co spowoduje przerwanie działania programu i stworzenie wyjątku.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6c90b9ba">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [35]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">wyswietl_wiek</span><span class="p">(</span><span class="n">wiek</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wiek</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Wiek musi być liczbą!"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">wiek</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Wiek musi być dodatni!"</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">wiek</span> <span class="o">&gt;</span> <span class="mi">150</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Wiek jest zbyt duży!"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">wiek</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=0474331a">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Importowanie-bibliotek">Importowanie bibliotek<a class="anchor-link" href="#Importowanie-bibliotek">¶</a></h2><p>Importowanie bibliotek umożliwia dostęp i używanie dodatkowych klas i metod, które nie są wbudowane język Python, dzięki czemu możliwe jest rozszerzenie funkcjonalności języka i wykorzystanie gotowych funkcji do różnych zadań.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=f41d5866">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>W Pythonie możemy załadować wbudowane biblioteki (np. <code>math</code>, <code>time</code>, <code>os</code>) lub zainstalować zewnętrzne (np. <code>numpy</code>, <code>pandas</code>, <code>matplotlib</code>) używając polecenia <code>import</code>. Aby wywołać zaimportowane funkcje, należy wykorzystać nazwę biblioteki jako prefiks z kropką, a następnie podać nazwę funkcji, w ten sposób: <code>biblioteka.funkcja()</code>. Zaimportowanej bibliotece można również nadać alias, dzięki czemu nazwa zostanie skrócona, np. <code>import numpy as np</code>.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=7a3973ba">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [36]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
-
-<span class="kn">import</span> <span class="nn">random</span>
-<span class="c1"># wylosuj 5 liczb z zakresu od 1 do 100</span>
-<span class="n">random_numbers</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">random_numbers</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>4.0
-[41, 57, 37, 52, 11]
-</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=72119e90">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Zadania">Zadania<a class="anchor-link" href="#Zadania">¶</a></h1><ol>
-<li>Napisz pętlę, która zsumuje wartości od 1 do 10.</li>
-<li>Napisz funkcję, która zamienia kilogramy (kg) na funty (lb) oraz na odwrót.</li>
-<li>Napisz funkcję, która sprawdzi czy dany rok jest przestępny. Rok jest przestępny, gdy jest podzielny przez 4 i nie jest podzielny przez 100 lub jest podzielny przez 400. Przykładowo lata 2000 i 2004 były przestępne, natomiast lata 1990, 2010 czy 2021 nie były.</li>
-<li>Używając listy składanej (<em>list comprehension</em>) oraz instrukcji warunkowej, sprawdź jakie są pozostałe metody dostępne dla list. Do tego zadania będą pomocne dwie metody -- <code>dir()</code> oraz <code>startswith()</code>.</li>
+<h1 id="Zadania">Zadania<a class="anchor-link" href="#Zadania">¶</a></h1><ol start="19">
+<li>Zaimplementuj wybrany przez siebie algorytm lub narzędzie z poprzednich zajęć jako skrypt przetwarzania w QGIS.</li>
 </ol>
 </div>
 </div>
