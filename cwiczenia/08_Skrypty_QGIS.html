@@ -7562,6 +7562,7 @@ a.anchor-link {
 <li>Dekorator <code>@alg.output</code> służący do definiowania danych wyjściowych.</li>
 <li>Logikę algorytmu.</li>
 </ol>
+<p>Oprócz tego, wymagana jest dokumentacja (opis) wewnątrz funkcji używając <code>docstrings</code> (jeśli tego nie uwzględnimy, zostanie zwrócony błąd).</p>
 <p>Dane wyjściowe muszą zostać jawnie zdefiniowane, tzn. należy dokładnie wskazać, co jest wynikiem działania algorytmu. W przeciwnym razie nie będzie można poprawnie użyć skryptu w przetwarzaniu sekwencyjnym (np. w modelerze). Algorytm może przyjmować i zwracać dane różnego typu (niekoniecznie warstwy), np. łańcuchy tekstu, liczby czy wartości logiczne. Wszystkie typy danych wejściowych i wyjściowych dla algorytmów przetwarzania znajdziesz <a href="https://docs.qgis.org/3.40/en/docs/user_manual/processing/parameters.html">tutaj</a>. Do przetwarzania przydatne będą również metody ewaluacji parametrów opisane <a href="https://qgis.org/pyqgis/3.40/core/QgsProcessingParameters.html">tutaj</a>. Jeśli algorytm posiada poprawnie zdefiniowane wyjście (warstwa wektorowa, rastrowa, chmura punktów), to automatycznie zostanie dodane do projektu.</p>
 <p>Danymi wejściowymi w naszej funkcji będzie warstwa wektorowa wybrana przez użytkownika za pomocą interfejsu, a danymi wyjściowymi łańcuch tekstu opisujące metadane tej warstwy (np. nazwa, źródło, liczba obiektów, typ geometrii, zakres przestrzenny oraz układ przestrzenny) jako słownik.</p>
 </div>
