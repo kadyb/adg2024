@@ -1,0 +1,13 @@
+vector.startEditing()
+new_field = [QgsField("border_len_km", QVariant.Double)]
+vector.dataProvider().addAttributes(new_field)
+vector.updateFields()
+border_idx = vector.fields().indexOf("border_len_km")
+
+for feature in vector.getFeatures():
+    border = feature.geometry().length()
+    border = border / 1000
+    vector.changeAttributeValue(feature.id(), border_idx, border)
+
+vector.commitChanges()
+QgsProject.instance().addMapLayer(vector)
