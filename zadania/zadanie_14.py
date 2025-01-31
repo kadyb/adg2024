@@ -5,7 +5,7 @@ def decimal_to_dms(decimal, is_lat):
     stopnie = int(stopnie10)
     minuty = int((stopnie10 - stopnie) * 60)
     sekundy = int(((stopnie10 - stopnie) * 60 - minuty) * 60)
-    if is_lat == True:
+    if is_lat:
         if decimal > 0:
             kier = "N"
         else:
