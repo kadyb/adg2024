@@ -1,0 +1,42 @@
+import qgis.core as qc
+import os
+
+filepath = os.path.join(os.path.expanduser("~"), "Documents", "ADP", "adg2024-main", "dane")
+os.chdir(filepath)
+
+powiaty = qc.QgsVectorLayer("powiaty.gpkg")
+
+def stats(layer):
+    import numpy as np
+    
+    if layer.isValid() == True:
+        feat_ar = []
+        feat_len = []
+        for feature in layer.getFeatures():
+            area = feature.geometry().area()
+            length = feature.geometry().length()
+            feat_ar.append(area)
+            feat_len.append(length)
+            
+        stat_ar = {
+            "area_minimum": round(min(feat_ar), 4),
+            "area_maximum": round(max(feat_ar), 4),
+            "area_mean": round(np.mean(feat_ar), 4),
+            "area_median": round(np.median(feat_ar), 4),
+            "area_stdev": round(np.std(feat_ar), 4)
+            }
+        
+        stat_lg = {
+            "length_minimum": round(min(feat_len), 4),
+            "length_maximum": round(max(feat_len), 4),
+            "length_mean": round(np.mean(feat_len), 4),
+            "length_median": round(np.median(feat_len), 4),
+            "length_stdev": round(np.std(feat_len), 4)
+            }
+        
+        return stat_ar, stat_lg
+        
+    else:
+        raise TypeError(f"{layer} nie jest poprawnym obiektem!")
+        
+stats(powiaty)
