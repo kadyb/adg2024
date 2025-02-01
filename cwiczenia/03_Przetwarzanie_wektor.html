@@ -3334,7 +3334,7 @@ vertical-align: -.125em;
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>polygon_wkt <span class="op">=</span> QgsGeometry.fromRect(rect).asWkt()</span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>polygon_geometry <span class="op">=</span> QgsGeometry.fromWkt(polygon_wkt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Finalnie, należy nowemu obiektowi należy nadać geometrię (metoda <code>setGeometry()</code>) oraz przypisać atrybutom wartości (metoda <code>setAttributes()</code>, po czym wymagane jest dodanie obiektów do warstwy, aktualizacja zasięgu warstwy oraz zapisanie zmian.</p>
+<p>Finalnie, należy nowemu obiektowi należy nadać geometrię (metoda <code>setGeometry()</code>) oraz przypisać atrybutom wartości (metoda <code>setAttributes()</code>), po czym wymagane jest dodanie obiektów do warstwy, aktualizacja zasięgu warstwy oraz zapisanie zmian.</p>
 <div id="3ccf6ee5" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># nadanie geometrii oraz wartości atrybutom</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>feature.setGeometry(polygon_geometry)</span>
@@ -3367,6 +3367,7 @@ vertical-align: -.125em;
 </section>
 <section id="łączenie-geometrii-obiektów" class="level1">
 <h1>Łączenie geometrii obiektów</h1>
+<p>Powiaty reprezentowane jako osobne geometrie możemy połączyć w jeden obiekt reprezentujący całe województwo. W tym celu można wykorzystać metodę <code>combine</code> z klasy <code>QgsGeometry</code> pod warunkiem, iż wszystkie granice są styczne. Na początku musimy zainicjować pustą geometrię, a następnie łączymy ją z kolejnymi w pętli. Wynikiem operacji jest nowa geometria będąca połączeniem wszystkich geometrii.</p>
 <div id="e827449c" class="cell" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># stworzenie nowej pustej geometrii</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>geometry <span class="op">=</span> <span class="va">None</span></span>
@@ -3378,12 +3379,13 @@ vertical-align: -.125em;
 <span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:                                 <span class="co"># łączy kolejne geometrie</span></span>
 <span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        geometry <span class="op">=</span> geometry.combine(geom)</span>
 <span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>dissolved <span class="op">=</span> QgsFeature()</span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>dissolved.setGeometry(geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>combined <span class="op">=</span> QgsFeature()</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>combined.setGeometry(geometry)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="tworzenie-buforów" class="level1">
 <h1>Tworzenie buforów</h1>
+<p>Stworzenie warstwy z buforami wymaga zainicjowania nowej warstwy poligonowej w pamięci. Następnie iterujemy po wszystkich obiektach i tworzymy bufory używając metody <code>buffer</code>, w której trzeba określić odległość bufora oraz liczbę segmentów. Po wygenerowaniu wszystkich obiektów, należy dodać je do warstwy.</p>
 <div id="ae9e052f" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># stworzenie pustej warstwy w pamięci</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>buffer_layer <span class="op">=</span> QgsVectorLayer(<span class="st">&quot;Polygon?crs=&quot;</span> <span class="op">+</span> vector.crs().authid(), <span class="st">&quot;Bufor&quot;</span>, <span class="st">&quot;memory&quot;</span>)</span>
@@ -3392,7 +3394,7 @@ vertical-align: -.125em;
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>buffer_distance <span class="op">=</span> <span class="fl">10000.0</span> <span class="co"># 10 km</span></span>
 <span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> []</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> feature <span class="kw">in</span> [dissolved]: <span class="co"># traktujemy jeden obiekt jako listę</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> feature <span class="kw">in</span> [combined]: <span class="co"># traktujemy jeden obiekt jako listę</span></span>
 <span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    geom <span class="op">=</span> feature.geometry()</span>
 <span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># stworzenie geometrii bufora</span></span>
 <span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>    buffer_geom <span class="op">=</span> geom.<span class="bu">buffer</span>(buffer_distance, segments <span class="op">=</span> <span class="dv">30</span>)</span>
@@ -3410,10 +3412,18 @@ vertical-align: -.125em;
 </section>
 <section id="reprojekcja-warstwy" class="level1">
 <h1>Reprojekcja warstwy</h1>
+<p>Istnieje kilka różnych sposobów reprojekcji warstwy wektorowej:</p>
 <ol type="1">
-<li>Pętla i <code>QgsCoordinateTransform</code></li>
-<li>Zapisanie całej warstwy z nowym CRS</li>
+<li>Iteracja po obiektach i zastosowanie metody <code>transform</code> z klasy <a href="https://qgis.org/pyqgis/master/core/QgsCoordinateTransform.html">QgsCoordinateTransform</a>.</li>
+<li>Zapisanie warstwy z nowym układem współrzędnych używając <code>QgsVectorFileWriter</code>.</li>
+<li>Wykorzystanie narzędzia <a href="https://docs.qgis.org/latest/en/docs/user_manual/processing_algs/qgis/vectorgeneral.html#reproject-layer">native:reprojectlayer</a>.</li>
 </ol>
+<p>Pierwsza metoda polega na transformacji wszystkich obiektów w pętli. Należy zwrócić szczególną uwagę na fakt, iż ta operacja modyfikuje bezpośrednio geometrie (można nieświadomie nadpisać oryginalne dane)! Kluczowym elementem jest zainicjowanie klasy <code>QgsCoordinateTransform</code> z trzema argumentami:</p>
+<ul>
+<li>źródłowym układem współrzędnych,</li>
+<li>docelowym układem współrzędnych,</li>
+<li>kontekstem transformacji (związany z parametrami transformacji między układami).</li>
+</ul>
 <div id="9ca9da37" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.core <span class="im">import</span> QgsProject, QgsCoordinateTransform, QgsCoordinateReferenceSystem</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -3442,6 +3452,7 @@ vertical-align: -.125em;
 <pre><code>EPSG:4326</code></pre>
 </div>
 </div>
+<p>Druga metoda jest zdecydowanie łatwiejsza, ponieważ wymaga wyłącznie zdefiniowanie wymaganych argumentów przez klasę <code>QgsCoordinateTransform</code> i zapisanie nowej warstwy.</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.core <span class="im">import</span> QgsVectorFileWriter</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>source_crs <span class="op">=</span> vector.crs()</span>
