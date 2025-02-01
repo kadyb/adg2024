@@ -3385,7 +3385,7 @@ vertical-align: -.125em;
 </section>
 <section id="tworzenie-buforów" class="level1">
 <h1>Tworzenie buforów</h1>
-<p>Stworzenie warstwy z buforami wymaga zainicjowania nowej warstwy poligonowej w pamięci. Następnie iterujemy po wszystkich obiektach i tworzymy bufory używając metody <code>buffer</code>, w której trzeba określić odległość bufora oraz liczbę segmentów. Po wygenerowaniu wszystkich obiektów, należy dodać je do warstwy.</p>
+<p>Stworzenie warstwy z buforami wymaga zainicjowania nowej warstwy poligonowej w pamięci. Następnie iterujemy po wszystkich obiektach i tworzymy bufory używając metody <code>buffer</code>, w której trzeba określić odległość bufora (wartość może być ujemna w przypadku poligonów) oraz liczbę segmentów. Po wygenerowaniu wszystkich obiektów, należy dodać je do warstwy.</p>
 <div id="ae9e052f" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># stworzenie pustej warstwy w pamięci</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>buffer_layer <span class="op">=</span> QgsVectorLayer(<span class="st">&quot;Polygon?crs=&quot;</span> <span class="op">+</span> vector.crs().authid(), <span class="st">&quot;Bufor&quot;</span>, <span class="st">&quot;memory&quot;</span>)</span>
