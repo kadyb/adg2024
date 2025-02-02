@@ -3116,6 +3116,7 @@ vertical-align: -.125em;
 
 <p><font size="5"><strong>Algorytmy danych geoprzestrzennych</strong></font><br> <font size="5">Przetwarzanie danych rastrowych</font></p>
 <p><font size="5">Krzysztof Dyba</font></p>
+<p>Rozpocznijmy od wczytania danych rastrowych z pliku <code>DEM.tif</code> i wyświetlenia jego podstawowych metadanych.</p>
 <div id="6d6c1e52" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.core <span class="im">import</span> QgsRasterLayer</span>
@@ -3150,12 +3151,7 @@ CRS: EPSG:2180</code></pre>
 <p>Wartości rastra można wczytać na dwa sposoby – definiując punkt (<code>QgsPointXY</code>) lub blok (<code>QgsRectangle</code>). W drugim przypadku, jeśli wskażemy wszystkie kolumny oraz wiersze, wtedy do pamięci zostanie wczytany cały raster.</p>
 <section id="punkt" class="level2">
 <h2 class="anchored" data-anchor-id="punkt">Punkt</h2>
-<ul>
-<li>jeśli mamy wiele punktów i kilka kanałów, to oczywiście trzeba zastosować pętlę</li>
-<li>układ współrzędnych rastra i punktów musi być jednakowy</li>
-<li>alternatywnie można użyć <code>identify()</code></li>
-<li>jeśli punkt leży poza obszarem, to zwróci <code>nan</code></li>
-</ul>
+<p>W pierwszym kroku należy utworzyć obiekt <code>QgsPointXY</code> reprezentujący punkt, dla którego zostanie pozyskana wartość komórki. Konieczne jest określenie współrzędnych X i Y punktu w układzie odniesienia warstwy rastrowej, tj. układ punkt oraz rastra muszą być identyczne! Następnie należy wykorzystać metodę <code>sample()</code> z <code>dataProvider()</code> i wskazać punkt oraz indeks kanału zaczynający się od 1. W przypadku gdy punkt znajduje się poza zasięgiem warstwy lub podano nieprawidłowy indeks kanału, to zostanie zwrócona wartość <code>NaN</code>. Dla większej liczby kanałów i/lub punktów należy zastosować pętlę.</p>
 <div id="741eb3c8" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.core <span class="im">import</span> QgsPointXY</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -3175,6 +3171,12 @@ CRS: EPSG:2180</code></pre>
 </section>
 <section id="blok" class="level2">
 <h2 class="anchored" data-anchor-id="blok">Blok</h2>
+<p>Zamiast pojedynczego punktu możemy wykorzystać blok, który umożliwi pozyskanie wartości z zakresu prostokąta zdefiniowanego przez <code>QgsRectangle</code>. Do jego utworzenia niezbędne jest określenie minimalnych i maksymalnych współrzędnych (cztery wartości). Następnie użyjemy metodę <code>block()</code> również z <code>dataProvider()</code>, która wymaga wskazania:</p>
+<ul>
+<li>indeksu kanału,</li>
+<li>obiektu <code>QgsRectangle</code>,</li>
+<li>liczby kolumn oraz wierszy.</li>
+</ul>
 <div id="79e5da23" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.core <span class="im">import</span> QgsRectangle</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -3194,6 +3196,7 @@ CRS: EPSG:2180</code></pre>
 Liczba komórek: 7268</code></pre>
 </div>
 </div>
+<p>W rezultacie otrzymamy <code>QgsRasterBlock</code>, dla którego możemy wyświetlić numera kolumny, wiersza i odpowiadającą im wartość komórki.</p>
 <div id="bd1bf891" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">3</span>): <span class="co"># block.width()</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>, <span class="dv">3</span>): <span class="co"># block.height()</span></span>
@@ -3240,6 +3243,7 @@ Liczba komórek: 7268</code></pre>
 </section>
 <section id="raster" class="level2">
 <h2 class="anchored" data-anchor-id="raster">Raster</h2>
+<p>Jeśli posiadamy wystarczającą ilość pamięci RAM, to możemy wczytać cały raster do pamięci. Wygląda to podobnie jak w przypadku wczytywania za pomocą bloku, z tą różnicą iż podajemy cały zakres rastra oraz wszystkie kolumny i wiersze. Możliwe jest dokonanie konwersji z <code>QgsRasterBlock</code> do macierzy <code>numpy</code> używając metody <code>frombuffer()</code> oraz <code>reshape()</code>. Zwróć uwagę, że w <code>numpy</code> pierwszy wymiar macierzy to wiersze, a drugi to kolumny (w QGIS jest na odwrót). Domyślnie dane nie są maskowane (wymagane jest zastosowanie modułu <em>masked arrays</em>).</p>
 <div id="9c44b3ac" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -3262,6 +3266,7 @@ Liczba komórek: 7268</code></pre>
 <p>W QGIS 3.40 dodano nową metodę <code>as_numpy()</code>, która upraszcza konwersję do macierzy.</p>
 <section id="wyświetlenie" class="level3">
 <h3 class="anchored" data-anchor-id="wyświetlenie">Wyświetlenie</h3>
+<p>Mając dane w postaci macierzy, możemy je wyświetlić używając biblioteki <code>matplotlib</code> w następujący sposób:</p>
 <div id="9994f5cd" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -3323,7 +3328,7 @@ Liczba komórek: 7268</code></pre>
 <span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;OK&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="maskowanie" class="level2">
 <h2 class="anchored" data-anchor-id="maskowanie">Maskowanie</h2>
-<p>Aby stworzyć maskę wartości należy wykorzystać operator logiczny i ustalony warunek, np. wysokość terenu jest mniejsza niż 80 m n.p.m. W ten sposób otrzymamy raster binarny reprezentujący obszary, które spełniają zadany warunek (wartość 1; prawda) oraz nie spełniają (wartość 0; fałsz). Następnie, jeśli przemnożymy maskę przez wartości rastra, to otrzymamy oryginalne wartości dla obszarów spełniających warunek, w przeciwnym razie iloczyn operacji wynosi 0 (czyli komóra zostaje zamaskowana).</p>
+<p>Aby stworzyć maskę wartości należy wykorzystać operator logiczny i ustalony warunek, np. wysokość terenu jest mniejsza niż 80 m n.p.m. W ten sposób otrzymamy raster binarny reprezentujący obszary, które spełniają zadany warunek (wartość 1; prawda) oraz nie spełniają (wartość 0; fałsz). Następnie, jeśli przemnożymy maskę przez wartości rastra, to otrzymamy oryginalne wartości dla obszarów spełniających warunek, w przeciwnym razie iloczyn operacji wynosi 0 (czyli komórka zostaje zamaskowana).</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># maskowanie</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>formulaString <span class="op">=</span> <span class="st">&quot;(&#39;DEM@1&#39; &lt; 80) * &#39;DEM@1&#39;&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
@@ -3336,41 +3341,33 @@ Liczba komórek: 7268</code></pre>
 </section>
 <section id="obliczenie-histogramu" class="level1">
 <h1>Obliczenie histogramu</h1>
+<p>Histogram umożliwia analizę rozkładu częstości wartości komórek poprzez zgrupowanie i zliczenie ich w określonych przedziałach (interwałach). Do stworzenia histogramu musimy zdefiniować liczbę przedziałów (wyznaczają w jaki sposób zostaną zgrupowane wartości) oraz kanał, dla którego ma zostać obliczony. Wymienione parametry przekazujemy do metody <code>histogram()</code> z <code>dataProvider()</code>. Wartości histogramu przechowywane są w atrybucie <code>histogramVector</code>.</p>
 <div id="b21cf338" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.core <span class="im">import</span> QgsRasterHistogram</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>provider <span class="op">=</span> raster.dataProvider()</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>bin_count <span class="op">=</span> <span class="dv">100</span>  <span class="co"># liczba przedziałów w histogramie</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>elev_max <span class="op">=</span> provider.bandStatistics(<span class="dv">1</span>).maximumValue</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>elev_min <span class="op">=</span> provider.bandStatistics(<span class="dv">1</span>).minimumValue</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># wyliczenie etykiet dla osi X</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>step <span class="op">=</span> (elev_max <span class="op">-</span> elev_min) <span class="op">/</span> (bin_count <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [elev_min <span class="op">+</span> i <span class="op">*</span> step <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(bin_count)]</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co"># oblicz histogram</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>histogram <span class="op">=</span> provider.histogram(<span class="dv">1</span>, bin_count)</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> histogram.histogramVector</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># oblicz histogram</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>bin_count <span class="op">=</span> <span class="dv">100</span>  <span class="co"># liczba przedziałów w histogramie</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>histogram <span class="op">=</span> provider.histogram(<span class="dv">1</span>, bin_count)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> histogram.histogramVector</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="be9d9022" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.core <span class="im">import</span> QgsHistogram</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># optymalizacja liczby przedziałów</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>bin_optim <span class="op">=</span> QgsHistogram()</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>bin_optim.setValues(array.flatten())</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bin_optim.optimalNumberBins())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>6243</code></pre>
-</div>
+<p>Do wizualizacji wykorzystamy wykres słupkowy, gdzie na osi Y znajdzie się częstość występowania wartości, a na osi X wysokość terenu. Aby wyświetlić prawidłowe etykiety na osi X musimy je wcześniej opracować, tj. najpierw podzielić zakres wartości na równe części (<code>step</code>), a następnie przypisać każdemu przedziałowi od 1 do 100 odpowiednią etykietę (<code>labels</code>).</p>
+<div id="2f52d6db" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># wyliczenie etykiet dla osi X</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>elev_max <span class="op">=</span> provider.bandStatistics(<span class="dv">1</span>).maximumValue</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>elev_min <span class="op">=</span> provider.bandStatistics(<span class="dv">1</span>).minimumValue</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>step <span class="op">=</span> (elev_max <span class="op">-</span> elev_min) <span class="op">/</span> (bin_count <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> [elev_min <span class="op">+</span> i <span class="op">*</span> step <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(bin_count)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div id="18b47c70" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">4</span>, <span class="dv">2</span>))</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>plt.bar(labels, vals, width <span class="op">=</span> step)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Wysokość terenu [m n.p.m]&quot;</span>)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Częstość&quot;</span>)</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">4</span>, <span class="dv">2</span>))</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>plt.bar(labels, vals, width <span class="op">=</span> step)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Wysokość terenu [m n.p.m]&quot;</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Częstość&quot;</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -3383,31 +3380,31 @@ Liczba komórek: 7268</code></pre>
 <section id="przepróbkowanie" class="level1">
 <h1>Przepróbkowanie</h1>
 <p>Do przepróbkowania (<em>resampling</em>) rastra można wykorzystać dwa zaawansowane programy pochodzące z GDAL, tj. <a href="https://gdal.org/en/stable/programs/gdalwarp.html">gdalwarp</a> (używany do transformacji rastrów między różnymi układami odniesienia) oraz <a href="https://gdal.org/en/stable/programs/gdal_translate.html">gdal_translate</a> (używany do konwersji formatu i typów danych). Aby je zastosować należy najpierw zainicjować QGIS (bez tego nie będzie możliwe znalezienie modułów przetwarzania).</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://docs.qgis.org/latest/en/docs/user_manual/processing_algs/gdal/rasterprojections.html#warp-reproject</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis <span class="im">import</span> processing</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;INPUT&quot;</span>: filepath,          <span class="co"># nazwa obiektu lub ścieżka do pliku</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;TARGET_CRS&quot;</span>: <span class="st">&quot;EPSG:2180&quot;</span>,  <span class="co"># reprojekcja</span></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;TARGET_RESOLUTION&quot;</span>: <span class="dv">1000</span>,  <span class="co"># rozdzielczość</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;RESAMPLING&quot;</span>: <span class="dv">0</span>,            <span class="co"># numer metody</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;OUTPUT&quot;</span>: <span class="st">&quot;DEM_1000.tif&quot;</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>processing.run(<span class="st">&quot;gdal:warpreproject&quot;</span>, params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://docs.qgis.org/latest/en/docs/user_manual/processing_algs/gdal/rasterprojections.html#warp-reproject</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis <span class="im">import</span> processing</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;INPUT&quot;</span>: filepath,          <span class="co"># nazwa obiektu lub ścieżka do pliku</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;TARGET_CRS&quot;</span>: <span class="st">&quot;EPSG:2180&quot;</span>,  <span class="co"># reprojekcja</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;TARGET_RESOLUTION&quot;</span>: <span class="dv">1000</span>,  <span class="co"># rozdzielczość</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;RESAMPLING&quot;</span>: <span class="dv">0</span>,            <span class="co"># numer metody</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;OUTPUT&quot;</span>: <span class="st">&quot;DEM_1000.tif&quot;</span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>processing.run(<span class="st">&quot;gdal:warpreproject&quot;</span>, params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Alternatywnie można użyć odwołań systemowych poprzez moduł Pythona <code>subprocess</code> do <code>qgis_process</code>.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> [</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--INPUT=&quot;</span> <span class="op">+</span> filepath,</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--TARGET_CRS=EPSG:2180&quot;</span>,</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--TARGET_RESOLUTION=1000&quot;</span>,</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--RESAMPLING=0&quot;</span>,</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--OUTPUT=DEM_1000.tif&quot;</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> subprocess.run([<span class="st">&quot;qgis_process&quot;</span>, <span class="st">&quot;run&quot;</span>, <span class="st">&quot;gdal:warpreproject&quot;</span>] <span class="op">+</span> params,</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>                        capture_output <span class="op">=</span> <span class="va">True</span>, text <span class="op">=</span> <span class="va">True</span>)</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.stdout)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> subprocess</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> [</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--INPUT=&quot;</span> <span class="op">+</span> filepath,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--TARGET_CRS=EPSG:2180&quot;</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--TARGET_RESOLUTION=1000&quot;</span>,</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--RESAMPLING=0&quot;</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;--OUTPUT=DEM_1000.tif&quot;</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> subprocess.run([<span class="st">&quot;qgis_process&quot;</span>, <span class="st">&quot;run&quot;</span>, <span class="st">&quot;gdal:warpreproject&quot;</span>] <span class="op">+</span> params,</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                        capture_output <span class="op">=</span> <span class="va">True</span>, text <span class="op">=</span> <span class="va">True</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(result.stdout)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="tworzenie-rastra" class="level1">
 <h1>Tworzenie rastra</h1>
@@ -3417,11 +3414,10 @@ Liczba komórek: 7268</code></pre>
 <li>Wczytanie wartości i ich zastąpienie.</li>
 <li>Aktualizacja (nadpisanie) wartości rastra w pliku.</li>
 </ol>
-<p>Po operacji zapisu, należy wyłączyć tryb edycji warstwy.</p>
 <p>Na początku stwórzmy macierz z wartościami od 1 do 100, którą zapiszemy na dysku.</p>
 <div id="000917f3" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.arange(<span class="dv">1</span>, <span class="dv">101</span>).reshape(<span class="dv">10</span>, <span class="dv">10</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.arange(<span class="dv">1</span>, <span class="dv">101</span>).reshape(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[  1   2   3   4   5   6   7   8   9  10]
  [ 11  12  13  14  15  16  17  18  19  20]
@@ -3435,29 +3431,30 @@ Liczba komórek: 7268</code></pre>
  [ 91  92  93  94  95  96  97  98  99 100]]</code></pre>
 </div>
 </div>
-<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ext <span class="op">=</span> QgsRectangle(<span class="dv">347000</span>, <span class="dv">454000</span>, <span class="dv">393000</span>, <span class="dv">494000</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>crs <span class="op">=</span> QgsCoordinateReferenceSystem(<span class="st">&quot;EPSG:2180&quot;</span>)</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (1)</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>writer <span class="op">=</span> QgsRasterFileWriter(<span class="st">&quot;test.tif&quot;</span>)</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>provider <span class="op">=</span> writer.createOneBandRaster(</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    dataType <span class="op">=</span> Qgis.DataType.Float32,</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    width <span class="op">=</span> <span class="dv">10</span>,</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    height <span class="op">=</span> <span class="dv">10</span>,</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    extent <span class="op">=</span> ext,</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    crs <span class="op">=</span> crs</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co"># (2)</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>block <span class="op">=</span> provider.block(<span class="dv">1</span>, provider.extent(), provider.xSize(), provider.ySize())</span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(block.width()):</span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(block.height()):</span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> data[x][y]</span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>        block.setValue(x, y, value)</span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (3)</span></span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>provider.writeBlock(block, band <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>provider.setEditable(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Do zainicjowania pustego rastra na dysku służy klasa <code>QgsRasterFileWriter</code> i metoda <code>createOneBandRaster()</code>, która wymaga wskazania typu danych, liczby kolumn i wierszy, zakresu przestrzennego oraz układu współrzędnych. W drugim kroku stosujemy metodę <code>block</code>, która zasięgiem obejmuje cały raster i iterujemy po wszystkich komórkach rastra nadając im odpowiednie wartości z wejściowej macierzy (metoda <code>setValue()</code>). Na końcu zapisujemy wartości oraz wyłączamy tryb edycji warstwy.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ext <span class="op">=</span> QgsRectangle(<span class="dv">347000</span>, <span class="dv">454000</span>, <span class="dv">393000</span>, <span class="dv">494000</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>crs <span class="op">=</span> QgsCoordinateReferenceSystem(<span class="st">&quot;EPSG:2180&quot;</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (1)</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>writer <span class="op">=</span> QgsRasterFileWriter(<span class="st">&quot;test.tif&quot;</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>provider <span class="op">=</span> writer.createOneBandRaster(</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    dataType <span class="op">=</span> Qgis.DataType.Float32,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    width <span class="op">=</span> <span class="dv">10</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    height <span class="op">=</span> <span class="dv">10</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    extent <span class="op">=</span> ext,</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    crs <span class="op">=</span> crs</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co"># (2)</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>block <span class="op">=</span> provider.block(<span class="dv">1</span>, provider.extent(), provider.xSize(), provider.ySize())</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(block.width()):</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(block.height()):</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>        value <span class="op">=</span> data[x][y]</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>        block.setValue(x, y, value)</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="co"># (3)</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>provider.writeBlock(block, band <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>provider.setEditable(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Zauważ, że dla danych rastrowych typ danych określamy z klasy <code>Qgis.DataType</code>, a nie <code>QMetaType.Type</code>, jak w przypadku danych wektorowych.</p>
 </section>
 <section id="łączenie-rastrów" class="level1">
@@ -3468,25 +3465,25 @@ Liczba komórek: 7268</code></pre>
 <li><a href="https://gdal.org/en/stable/programs/gdal_merge.html">gdal_merge</a> – fizycznie łączy dane z wielu rastrów w jeden plik.</li>
 <li><a href="https://gdal.org/en/stable/programs/gdalbuildvrt.html">gdalbuildvrt</a> – tworzy wirtualny raster (plik z rozszerzeniem <code>.vrt</code> oparty o XML), który wyłącznie odwołuje się do wejściowych plików rastrowych bez ich kopiowania, tj. działa jako wskaźnik do oryginalnych plików.</li>
 </ol>
-<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://docs.qgis.org/latest/en/docs/user_manual/processing_algs/gdal/rastermiscellaneous.html#merge</span></span>
+<div class="sourceCode" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://docs.qgis.org/latest/en/docs/user_manual/processing_algs/gdal/rastermiscellaneous.html#merge</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;INPUT&quot;</span>: [filepath, filepath],</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;SEPARATE&quot;</span>: <span class="va">True</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;NODATA_OUTPUT&quot;</span>: <span class="dv">9999</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;OUTPUT&quot;</span>: <span class="st">&quot;Merged.tif&quot;</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>processing.run(<span class="st">&quot;gdal:merge&quot;</span>, params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://docs.qgis.org/latest/en/docs/user_manual/processing_algs/gdal/rastermiscellaneous.html#build-virtual-raster</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
 <span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;INPUT&quot;</span>: [filepath, filepath],</span>
 <span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;SEPARATE&quot;</span>: <span class="va">True</span>,</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;NODATA_OUTPUT&quot;</span>: <span class="dv">9999</span>,</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;OUTPUT&quot;</span>: <span class="st">&quot;Merged.tif&quot;</span></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>processing.run(<span class="st">&quot;gdal:merge&quot;</span>, params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://docs.qgis.org/latest/en/docs/user_manual/processing_algs/gdal/rastermiscellaneous.html#build-virtual-raster</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;INPUT&quot;</span>: [filepath, filepath],</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;SEPARATE&quot;</span>: <span class="va">True</span>,</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;OUTPUT&quot;</span>: <span class="st">&quot;Merged.vrt&quot;</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>processing.run(<span class="st">&quot;gdal:buildvirtualraster&quot;</span>, params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;OUTPUT&quot;</span>: <span class="st">&quot;Merged.vrt&quot;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>processing.run(<span class="st">&quot;gdal:buildvirtualraster&quot;</span>, params)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="zadania" class="level1">
 <h1>Zadania</h1>
