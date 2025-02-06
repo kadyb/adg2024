@@ -1,0 +1,59 @@
+from qgis.processing import alg
+from qgis.core import (QgsVectorLayer, QgsFeature, QgsVectorFileWriter, QgsGeometry, QgsPointXY, QgsWkbTypes)
+import math as m
+
+@alg(name="rotate_geometry", label="Rotate Geometry", group="ADG", group_label="ADG")
+@alg.input(type=alg.SOURCE, name="INPUT", label="Input layer")
+@alg.input(type=alg.NUMBER, name="ANGLE", label="Rotation angle (degrees)", default=0.0)
+@alg.input(type=alg.VECTOR_LAYER_DEST, name="OUTPUT", label="Rotated layer")
+
+def rotate_geometry(instance, parameters, context, feedback, inputs):
+    """
+    Rotates features around their centroids
+    """
+    layer = instance.parameterAsVectorLayer(parameters, "INPUT", context)
+    deg = instance.parameterAsDouble(parameters, "ANGLE", context)
+    output_path = instance.parameterAsOutputLayer(parameters, "OUTPUT", context)
+
+    rotated_layer = QgsVectorLayer(f"{QgsWkbTypes.displayString(layer.wkbType())}?crs={layer.crs().authid()}", "rotated", "memory")
+    rotated_layer.dataProvider().addAttributes(layer.fields())
+    rotated_layer.updateFields()
+
+    for feature in layer.getFeatures():
+        if feedback.isCanceled():
+            break
+        
+        rad = m.radians(deg)
+        geom = feature.geometry()
+        centroid = geom.centroid().asPoint()
+        
+        rot = []
+        for v in geom.vertices():
+            dx = v.x() - centroid.x()
+            dy = v.y() - centroid.y()
+            
+            rx = dx * m.cos(rad) - dy * m.sin(rad) + centroid.x()
+            ry = dx * m.sin(rad) + dy * m.cos(rad) + centroid.y()
+            rot.append(QgsPointXY(rx, ry))
+        
+        if geom.type() == QgsWkbTypes.PointGeometry:
+            new_geom = QgsGeometry.fromPointXY(rot[0])
+        elif geom.type() == QgsWkbTypes.LineGeometry:
+            new_geom = QgsGeometry.fromPolylineXY(rot)
+        elif geom.type() == QgsWkbTypes.PolygonGeometry:
+            new_geom = QgsGeometry.fromPolygonXY([rot])
+        else:
+            continue
+        
+        new_feature = QgsFeature(feature)
+        new_feature.setGeometry(new_geom)
+        rotated_layer.dataProvider().addFeature(new_feature)
+
+    QgsVectorFileWriter.writeAsVectorFormatV3(
+        rotated_layer,
+        output_path,
+        context.transformContext(),
+        QgsVectorFileWriter.SaveVectorOptions()
+    )
+
+    return {"OUTPUT": output_path}
