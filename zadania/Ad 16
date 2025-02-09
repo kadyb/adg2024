@@ -1,0 +1,23 @@
+import os
+import math
+import qgis.core as qc
+
+def surface_distance(layer):
+    if layer.isValid():
+        lFeat = list(layer.getFeatures())
+        dst = 0
+        for l in range(len(lFeat) - 1):
+            p = lFeat[l]
+            p_next = lFeat[l + 1]
+            x1, y1, z1 = float(p.attributes()[1]), float(p.attributes()[2]), float(p.attributes()[3])
+            x2, y2, z2 = float(p_next.attributes()[1]), float(p_next.attributes()[2]), float(p_next.attributes()[3])
+            dst += math.sqrt((x2 - x1)**2 + (y2 - y1)**2 + (z2 - z1)**2)
+        return round(dst, 2)
+    else:
+        raise TypeError(f"{layer} nie jest poprawnym obiektem!")
+
+path = os.path.join(os.path.expanduser("~"), "OneDrive", "Dokumenty", "adg", "dane")
+os.chdir(path)
+profil = QgsVectorLayer("profil.csv")
+odl = surface_distance(profil)
+print(f"Odległość powierzchniowa: {odl} m")
