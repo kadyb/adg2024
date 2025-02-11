@@ -8,7 +8,7 @@
 
 <meta name="author" content="Krzysztof Dyba">
 
-<title>Algorytmy danych geoprzestrzennych</title>
+<title>Algorytmy danych geoprzestrzennych: Skrypty geoprzetwarzania w QGIS</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -3084,537 +3084,155 @@ vertical-align: -.125em;
   <nav id="TOC" role="doc-toc" class="toc-active">
    
   <ul>
-  <li><a href="#przegląd-funkcjonalności" id="toc-przegląd-funkcjonalności" class="nav-link active" data-scroll-target="#przegląd-funkcjonalności">Przegląd funkcjonalności</a>
-  <ul class="collapse">
-  <li><a href="#zmienne" id="toc-zmienne" class="nav-link" data-scroll-target="#zmienne">Zmienne</a></li>
-  <li><a href="#typy-danych" id="toc-typy-danych" class="nav-link" data-scroll-target="#typy-danych">Typy danych</a></li>
-  <li><a href="#struktury-danych" id="toc-struktury-danych" class="nav-link" data-scroll-target="#struktury-danych">Struktury danych</a>
-  <ul class="collapse">
-  <li><a href="#lista" id="toc-lista" class="nav-link" data-scroll-target="#lista">Lista</a></li>
-  <li><a href="#słownik" id="toc-słownik" class="nav-link" data-scroll-target="#słownik">Słownik</a></li>
-  </ul></li>
-  <li><a href="#operatory" id="toc-operatory" class="nav-link" data-scroll-target="#operatory">Operatory</a>
-  <ul class="collapse">
-  <li><a href="#arytmetyczne" id="toc-arytmetyczne" class="nav-link" data-scroll-target="#arytmetyczne">Arytmetyczne:</a></li>
-  <li><a href="#porównawcze" id="toc-porównawcze" class="nav-link" data-scroll-target="#porównawcze">Porównawcze</a></li>
-  <li><a href="#logiczne" id="toc-logiczne" class="nav-link" data-scroll-target="#logiczne">Logiczne</a></li>
-  </ul></li>
-  <li><a href="#instrukcje-warunkowe" id="toc-instrukcje-warunkowe" class="nav-link" data-scroll-target="#instrukcje-warunkowe">Instrukcje warunkowe</a></li>
-  <li><a href="#pętle" id="toc-pętle" class="nav-link" data-scroll-target="#pętle">Pętle</a>
-  <ul class="collapse">
-  <li><a href="#pętla-for" id="toc-pętla-for" class="nav-link" data-scroll-target="#pętla-for">Pętla <code>for</code></a></li>
-  <li><a href="#pętla-while" id="toc-pętla-while" class="nav-link" data-scroll-target="#pętla-while">Pętla <code>while</code></a></li>
-  </ul></li>
-  <li><a href="#funkcje" id="toc-funkcje" class="nav-link" data-scroll-target="#funkcje">Funkcje</a></li>
-  <li><a href="#obsługa-wyjątków" id="toc-obsługa-wyjątków" class="nav-link" data-scroll-target="#obsługa-wyjątków">Obsługa wyjątków</a></li>
-  <li><a href="#importowanie-bibliotek" id="toc-importowanie-bibliotek" class="nav-link" data-scroll-target="#importowanie-bibliotek">Importowanie bibliotek</a></li>
-  </ul></li>
+  <li><a href="#struktura-skryptu" id="toc-struktura-skryptu" class="nav-link active" data-scroll-target="#struktura-skryptu">Struktura skryptu</a></li>
+  <li><a href="#wyświetlenie-metadanych" id="toc-wyświetlenie-metadanych" class="nav-link" data-scroll-target="#wyświetlenie-metadanych">Wyświetlenie metadanych</a></li>
+  <li><a href="#stworzenie-buforów" id="toc-stworzenie-buforów" class="nav-link" data-scroll-target="#stworzenie-buforów">Stworzenie buforów</a></li>
   <li><a href="#zadania" id="toc-zadania" class="nav-link" data-scroll-target="#zadania">Zadania</a></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/kadyb/adg2024"><i class="bi bi-github"></i>Repozytorium</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Algorytmy danych geoprzestrzennych</h1>
-<p class="subtitle lead">Wprowadzenie do Pythona</p>
-</div>
 
 
 
-<div class="quarto-title-meta">
-
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Krzysztof Dyba </p>
-          </div>
-  </div>
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>Python to interpretowany język programowania wysokiego poziomu, powszechnie stosowany w różnych zastosowaniach takich jak tworzenie stron internetowych, analiza danych i uczenie maszynowe, pisanie skryptów i automatyzacja procesów czy zarządzanie systemami (<em>DevOps</em>). Jest także używany w systemach informacji geograficznej do przetwarzania i analizowania danych przestrzennych. Jest aktualnie najpopularniejszym językiem programowania.</p>
-<p>Cechy języka Python:</p>
+<p><font size="5"><strong>Algorytmy danych geoprzestrzennych</strong></font><br> <font size="5">Skrypty geoprzetwarzania w QGIS</font></p>
+<p><font size="5">Krzysztof Dyba</font></p>
+<p>Narzędzia przetwarzania (<em>Processing Toolbox</em>) w QGIS są kompleksowym systemem do uruchamiania algorytmów analizy geoprzestrzennej. Algorytmy te mogą pochodzić z różnych źródeł:</p>
+<ol type="1">
+<li>Natywne algorytmy (wbudowane bezpośrednio w QGIS i napisane w C++ dla większej wydajności).</li>
+<li>Zewnętrzne algorytmy (pochodzące z różnych aplikacji, np. SAGA GIS czy GRASS GIS).</li>
+<li><strong>Własne skrypty przetwarzania</strong>.</li>
+</ol>
+<p>Skrypty przetwarzania są pisane przy użyciu języka Python i wykorzystują QGIS Python API (PyQGIS) do interakcji z danymi przestrzennymi. Skrypty te muszą przestrzegać określonej struktury, w tym definiować dane wejściowe, wyjściowe i logikę algorytmu. Istnieje kilka możliwości ich zastosowania:</p>
 <ul>
-<li>darmowy i otwarty,</li>
-<li>język interpretowany (kod wykonywany jest linia po linii, bez potrzeby kompilacji),</li>
-<li>język wysokiego poziomu (pominięcie aspektów związanych z zarządzaniem pamięcią),</li>
-<li>dynamiczne typowanie (zmienne nie wymagają jawnych deklaracji przed użyciem),</li>
-<li>wsparcie dwóch paradygmatów programowania, tj. obiektowego i funkcjonalnego,</li>
-<li>duży ekosystem (biblioteki, wsparcie, tutoriale),</li>
-<li>indeksowanie od 0.</li>
+<li>bezpośrednie uruchomienie z poziomu interfejsu QGIS,</li>
+<li>wykorzystanie w kreatorze modeli (<em>model designer</em>) do tworzenia złożonych przepływów pracy,</li>
+<li>użycie do przetwarzania wsadowego,</li>
+<li>odwołanie się z poziomu wbudowanej konsoli Python.</li>
 </ul>
-<section id="przegląd-funkcjonalności" class="level1">
-<h1>Przegląd funkcjonalności</h1>
-<p>W tej sekcji znajdziesz błyskawiczny przegląd funkcjonalności Pythona. Pełna wersja tutorialu w języku angielskim dostępna jest <a href="https://docs.python.org/3/tutorial/">tutaj</a>.</p>
-<section id="zmienne" class="level2">
-<h2 class="anchored" data-anchor-id="zmienne">Zmienne</h2>
-<p>Do przypisania wartości do zmiennej stosuje się znak równości <code>=</code>.</p>
-<div id="c0605434" class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dv">5</span>          <span class="co"># liczba</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="st">&quot;parasol&quot;</span>  <span class="co"># tekst</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Utworzone zmienne można wyświetlić używając funkcji <code>print()</code>.</p>
-<div id="3f61d50d" class="cell" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(x)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>5
-parasol</code></pre>
-</div>
-</div>
+<p>Aby stworzyć nowy skrypt przetwarzania w QGIS należy:</p>
+<ol type="1">
+<li>Otworzyć panel algorytmów w zakładce Processing (<code>CTRL</code> + <code>ALT</code> + <code>T</code>).</li>
+<li>Kliknąć ikonę “Twórz nowy skrypt” (alternatywnie można wykorzystać gotowy szablon).</li>
+<li>Napisać kod zgodnie z wymaganą strukturą.</li>
+<li>Zapisać plik z rozszerzeniem <code>.py</code> w katalogu ze skryptami w QGIS (będzie dostępny w zakładce “Skrypty” w panelu algorytmów).</li>
+</ol>
+<section id="struktura-skryptu" class="level1">
+<h1>Struktura skryptu</h1>
+<p>Do tworzenia skryptów przetwarzania można wybrać jeden z dwóch sposobów:</p>
+<ol type="1">
+<li>Wykorzystanie klasy <a href="https://qgis.org/pyqgis/3.40/core/QgsProcessingAlgorithm.html">QgsProcessingAlgorithm</a>. Szablon dostępny jest <a href="https://docs.qgis.org/3.40/en/docs/user_manual/processing/scripts.html#scripts-extend">tutaj</a>.</li>
+<li>Wykorzystanie dekoratora <code>@alg</code>, który umożliwia modyfikację metody lub klasy bez bezpośredniej zmiany ich kodu (<em>wrapping</em>). Jest to sposób uproszczony z brakiem możliwości użycia we wtyczkach. Szablon dostępny jest <a href="https://docs.qgis.org/3.40/en/docs/user_manual/processing/scripts.html#scripts-alg">tutaj</a>.</li>
+</ol>
+<p>Przykładowe skrypty znajdziesz w <a href="https://github.com/qgis/QGIS/tree/master/python/plugins/processing/algs/qgis">repozytorium QGIS</a>.</p>
 </section>
-<section id="typy-danych" class="level2">
-<h2 class="anchored" data-anchor-id="typy-danych">Typy danych</h2>
-<p>Domyślnie wspierane są następujące typy danych:</p>
-<ul>
-<li>liczba całkowita <strong>int</strong> (np. -10, 0, 10),</li>
-<li>liczba zmiennoprzecinkowa <strong>float</strong> (np. 0.01, 21.37),</li>
-<li>łańcuchy tekstu <strong>str</strong> (np. “Ala ma kota.”, ‘rower’),</li>
-<li>wartości logiczne <strong>bool</strong> (True, False).</li>
-</ul>
-<p>Do sprawdzenia typu danych służy funkcja <code>type()</code>.</p>
-<div id="f20a0290" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>int</code></pre>
-</div>
-</div>
-<div id="f04d9542" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(<span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
-<pre><code>float</code></pre>
-</div>
-</div>
-<div id="32f49015" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(<span class="st">&quot;Ala ma kota.&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<pre><code>str</code></pre>
-</div>
-</div>
-<div id="f4df4edd" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">type</span>(<span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
-<pre><code>bool</code></pre>
-</div>
-</div>
-<p>Możemy również dokonać konwersji między typami: - z liczby zmiennoprzecinkowej na całkowitą (część dziesiętna zostaje usunięta!), - z liczby całkowitej na zmiennoprzecinkową, - z liczby na tekst i na odwrót.</p>
-<div id="95625fb0" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># konwersja liczby zmiennoprzecinkowej na całkowitą</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(<span class="fl">3.14</span>))</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(<span class="fl">3.99</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>3
-3</code></pre>
-</div>
-</div>
-<div id="31a395a6" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># konwersja tekstu na liczbę</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="bu">str</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="8">
-<pre><code>&#39;10&#39;</code></pre>
-</div>
-</div>
+<section id="wyświetlenie-metadanych" class="level1">
+<h1>Wyświetlenie metadanych</h1>
+<p>Zacznijmy od napisania prostego skryptu używając dekoratora <code>@alg</code>, który umożliwi wyświetlenie metadanych warstwy wektorowej. Obligatoryjnie musimy zdefiniować cztery elementy:</p>
+<ol type="1">
+<li>Dekorator <code>@alg</code> służący do definiowania nazwy i lokalizacji algorytmu w panelu algorytmów.</li>
+<li>Dekorator <code>@alg.input</code> służący do definiowania danych wejściowych.</li>
+<li>Dekorator <code>@alg.output</code> służący do definiowania danych wyjściowych.</li>
+<li>Logikę algorytmu.</li>
+</ol>
+<p>Oprócz tego, wymagana jest dokumentacja (opis) wewnątrz funkcji używając <code>docstrings</code> (jeśli tego nie uwzględnimy, zostanie zwrócony błąd).</p>
+<p>Dane wyjściowe muszą zostać jawnie zdefiniowane, tzn. należy dokładnie wskazać, co jest wynikiem działania algorytmu. W przeciwnym razie nie będzie można poprawnie użyć skryptu w przetwarzaniu sekwencyjnym (np. w modelerze). Algorytm może przyjmować i zwracać dane różnego typu (niekoniecznie warstwy), np. łańcuchy tekstu, liczby czy wartości logiczne. Wszystkie typy danych wejściowych i wyjściowych dla algorytmów przetwarzania znajdziesz <a href="https://docs.qgis.org/3.40/en/docs/user_manual/processing/parameters.html">tutaj</a>. Do przetwarzania przydatne będą również metody ewaluacji parametrów opisane <a href="https://qgis.org/pyqgis/3.40/core/QgsProcessingParameters.html">tutaj</a>. Jeśli algorytm posiada poprawnie zdefiniowane wyjście (warstwa wektorowa, rastrowa, chmura punktów), to automatycznie zostanie dodane do projektu.</p>
+<p>Danymi wejściowymi w naszej funkcji będzie warstwa wektorowa wybrana przez użytkownika za pomocą interfejsu, a danymi wyjściowymi łańcuch tekstu opisujące metadane tej warstwy (np. nazwa, źródło, liczba obiektów, typ geometrii, zakres przestrzenny oraz układ przestrzenny) jako słownik.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.processing <span class="im">import</span> alg</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">@alg</span>(name <span class="op">=</span> <span class="st">&quot;vector_metadata&quot;</span>, label <span class="op">=</span> <span class="st">&quot;Print metadata of vector layer&quot;</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>     group <span class="op">=</span> <span class="st">&quot;examplescripts&quot;</span> , group_label <span class="op">=</span> <span class="st">&quot;Example scripts&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">@alg.input</span>(<span class="bu">type</span> <span class="op">=</span> alg.VECTOR_LAYER, name <span class="op">=</span> <span class="st">&quot;INPUT&quot;</span>, label <span class="op">=</span> <span class="st">&quot;Input vector layer&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">@alg.output</span>(<span class="bu">type</span> <span class="op">=</span> alg.STRING, name <span class="op">=</span> <span class="st">&quot;OUTPUT&quot;</span>, label <span class="op">=</span> <span class="st">&quot;Metadata&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vector_metadata(instance, parameters, context, feedback, inputs):</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">    Print metadata of vector layer</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># QgsVectorLayer</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    layer <span class="op">=</span> instance.parameterAsVectorLayer(parameters, <span class="st">&quot;INPUT&quot;</span>, context)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    name <span class="op">=</span> layer.name()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    data_source <span class="op">=</span> layer.dataProvider().dataSourceUri()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    num_features <span class="op">=</span> layer.featureCount()</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    geometry_type <span class="op">=</span> layer.geometryType()</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    extent <span class="op">=</span> layer.extent().toString(precision <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    crs <span class="op">=</span> layer.crs().authid()</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    output <span class="op">=</span> {</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Layer name&quot;</span>: name,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Data source&quot;</span>: data_source,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Number of features&quot;</span>: num_features,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Geometry type&quot;</span>: geometry_type,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;Extent&quot;</span>: extent,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;CRS&quot;</span>: crs</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sprawdź czy użytkownik anulował operację</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> feedback.isCanceled():</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {}</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> output</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="struktury-danych" class="level2">
-<h2 class="anchored" data-anchor-id="struktury-danych">Struktury danych</h2>
-<p>Do podstawowych struktur danych należą:</p>
-<ul>
-<li>lista,</li>
-<li>słownik.</li>
-</ul>
-<section id="lista" class="level3">
-<h3 class="anchored" data-anchor-id="lista">Lista</h3>
-<p>Lista jest uporządkowanym, modyfikowalnym i dynamicznym zbiorem elementów, które mogą być dowolnego typu danych. Definiuje się ją poprzez umieszczenie elementów między nawiasami kwadratowymi <code>[]</code>, które oddzielone są przecinkami. Listy można również zagnieżdżać.</p>
-<div id="a274ba7e" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># stworzenie listy</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ls <span class="op">=</span> [<span class="dv">35</span>, <span class="st">&quot;rower&quot;</span>, <span class="fl">53.61</span>, <span class="st">&quot;plecak&quot;</span>, <span class="va">True</span>]</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[35, &#39;rower&#39;, 53.61, &#39;plecak&#39;, True]</code></pre>
-</div>
-</div>
-<p>Funkcja <code>len()</code> zwraca liczbę elementów w liście.</p>
-<div id="c359d41f" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(ls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="10">
-<pre><code>5</code></pre>
-</div>
-</div>
-<p>Dostęp do poszczególnych elementów listy możemy uzyskać za pomocą ich indeksu.</p>
-<div id="af077b35" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dostęp do elementów listy</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls[<span class="dv">0</span>]) <span class="co"># pierwszy element</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls[<span class="dv">1</span>]) <span class="co"># drugi element</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls[<span class="op">-</span><span class="dv">1</span>]) <span class="co"># pierwszy element od końca</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls[<span class="op">-</span><span class="dv">2</span>]) <span class="co"># drugi element od końca</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>35
-rower
-True
-plecak</code></pre>
-</div>
-</div>
-<div id="da498594" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># zakresy indeksów</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ls[początek:koniec]</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls[<span class="dv">2</span>:<span class="dv">4</span>]) <span class="co"># od trzeciego do czwartego obiektu</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls[:<span class="dv">3</span>]) <span class="co"># od początku do trzeciego obiektu</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls[<span class="dv">3</span>:]) <span class="co"># od czwartego obiektu do końca</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[53.61, &#39;plecak&#39;]
-[35, &#39;rower&#39;, 53.61]
-[&#39;plecak&#39;, True]</code></pre>
-</div>
-</div>
-<p>Używając indeksów można zastąpić poszczególne elementy listy.</p>
-<div id="e5239bb3" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>ls[<span class="dv">4</span>] <span class="op">=</span> <span class="va">False</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[35, &#39;rower&#39;, 53.61, &#39;plecak&#39;, False]</code></pre>
-</div>
-</div>
-<p>Możemy również modyfikować zawartość listy za pomocą różnych metod:</p>
-<ul>
-<li><code>append()</code> – dodaje element na końcu listy,</li>
-<li><code>insert(indeks, element)</code> – dodaje element w określonym miejscu,</li>
-<li><code>remove()</code> – usuwa element według wartości,</li>
-<li><code>reverse()</code> – odwraca kolejność elementów listy.</li>
-</ul>
-<div id="28692a5f" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ls.append(<span class="dv">999</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[35, &#39;rower&#39;, 53.61, &#39;plecak&#39;, False, 999]</code></pre>
-</div>
-</div>
-<div id="fd5fd5e0" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>ls.insert(<span class="dv">6</span>, <span class="st">&quot;nowy&quot;</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[35, &#39;rower&#39;, 53.61, &#39;plecak&#39;, False, 999, &#39;nowy&#39;]</code></pre>
-</div>
-</div>
-<div id="293137ba" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>ls.remove(<span class="st">&quot;rower&quot;</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[35, 53.61, &#39;plecak&#39;, False, 999, &#39;nowy&#39;]</code></pre>
-</div>
-</div>
-<div id="9696b6c0" class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>ls.reverse()</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ls)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[&#39;nowy&#39;, 999, False, &#39;plecak&#39;, 53.61, 35]</code></pre>
-</div>
-</div>
-<p>Nie są to jednak wszystkie dostępne metody. Aby odkryć pozostałe, wykonaj Zadanie 4.</p>
-</section>
-<section id="słownik" class="level3">
-<h3 class="anchored" data-anchor-id="słownik">Słownik</h3>
-<p>Słownik jest strukturą danych używaną do przechowywania zbiorów danych w formacie pary klucz-wartość. W przeciwieństwie list, które są indeksowane liczbami całkowitymi, słowniki są indeksowane za pomocą unikalnych, niemodyfikowalnych kluczy. Każdy klucz jest unikatowy w słowniku i pełni funkcję identyfikatora umożliwiającego dostęp do powiązanej z nim wartości.</p>
-<p>Słowniki są definiowane za pomocą nawiasów klamrowych <code>{}</code>, pary klucz-wartość są określane za pomocą dwukropka <code>:</code>, a kolejne pary są rozdzielone przecinkami <code>,</code> w następujący sposób:</p>
-<p><code>slownik = {klucz_1: wartosc_1, klucz_2: wartosc_2, ...}</code></p>
-<div id="2f2b9aa4" class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># stworzenie słownika</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>osoby <span class="op">=</span> {</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;imie&quot;</span>: <span class="st">&quot;Ania&quot;</span>,</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;wiek&quot;</span>: <span class="dv">21</span>,</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;miasto&quot;</span>: <span class="st">&quot;Poznań&quot;</span></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Dostęp do wartości powiązanej z kluczem możemy uzyskać za pomocą nawiasów kwadratowych <code>[]</code> i klucza:</p>
-<div id="537e0858" class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(osoby[<span class="st">&quot;imie&quot;</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Ania</code></pre>
-</div>
-</div>
-<p>Dostępne są również metody <code>keys()</code> oraz <code>values()</code>, które zwracają wszystkie klucze oraz wartości.</p>
-<div id="983b95b9" class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(osoby.keys())</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(osoby.values())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>dict_keys([&#39;imie&#39;, &#39;wiek&#39;, &#39;miasto&#39;])
-dict_values([&#39;Ania&#39;, 21, &#39;Poznań&#39;])</code></pre>
-</div>
-</div>
-<p>Słowniki są modyfikowalne, co oznacza, że można dodawać, modyfikować lub usuwać pary klucz-wartość po utworzeniu słownika.</p>
-<div id="59958f83" class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dodanie nowej pary klucz-wartość</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>osoby[<span class="st">&quot;wzrost&quot;</span>] <span class="op">=</span> <span class="dv">165</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># modyfikacja wartości</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>osoby[<span class="st">&quot;wiek&quot;</span>] <span class="op">=</span> <span class="dv">41</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co"># usunięcie pary klucz-wartość</span></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span> osoby[<span class="st">&quot;miasto&quot;</span>]</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(osoby)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>{&#39;imie&#39;: &#39;Ania&#39;, &#39;wiek&#39;: 41, &#39;wzrost&#39;: 165}</code></pre>
-</div>
-</div>
-</section>
-</section>
-<section id="operatory" class="level2">
-<h2 class="anchored" data-anchor-id="operatory">Operatory</h2>
-<p>Python obsługuje różne operatory do wykonywania operacji arytmetycznych, porównawczych, logicznych, przypisania i innych.</p>
-<section id="arytmetyczne" class="level3">
-<h3 class="anchored" data-anchor-id="arytmetyczne">Arytmetyczne:</h3>
-<ul>
-<li>Dodawanie <code>+</code>,</li>
-<li>Odejmowanie <code>-</code>,</li>
-<li>Mnożenie <code>*</code>,</li>
-<li>Dzielenie <code>/</code>,</li>
-<li>Modulo <code>%</code> (reszta z dzielenia),</li>
-<li>Potęgowanie <code>**</code>.</li>
-</ul>
-<div id="1dd86f7b" class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">3</span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">+</span> b)</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">-</span> b)</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">*</span> b)</span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">/</span> b)</span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">%</span> b)</span>
-<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">**</span> b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>13
-7
-30
-3.3333333333333335
-1
-1000</code></pre>
-</div>
-</div>
-</section>
-<section id="porównawcze" class="level3">
-<h3 class="anchored" data-anchor-id="porównawcze">Porównawcze</h3>
-<ul>
-<li>Operator równości <code>==</code>,</li>
-<li>Operator negacji równości <code>!=</code>,</li>
-<li>Operatory nierówności <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;</code>, <code>&lt;=</code>.</li>
-</ul>
-<div id="40ec5cda" class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">3</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">==</span> b)</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">!=</span> b)</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">&lt;</span> b)</span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">&gt;</span> b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>False
-True
-False
-True</code></pre>
-</div>
-</div>
-</section>
-<section id="logiczne" class="level3">
-<h3 class="anchored" data-anchor-id="logiczne">Logiczne</h3>
-<ul>
-<li>Koniunkcja <code>and</code> (<code>True</code>, jeśli obie wartości są prawdziwe),</li>
-<li>Alternatywa <code>or</code> (<code>True</code>, jeśli przynajmniej jedna wartość jest prawdziwa),</li>
-<li>Negacja <code>not</code> (odwraca wartość logiczną).</li>
-</ul>
-<div id="5e44e123" class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">&gt;</span> <span class="dv">0</span> <span class="kw">and</span> a <span class="op">&lt;</span> <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>True</code></pre>
-</div>
-</div>
-<div id="cf03e41d" class="cell" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="va">True</span> <span class="kw">and</span> <span class="va">False</span>)</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="va">True</span> <span class="kw">or</span> <span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>False
-True</code></pre>
-</div>
-</div>
-</section>
-</section>
-<section id="instrukcje-warunkowe" class="level2">
-<h2 class="anchored" data-anchor-id="instrukcje-warunkowe">Instrukcje warunkowe</h2>
-<p>Instrukcje warunkowe są podstawowymi mechanizmami przepływu pracy, które pozwalają na wykonywanie różnych bloków kodu w zależności od tego czy określony warunek jest prawdziwy czy fałszywy. W Pythonie do formułowania instrukcji warunkowych używa się wyrażeń <code>if</code>, <code>elif</code> oraz <code>else</code>. Warunki są sprawdzane (i wykonywane) w takiej kolejności w jakiej zostały zapisane.</p>
-<div id="bab4cfa4" class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dv">10</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sprawdza jeden warunek</span></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> x <span class="op">&gt;</span> <span class="dv">0</span>:</span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Liczba jest większa od 0.&quot;</span>)</span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Liczba jest mniejsza od 0 lub równa 0.&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Liczba jest większa od 0.</code></pre>
-</div>
-</div>
-<div id="7751495b" class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co"># sprawdza dwa warunki</span></span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> x <span class="op">&gt;</span> <span class="dv">0</span>:</span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Liczba jest większa od 0.&quot;</span>)</span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="cf">elif</span> x <span class="op">&lt;</span> <span class="dv">0</span>:</span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Liczba jest mniejsza od 0.&quot;</span>)</span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Liczba to 0.&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Liczba to 0.</code></pre>
-</div>
-</div>
-</section>
-<section id="pętle" class="level2">
-<h2 class="anchored" data-anchor-id="pętle">Pętle</h2>
-<p>Pętle to instrukcje przepływu pracy używane do wielokrotnego wykonywania bloku kodu. Są one niezbędne do automatyzacji powtarzających się zadań. W Pythonie istnieją dwa typy pętli: <code>for</code> oraz <code>while</code>.</p>
-<section id="pętla-for" class="level3">
-<h3 class="anchored" data-anchor-id="pętla-for">Pętla <code>for</code></h3>
-<p>Służy do iteracji po sekwencji, np. lista, łańcuch znaków, zakres (lub dowolnym iterowalnym obiekcie) i wykonuje zdefiniowaną akcję dla każdego elementu.</p>
-<div id="167299fb" class="cell" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>ls <span class="op">=</span> [<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>]</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a><span class="co"># iteracja po elementach listy</span></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> ls:</span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>a
-b
-c</code></pre>
-</div>
-</div>
-<div id="60bae4f0" class="cell" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># iteracja po zakresie liczb</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">3</span>):</span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(i)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0
-1
-2</code></pre>
-</div>
-</div>
-<p>Zauważ, że numeracja rozpoczyna się od 0.</p>
-</section>
-<section id="pętla-while" class="level3">
-<h3 class="anchored" data-anchor-id="pętla-while">Pętla <code>while</code></h3>
-<p>Służy do wielokrotnej iteracji, dopóki określony warunek jest prawdziwy. Oznacza to, że pętla zakończy się wtedy, kiedy warunek nie zostanie spełniony. Używając tego rodzaju pętli, należy upewnić się, że jest ona skończona!</p>
-<div id="ca9a81c4" class="cell" data-execution_count="30">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>licznik <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> licznik <span class="op">&lt;</span> <span class="dv">5</span>:</span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(licznik)</span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>    licznik <span class="op">+=</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>0
-1
-2
-3
-4</code></pre>
-</div>
-</div>
-<p>Wykonywanie pętli można kontrolować za pomocą wyrażeń:</p>
-<ul>
-<li><code>break</code> – natychmiastowe wyjście z pętli,</li>
-<li><code>continue</code> – pominięcie bieżącej iteracji i przejście do następnej,</li>
-<li><code>pass</code> – brak akcji (nic się nie dzieje).</li>
-</ul>
-</section>
-</section>
-<section id="funkcje" class="level2">
-<h2 class="anchored" data-anchor-id="funkcje">Funkcje</h2>
-<p>Funkcja to blok kodu wielokrotnego użytku, który wykonuje określone zadanie. Umożliwiają organizowanie kodu w mniejsze moduły, dzięki czemu kod programu jest czytelniejszy i łatwiejszy do zrozumienia. Funkcje mogą przyjmować dane wejściowe, przetwarzać je i zwracać dane wyjściowe. Funkcje definiuje się za pomocą słowa kluczowego <code>def</code>, po którym następuje nazwa funkcji i nawiasy <code>()</code> z argumentami.</p>
-<div id="978985d2" class="cell" data-execution_count="31">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> pole_prostokata(a, b):</span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;Opcjonalna dokumentacja opisująca funkcję&quot;&quot;&quot;</span></span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    P <span class="op">=</span> a <span class="op">*</span> b</span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> P</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Aby wykonać funkcję, należy ją wywołać, używając jej nazwy wraz z nawiasami. Jeśli funkcja przyjmuje argumenty, to należy je określić w nawiasie.</p>
-<div id="36dfc8a7" class="cell" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>pole_prostokata(<span class="dv">10</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="32">
-<pre><code>50</code></pre>
-</div>
-</div>
-</section>
-<section id="obsługa-wyjątków" class="level2">
-<h2 class="anchored" data-anchor-id="obsługa-wyjątków">Obsługa wyjątków</h2>
-<p>Obsługa wyjątków jest mechanizmem umożliwiającym zarządzanie i reagowanie na błędy lub nieoczekiwane zdarzenia, które mogą wystąpić podczas wykonywania kodu. Przyczyny błędów w programie mogą być zróżnicowane, np. nieprawidłowy format danych wejściowych, brak pliku w określonej lokalizacji, dzielenie przez zero, itd.</p>
-<p>Podstawowym narzędziem Pythona do obsługi wyjątków jest blok <code>try-except</code>:</p>
-<ul>
-<li><code>try</code> – obejmuje blok kodu, który potencjalnie może spowodować wyjątek,</li>
-<li><code>except</code> – określa typów wyjątków, które powinny zostać wychwycone.</li>
-</ul>
-<p>Wśród podstawowych klas wyjątków możemy znaleźć:</p>
-<ul>
-<li><code>TypeError</code> (operacja wykonywana jest na niezgodnym typie danych),</li>
-<li><code>ZeroDivisionError</code> (próba dzielenia przez 0),</li>
-<li><code>FileNotFoundError</code> (żądany jest plik, który nie istnieje),</li>
-<li><code>SyntaxError</code> (nieprawidłowa składnia języka Python).</li>
-</ul>
-<p>Wszystkie klasy są opisane <a href="https://docs.python.org/3/library/exceptions.html">tutaj</a>.</p>
-<div id="615524a1" class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dzielenie(n):</span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>        wynik <span class="op">=</span> <span class="dv">10</span> <span class="op">/</span> n</span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">TypeError</span>:</span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Nieprawidłowy typ danych!&quot;</span>)</span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ZeroDivisionError</span>:</span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">&quot;Nie można dzielić przez 0!&quot;</span>)</span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(wynik)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>W powyższym przykładzie najpierw wykonywany jest kod w bloku <code>try</code>. Następnie, jeżeli w bloku <code>try</code> wystąpi wyjątek określony w klauzulach <code>except</code>, to zostanie wykonany odpowiedni blok <code>except</code>, np. wyświetlenie komunikatu o błędzie, zastosowanie alternatywnego podejścia. Jeżeli nie wystąpił żaden wyjątek, to zostanie wykonany blok <code>else</code>.</p>
-<p>Przetestuj samodzielnie, co stanie się w poniższych wariantach:</p>
-<div id="01e87edc" class="cell" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>dzielenie(<span class="st">&quot;a&quot;</span>)</span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>dzielenie(<span class="dv">0</span>)</span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>dzielenie(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Nieprawidłowy typ danych!
-Nie można dzielić przez 0!
-2.0</code></pre>
-</div>
-</div>
-</section>
-<section id="importowanie-bibliotek" class="level2">
-<h2 class="anchored" data-anchor-id="importowanie-bibliotek">Importowanie bibliotek</h2>
-<p>Importowanie bibliotek umożliwia dostęp i używanie dodatkowych klas i metod, które nie są wbudowane język Python, dzięki czemu możliwe jest rozszerzenie funkcjonalności języka i wykorzystanie gotowych funkcji do różnych zadań.</p>
-<p>W Pythonie możemy załadować wbudowane biblioteki (np. <code>math</code>, <code>time</code>, <code>os</code>) lub zainstalować zewnętrzne (np. <code>numpy</code>, <code>pandas</code>, <code>matplotlib</code>) używając polecenia <code>import</code>. Aby wywołać zaimportowane funkcje, należy wykorzystać nazwę biblioteki jako prefiks z kropką, a następnie podać nazwę funkcji, w ten sposób: <code>biblioteka.funkcja()</code>. Zaimportowanej bibliotece można również nadać alias, dzięki czemu nazwa zostanie skrócona, np. <code>import numpy as np</code>.</p>
-<div id="7a3973ba" class="cell" data-scrolled="true" data-execution_count="35">
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(math.sqrt(<span class="dv">16</span>))</span>
-<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
-<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a><span class="co"># wylosuj 5 liczb z zakresu od 1 do 100</span></span>
-<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>random_numbers <span class="op">=</span> random.sample(<span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">101</span>), <span class="dv">5</span>)</span>
-<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(random_numbers)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>4.0
-[85, 56, 96, 4, 53]</code></pre>
-</div>
-</div>
-</section>
+<section id="stworzenie-buforów" class="level1">
+<h1>Stworzenie buforów</h1>
+<p>Zobaczmy teraz jak wygląda bardziej zaawansowany skrypt, który stworzy bufory geometrii i zapisze wynik w lokalizacji określonej przez użytkownika. Jako wynik działania zostanie zwrócona ścieżka do utworzonego pliku.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.processing <span class="im">import</span> alg</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> qgis.core <span class="im">import</span> QgsVectorLayer, QgsFeature, QgsVectorFileWriter</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">@alg</span>(name <span class="op">=</span> <span class="st">&quot;buffers&quot;</span>, label <span class="op">=</span> <span class="st">&quot;Calculate buffers&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>     group <span class="op">=</span> <span class="st">&quot;examplescripts&quot;</span> , group_label <span class="op">=</span> <span class="st">&quot;Example scripts&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">@alg.input</span>(<span class="bu">type</span> <span class="op">=</span> alg.SOURCE, name <span class="op">=</span> <span class="st">&quot;INPUT&quot;</span>, label <span class="op">=</span> <span class="st">&quot;Input vector layer&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">@alg.input</span>(<span class="bu">type</span> <span class="op">=</span> alg.DISTANCE, name <span class="op">=</span> <span class="st">&quot;BUFFERDIST&quot;</span>, label <span class="op">=</span> <span class="st">&quot;Buffer distance&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">@alg.input</span>(<span class="bu">type</span> <span class="op">=</span> alg.INT, name <span class="op">=</span> <span class="st">&quot;SEGMENTS&quot;</span>, label <span class="op">=</span> <span class="st">&quot;Buffer segments&quot;</span>, default <span class="op">=</span> <span class="dv">15</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">@alg.input</span>(<span class="bu">type</span> <span class="op">=</span> alg.VECTOR_LAYER_DEST, name <span class="op">=</span> <span class="st">&quot;OUTPUT_PATH&quot;</span>, label <span class="op">=</span> <span class="st">&quot;Output path&quot;</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">@alg.output</span>(<span class="bu">type</span> <span class="op">=</span> alg.FILE, name <span class="op">=</span> <span class="st">&quot;OUTPUT&quot;</span>, label <span class="op">=</span> <span class="st">&quot;Buffers&quot;</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> buffers(instance, parameters, context, feedback, inputs):</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">    Calculate buffers</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">    &quot;&quot;&quot;</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    layer <span class="op">=</span> instance.parameterAsVectorLayer(parameters, <span class="st">&quot;INPUT&quot;</span>, context)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    bufferdist <span class="op">=</span> instance.parameterAsDouble(parameters, <span class="st">&quot;BUFFERDIST&quot;</span>, context)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    segments <span class="op">=</span> instance.parameterAsInt(parameters, <span class="st">&quot;SEGMENTS&quot;</span>, context)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    output_path <span class="op">=</span> instance.parameterAsOutputLayer(parameters, <span class="st">&quot;OUTPUT_PATH&quot;</span>, context)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    crs <span class="op">=</span> layer.crs().authid()</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    buffer_layer <span class="op">=</span> QgsVectorLayer(<span class="st">&quot;Polygon?crs=&quot;</span> <span class="op">+</span> crs, <span class="st">&quot;Buffer&quot;</span>, <span class="st">&quot;memory&quot;</span>)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> feedback.isCanceled():</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {}</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    features <span class="op">=</span> []</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature <span class="kw">in</span> layer.getFeatures():</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        geom <span class="op">=</span> feature.geometry()</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        buffer_geom <span class="op">=</span> geom.<span class="bu">buffer</span>(bufferdist, segments)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        buffer_feature <span class="op">=</span> QgsFeature()</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        buffer_feature.setGeometry(buffer_geom)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        features.append(buffer_feature)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    buffer_layer.dataProvider().addFeatures(features)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    buffer_layer.updateExtents()</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> feedback.isCanceled():</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> {}</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    QgsVectorFileWriter.writeAsVectorFormatV3(</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>        layer <span class="op">=</span> buffer_layer,</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>        fileName <span class="op">=</span> output_path,</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        transformContext <span class="op">=</span> context.transformContext(),</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>        options <span class="op">=</span> QgsVectorFileWriter.SaveVectorOptions()</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">&quot;OUTPUT&quot;</span>: output_path}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="zadania" class="level1">
 <h1>Zadania</h1>
-<ol type="1">
-<li>Napisz pętlę, która zsumuje wartości od 1 do 10.</li>
-<li>Napisz funkcję, która zamienia kilogramy (kg) na funty (lb) oraz na odwrót.</li>
-<li>Napisz funkcję, która sprawdzi czy dany rok jest przestępny. Rok jest przestępny, gdy jest podzielny przez 4 i nie jest podzielny przez 100 lub jest podzielny przez 400. Przykładowo lata 2000 i 2004 były przestępne, natomiast lata 1990, 2010 czy 2021 nie były.</li>
-<li>Używając listy składanej (<em>list comprehension</em>) oraz instrukcji warunkowej, sprawdź jakie są pozostałe metody dostępne dla list. Do tego zadania będą pomocne dwie metody – <code>dir()</code> oraz <code>startswith()</code>.</li>
+<ol start="19" type="1">
+<li>Zaimplementuj wybrany przez siebie algorytm lub narzędzie z poprzednich zajęć jako skrypt przetwarzania w QGIS.</li>
 </ol>
 </section>
 

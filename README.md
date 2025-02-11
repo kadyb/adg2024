@@ -39,7 +39,7 @@ i zapisać ją jako PDF.*
 5. [Próbkowanie](https://kadyb.github.io/adg2024/cwiczenia/05_Probkowanie.html)
 6. [Obliczenia geodezyjne](https://kadyb.github.io/adg2024/cwiczenia/06_Obliczenia_geodezyjne.html)
 7. [Transformacje](https://kadyb.github.io/adg2024/cwiczenia/07_Transformacje.html)
-8. Skrypty geoprzetwarzania w QGIS
+8. [Skrypty geoprzetwarzania w QGIS](https://kadyb.github.io/adg2024/cwiczenia/08_Skrypty_QGIS.html)
    
 
 # Materiały dodatkowe
