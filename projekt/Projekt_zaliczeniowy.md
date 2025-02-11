@@ -9,7 +9,7 @@ Dane są dwie warstwy punktowe:
 1. `dostawcy.gpkg` (punkty główne).
 2. `odbiorcy.gpkg` (punkty podrzędne).
 
-Napisz funkcję, która wykona następujące operacje przestrzenne:
+Napisz funkcję używając wyłącznie PyQGIS, która wykona następujące operacje przestrzenne:
 
 1. Dla każdego odbiorcy znajdzie najbliższego dostawcę. W tym
    celu należy zastosować zagnieżdżoną pętlę.
