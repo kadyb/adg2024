@@ -11,7 +11,7 @@ Dane są dwie warstwy punktowe:
 
 Napisz funkcję, która wykona następujące operacje przestrzenne:
 
-1. Dla każdego dostawcy znajdzie najbliższego odbiorcę. W tym
+1. Dla każdego odbiorcy znajdzie najbliższego dostawcę. W tym
    celu należy zastosować zagnieżdżoną pętlę.
 2. Stworzy linię między najbliższym odbiorcą a dostawcą i doda
    do warstwy atrybut z obliczoną odległością.
