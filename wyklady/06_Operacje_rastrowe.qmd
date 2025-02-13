@@ -11,6 +11,7 @@ css: _style.css
 ---
 
 ```{r}
+#| message: false
 library("terra")
 ```
 
@@ -19,7 +20,7 @@ library("terra")
 ![](https://eoimages.gsfc.nasa.gov/images/imagerecords/144000/144225/campfire_oli_2018312_crop_lrg.jpg)
 
 ::: {style="font-size: 60%;"}
-[Kalifornia (8 listopada 2018), Landsat 8](https://landsat.visibleearth.nasa.gov/)
+[Kalifornia (8 listopada 2018), Landsat 8, NASA](https://landsat.visibleearth.nasa.gov/)
 :::
 
 ## Raster
@@ -83,7 +84,7 @@ W zależności od zakresu wartości rastra i wymaganej precyzji można wykorzyst
 różne typy danych, co ma istotny wpływ na rozmiar pliku wyjściowego oraz
 wydajność obliczeń.
 
-Zawsze należy starać się wybrać optymalny typ dla konkretnych zastosowań.
+Zawsze należy starać się wybrać optymalny typ dla konkretnych zastosowań!
 
 ## Typy danych w GDAL
 
@@ -99,11 +100,11 @@ Zawsze należy starać się wybrać optymalny typ dla konkretnych zastosowań.
 |      Int32     |   $-2,147,483,648$    |      $2,147,483,647$   |
 |     UInt64     |         $0$           |         $2^{64}$       |
 |      Int64     |       $-2^{63}$       |         $2^{63}$       |
-|     Float32    |    $-3.4*10^{38}$     |     $3.4*10^{38}$      |
-|     Float64    |   $-1.8*10^{308}$     |    $1.8*10^{308}$      |
+|     Float32    |    $-3.4*10^{38}$     |      $3.4*10^{38}$     |
+|     Float64    |   $-1.8*10^{308}$     |     $1.8*10^{308}$     |
 
 ::: {style="text-align: center;"}
-[GDAL](https://gdal.org/en/stable/user/raster_data_model.html)
+[Dokumentacja GDAL](https://gdal.org/en/stable/user/raster_data_model.html)
 :::
 
 :::
@@ -111,12 +112,8 @@ Zawsze należy starać się wybrać optymalny typ dla konkretnych zastosowań.
 ## {.center}
 
 ::: {.fragment}
-**1. W jaki sposób przechowywane są łańcuchy tekstu (kategorie), a jak wartości
+**W jaki sposób przechowywane są łańcuchy tekstu (kategorie), a jak wartości
 logiczne?**
-:::
-
-::: {.fragment}
-**2. Jaki typ danych jest najlepszy do ich zapisu?**
 :::
 
 ## Typy rastrów
@@ -131,15 +128,6 @@ wymiar czasu lub inne atrybuty, np. dane pochodzące z różnych sensorów.
 ## Struktura dwuwymiarowa
 
 ```{r}
-r = rast(nrows = 10, ncols = 10, xmin = 0, xmax = 10, ymin = 0, ymax = 10,
-         vals = 1:100)
-plot(r, col = grey.colors(100, rev = TRUE), main = "Numer komórki", legend = FALSE)
-text(r)
-```
-
-## Struktura dwuwymiarowa
-
-```{r}
 x = 1:10
 y = 1:10
 comb = expand.grid(x = x, y = y)
@@ -147,9 +135,18 @@ labels = paste0("[", comb$y, ", ", comb$x, "]")
 ```
 
 ```{r}
+r = rast(nrows = 10, ncols = 10, xmin = 0, xmax = 10, ymin = 0, ymax = 10,
+         vals = 1:100)
 plot(r, col = grey.colors(100, rev = TRUE), main = "Indeks komórki [wiersz, kolumna]",
      legend = FALSE)
 text(r, labels, cex = 0.7)
+```
+
+## Struktura dwuwymiarowa
+
+```{r}
+plot(r, col = grey.colors(100, rev = TRUE), main = "Numer komórki", legend = FALSE)
+text(r)
 ```
 
 ## Raster wielokanałowy
@@ -166,9 +163,10 @@ kolorach.
 ## Raster wielokanałowy
 
 ```{r}
-f = system.file("tif/L7_ETMs.tif", package = "stars")
-r = rast(f)
-plotRGB(r, 4, 3, 2, main = "Kompozycja bliskiej podczerwieni", mar = c(0, 0, 1.5, 0))
+ff = system.file("tif/L7_ETMs.tif", package = "stars")
+r = rast(ff)
+plotRGB(r, 4, 3, 2, main = "Kompozycja bliskiej podczerwieni", axes = TRUE,
+        mar = c(1.2, 0, 1.5, 0))
 ```
 
 ## Raster wieloatrybutowy
@@ -247,18 +245,184 @@ które można przetwarzać za pomocą operacji matematycznych wykorzystując
 operatory arytmetyczne, porównawcze, logiczne czy funkcje matematyczne.
 
 Założenia zostały opracowane przez amerykańskiego studenta architektury
-krajobrazu Charlesa Dana Tomlina w latach 70 i są powszechnie stosowane
+krajobrazu Charlesa Dana Tomlina w latach 70. i są powszechnie stosowane
 we współczesnym oprogramowaniu do analiz rastrowych.
 
 ## Algebra map
 
-Działania mogą być podejmowane na czterech poziomach:
+Można wyróżnić cztery poziomy operacji:
 
-- operacje lokalne
-- operacje ogniskowe
-- operacje strefowe
-- operacje globalne
+- operacje lokalne,
+- operacje ogniskowe,
+- operacje strefowe,
+- operacje globalne.
+
+## Operacje lokalne {style="text-align: center;" .center}
 
 ## Operacje lokalne
 
-## Skalowanie wartości
+Operacje lokalne wykonywane są na poszczególnych komórkach jednego lub większej
+liczby rastrów wejściowych bez uwzględniania sąsiednich komórek.
+
+**Przykład:**
+
+- Działania arytmetyczne,
+- Funkcje matematyczne,
+- Skalowanie,
+- Reklasyfikacja,
+- Maskowanie.
+
+## Operacje lokalne
+
+```{r}
+r = rast(f)
+```
+
+**Działania arytmetyczne**
+
+```r
+rr = r + 1
+rr = sqrt(abs(r) / 2)
+rr = log(cos(r))
+```
+
+$r$ -- $\textrm{raster wejściowy}$
+
+\
+
+::: {.fragment}
+```r
+rr = r1 + r2
+```
+
+$r_1$ -- $\textrm{raster wejściowy 1}$
+
+$r_2$ -- $\textrm{raster wejściowy 2}$
+
+::: {style="text-align: center;"}
+**Jakie warunki należy spełnić, aby wykonać powyższe działanie?**
+:::
+:::
+
+## Operacje lokalne
+
+**Skalowanie**
+
+Dane satelitarne dla ograniczenia zajmowanego miejsca są zazwyczaj przechowywane
+jako wartości całkowite (*integer*), pomimo iż w rzeczywistości reprezentują
+odbicie spektralne w zakresie od 0 do 1 jako wartości zmiennoprzecinkowe (*float*).
+
+Aby dokonać transformacji wartości z typu całkowitego na zmiennoprzecinkowy,
+należy wykorzystać poniższe równanie:
+
+$$
+x' = x \cdot \textrm{scale factor} + \textrm{offset}
+$$
+
+## Operacje lokalne
+
+**Skalowanie**
+
+W przypadku Landsata 8/9 współczynnik skalowania wynosi $0,0000275$, a przesunięcie
+$-0,2$. Załóżmy, że wartość komórki w kanale bliskiej podczerwieni wynosi 15000,
+wtedy:
+
+```{r}
+#| echo: true
+scale = function(x) x * 2.75e-05 - 0.2
+scale(15000)
+```
+
+## Operacje lokalne
+
+**Binaryzacja (progowanie)**
+
+```r
+rr = r < 300
+```
+
+```{r}
+rr = r < 300
+plot(rr, type = "classes", col = c("brown", "darkgreen"),
+     levels = c("Fałsz", "Prawda"), axes = FALSE)
+```
+
+## Operacje lokalne
+
+**Reklasyfikacja**
+
+```{r}
+#| echo: true
+m_rcl = c(
+  -Inf,   300,   1,
+   300,   350,   2,
+   350,   400,   3,
+   400,   Inf,   4
+)
+m_rcl = matrix(m_rcl, ncol = 3, byrow = TRUE)
+rr = classify(r, m_rcl)
+```
+
+::: {.nonincremental}
+Macierz reklasyfikacyjna składa się z trzech kolumn:
+
+- początek zakresu,
+- koniec zakresu,
+- nowa wartość.
+:::
+
+## Operacje lokalne
+
+**Reklasyfikacja**
+
+```{r}
+plot(rr, axes = FALSE, col = rainbow(4))
+```
+
+## Operacje lokalne
+
+**Maskowanie**
+
+Maskowanie to ...
+
+
+```{r}
+f = system.file("ex/lux.shp", package = "terra")
+poly = vect(f)[12]
+plot(r)
+plot(poly, border = "red", lwd = 4, add = TRUE)
+```
+
+```{r}
+r_mask = crop(r, ext(poly), snap = "out")
+plot(r_mask, main = "Docięcie rastra do zasięgu poligonu")
+plot(poly, border = "red", lwd = 3, add = TRUE)
+```
+
+```{r}
+tmp = rast(nrows = nrow(r_mask), ncols = ncol(r_mask),
+           extent = ext(r_mask), crs = crs(r_mask))
+poly_grid = rasterize(poly, tmp, background = NA)
+output = r_mask * poly_grid
+```
+
+```{r}
+plot(poly_grid, main = "Maska poligonu")
+plot(poly, border = "red", lwd = 3, add = TRUE)
+```
+
+```{r}
+plot(output, main = "Wynik")
+plot(poly, border = "red", lwd = 3, add = TRUE)
+```
+
+
+## Analizy terenu
+
+## Inne operacje
+
+- przepróbkowanie
+- reprojekcja
+
+
+

@@ -3334,7 +3334,7 @@ Liczba komórek: 7268</code></pre>
 </section>
 <section id="reklasyfikacja" class="level2">
 <h2 class="anchored" data-anchor-id="reklasyfikacja">Reklasyfikacja</h2>
-<p>W podobny sposób działa reklasyfikacja wartości rastra. Jeśli chcemy zreklasyfikować raster na trzy klasy wysokości, możemy zrobić to w następujący sposób:</p>
+<p>Podobnie do maskowania działa reklasyfikacja wartości rastra. Jeśli chcemy zreklasyfikować raster na trzy klasy wysokości (np. niziny, wyżyny, góry), to możemy zrobić to w następujący sposób:</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># reklasyfikacja</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>formulaString <span class="op">=</span> <span class="st">&quot;(&#39;DEM@1&#39; &lt; 94) * 1 + (&#39;DEM@1&#39; &gt;= 94 AND &#39;DEM@1&#39; &lt;= 125) * 2 + (&#39;DEM@1&#39; &gt; 125) * 3&quot;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
