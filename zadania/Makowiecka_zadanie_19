@@ -1,0 +1,33 @@
+from qgis.core import QgsRasterLayer
+from qgis.processing import alg
+import os
+
+@alg(name="raster_cell_size", label="Calculate raster cell size",
+     group="examplescripts", group_label="Example scripts")
+@alg.input(type=alg.RASTER_LAYER, name="INPUT", label="Input raster layer")
+@alg.output(type=alg.STRING, name="OUTPUT", label="Cell size")
+def wielkosc_komorki(instance, parameters, context, feedback, inputs):
+    """
+    Calculate cell size of a raster layer
+    """
+    
+    raster = instance.parameterAsRasterLayer(parameters, "INPUT", context)
+    if not raster or not raster.isValid():
+        raise ValueError("Raster nie jest prawidłowy lub plik nie istnieje.")
+    
+    extent = raster.extent()
+    liczba_kolumn = raster.width()
+    liczba_wierszy = raster.height()
+    
+    wielkosc_komorki_x = extent.width() / liczba_kolumn
+    wielkosc_komorki_y = extent.height() / liczba_wierszy
+    
+    output = {
+        "Cell size X": wielkosc_komorki_x,
+        "Cell size Y": wielkosc_komorki_y
+    }
+    
+    if feedback.isCanceled():
+        return {}
+    
+    return output
