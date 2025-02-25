@@ -1,5 +1,4 @@
 from qgis.processing import alg
-from qgis.core import QgsVectorLayer
 import csv
 import math
 import os
@@ -23,17 +22,17 @@ def terrain_profile_length(instance, parameters, context, feedback, inputs):
     # Wczytaj dane z pliku CSV
     with open(csv_file, newline='', encoding='utf-8') as file:
         reader = csv.reader(file)
-        next(reader)
+        next(reader)  # Pominięcie nagłówka
         for row in reader:
-            if len(row) < 3:
-                feedback.reportError(f"Skipping invalid row: {row}")
+            if len(row) < 4:  # Sprawdzenie, czy są ID, X, Y, Z
+                feedback.reportError(f"Pominięto nieprawidłowy wiersz: {row}")
                 continue
             try:
-                x, y, z = map(float, row[:3])
+                x, y, z = map(float, row[1:4])  # Pobierz kolumny 2, 3, 4
                 points.append((x, y, z))
             except ValueError as e:
-                feedback.reportError(f"Conversion error in row {row}: {e}")
+                feedback.reportError(f"Błąd konwersji wiersza {row}: {e}")
     # Oblicz całkowitą odległość
     for i in range(len(points) - 1):
         total_distance += surface_distance(points[i], points[i + 1])
-    return {"OUTPUT": f"Total terrain profile length: {total_distance:.2f} m"}
+    return {"OUTPUT": f"Całkowita długość profilu terenu: {total_distance:.2f} m"}
